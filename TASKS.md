@@ -14,7 +14,7 @@
 - [ ] **[Brand] Define "Change by Design" brand vision and positioning** | P2 | 🔴 High energy
 - [ ] **[Brand] Map Brilliance Collective into Change by Design** - merge plan | P2 | 🟡 Medium energy
 - [ ] **[Setup] Create Google Drive "Capture" folder** - victoria@changebydesign.me | P1 | 🟢 Low energy
-- [ ] **[Setup] Set up GitHub account and GitHub Pages** - permanent cross-device dashboard URL | P1 | 🟡 Medium energy
+- [x] **[Setup] Set up GitHub account and GitHub Pages** - permanent cross-device dashboard URL | P1 | 🟡 Medium energy — DONE 2026-03-30. URL: https://victoriachangebydesign.github.io/dashboard/
 
 ## Waiting On
 

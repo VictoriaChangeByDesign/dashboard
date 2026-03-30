@@ -76,7 +76,7 @@ Writing style: data-forward, professionally precise, readable (not academic). AI
 ## Connected Accounts
 - Gmail + Google Drive: victoria@changebydesign.me (personal + brand)
 - Work: Microsoft 365 Government — access via Chrome only during Cowork sessions
-- GitHub: not yet set up — next session priority
+- GitHub: VictoriaChangeByDesign — repo: github.com/VictoriaChangeByDesign/dashboard
 
 ## Productivity System Design
 **Framework:** Eisenhower Matrix (urgency × importance) + P1/P2/P3 priority + energy tags (🔴 High / 🟡 Medium / 🟢 Low)
@@ -84,7 +84,8 @@ Writing style: data-forward, professionally precise, readable (not academic). AI
 **Work inbox:** I pull action items from Outlook via Chrome at the start of any Cowork session (M–F). Victoria does NOT forward work email to personal.
 **Daily routine:** Self-serve via dashboard (zero tokens). Victoria opens overview.html from ~/Documents/Claude/Dashboard/, checks the daily checklist panel, sees today's top tasks.
 **Cowork cadence:** 2–3x/week for capture processing + task updates. Full weekly review every Friday (scheduled prompt set up).
-**Dashboard location:** ~/Documents/Claude/Dashboard/ — permanent location on Victoria's computer. GitHub Pages setup pending.
+**Dashboard location:** ~/Documents/Claude/Dashboard/ — permanent location on Victoria's computer.
+**Dashboard URL (cross-device):** https://victoriachangebydesign.github.io/dashboard/ — live on GitHub Pages. Bookmark this for phone/tablet/any device access.
 **Task vs. Project rule:** If it takes more than one action, it's a project. Every project must have a single "Next Action" listed. I decompose projects into actions — Victoria doesn't have to figure out first steps.
 **Reminder delivery:** Cowork scheduled prompts at 8am weekdays (daily briefing) and 8am Fridays (weekly review). Victoria sets phone calendar alerts as backup triggers.
 
