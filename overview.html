@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victoria's Life Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --bg-card: #1a1d27;
+      --bg-card-hover: #1f2235;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f0f0f0;
+      --text-secondary: #9a9aaa;
+      --text-muted: #5c5c70;
+
+      --c-work:     #3b82f6;
+      --c-mihf:     #10b981;
+      --c-naacp:    #ef4444;
+      --c-guns:     #8b5cf6;
+      --c-campaign: #f59e0b;
+      --c-podcast:  #ec4899;
+      --c-brand:    #f97316;
+      --c-glow:     #eab308;
+      --c-family:   #06b6d4;
+      --c-finances: #22c55e;
+      --c-home:     #a78bfa;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .header-left h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .header-left .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .date-display {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* DAILY CHECKLIST */
+    .daily-checklist {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin: 20px 32px 0;
+    }
+
+    .daily-checklist h3 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .daily-checklist h3 span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .check-item:hover { background: rgba(255,255,255,0.04); }
+
+    .check-item.done .check-label { text-decoration: line-through; color: var(--text-muted); }
+
+    .check-box {
+      width: 18px; height: 18px; min-width: 18px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 5px;
+      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      font-size: 11px;
+    }
+
+    .check-item.done .check-box {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: white;
+    }
+
+    .check-label { font-size: 0.82rem; line-height: 1.4; color: var(--text-secondary); }
+    .check-label strong { color: var(--text); font-weight: 500; }
+    .check-trigger {
+      font-size: 0.72rem;
+      color: var(--c-campaign);
+      margin-top: 2px;
+    }
+
+    .reset-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .reset-btn:hover { color: var(--text); border-color: var(--border-hover); }
+
+    .urgent-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    /* NAV TABS */
+    .nav {
+      display: flex;
+      gap: 2px;
+      padding: 16px 32px 0;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .nav::-webkit-scrollbar { display: none; }
+
+    .nav-tab {
+      padding: 8px 16px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.15s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: inherit;
+      margin-bottom: -1px;
+    }
+
+    .nav-tab:hover { color: var(--text-secondary); }
+    .nav-tab.active { color: var(--text); border-bottom-color: white; }
+
+    /* MAIN CONTENT */
+    .content {
+      padding: 28px 32px;
+    }
+
+    /* OVERVIEW GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .area-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .area-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .area-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .area-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .area-card .card-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .area-card .card-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-urgent {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+    }
+
+    .badge-active {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+    }
+
+    .badge-upcoming {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+    }
+
+    .badge-goal {
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+    }
+
+    .badge-paused {
+      background: rgba(100, 100, 120, 0.2);
+      color: var(--text-muted);
+    }
+
+    .area-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .area-card .card-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .task-list {
+      list-style: none;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .task-item:last-child { border-bottom: none; }
+
+    .task-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .card-footer {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* INDIVIDUAL AREA VIEW */
+    .area-detail {
+      display: none;
+      max-width: 780px;
+    }
+
+    .area-detail.visible { display: block; }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .detail-icon {
+      font-size: 2.2rem;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .detail-title h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .detail-title p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-top: 3px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      cursor: pointer;
+      margin-bottom: 20px;
+      background: none;
+      border: none;
+      font-family: inherit;
+      padding: 0;
+    }
+
+    .back-btn:hover { color: var(--text); }
+
+    .detail-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .detail-section h4 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .detail-task {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.85rem;
+    }
+
+    .detail-task:last-child { border-bottom: none; }
+
+    .detail-task-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .detail-task-text { color: var(--text); line-height: 1.4; }
+    .detail-task-note { color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
+
+    .context-block {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin: 2px;
+    }
+
+    /* OVERVIEW VIEW  */
+    #view-overview { display: block; }
+    #view-area { display: none; }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      margin-top: 24px;
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Victoria Henderson Weber</h1>
+    <div class="subtitle">Life Command Center &nbsp;·&nbsp; Des Moines, IA</div>
+  </div>
+  <div class="header-right">
+    <div class="date-display" id="date-display"></div>
+    <div class="urgent-banner">⚡ 2 areas need immediate attention: NAACP · Gun Club</div>
+  </div>
+</div>
+
+<!-- DAILY CHECKLIST -->
+<div class="daily-checklist" id="daily-checklist">
+  <h3>Daily Routine Checklist <span id="checklist-progress"></span> <button class="reset-btn" onclick="resetChecklist()">Reset</button></h3>
+  <div class="checklist-grid" id="checklist-items"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-tab active" onclick="switchTab('overview', this)">All Areas</button>
+  <button class="nav-tab" onclick="showArea('work', this)">DART & Work</button>
+  <button class="nav-tab" onclick="showArea('mihf', this)">MIHF Fellowship</button>
+  <button class="nav-tab" onclick="showArea('naacp', this)">NAACP</button>
+  <button class="nav-tab" onclick="showArea('guns', this)">Gun Club</button>
+  <button class="nav-tab" onclick="showArea('campaign', this)">Campaign</button>
+  <button class="nav-tab" onclick="showArea('podcast', this)">Podcast</button>
+  <button class="nav-tab" onclick="showArea('brand', this)">Brand</button>
+  <button class="nav-tab" onclick="showArea('glow', this)">Glow Up</button>
+  <button class="nav-tab" onclick="showArea('family', this)">Family</button>
+  <button class="nav-tab" onclick="showArea('finances', this)">Finances</button>
+  <button class="nav-tab" onclick="showArea('home', this)">Home</button>
+</div>
+
+<div class="content">
+
+  <!-- OVERVIEW GRID -->
+  <div id="view-overview">
+    <div class="section-label">🔴 Urgent — balls dropping</div>
+    <div class="grid" id="urgent-grid"></div>
+
+    <div class="section-label">🟡 Active — in motion</div>
+    <div class="grid" id="active-grid"></div>
+
+    <div class="section-label">🔵 Goals & Someday</div>
+    <div class="grid" id="goal-grid"></div>
+  </div>
+
+  <!-- INDIVIDUAL AREA DETAIL -->
+  <div id="view-area">
+    <button class="back-btn" onclick="goBack()">← All Areas</button>
+    <div id="area-detail-content"></div>
+  </div>
+
+</div>
+
+<script>
+  // ─── DATE ──────────────────────────────────────────────
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const now = new Date();
+  document.getElementById('date-display').textContent =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+
+  // ─── AREA DATA ─────────────────────────────────────────
+  const areas = {
+    work: {
+      icon: '🚌',
+      name: 'DART & Work',
+      color: 'var(--c-work)',
+      role: 'Caravan (Vanpool) Manager · 20-county region',
+      badge: 'active',
+      badgeLabel: 'Active',
+      priority: 'active',
+      tasks: [
+        { text: 'Prepare for Eno Center Mid-Manager Program', note: 'July · Seattle', urgent: false },
+        { text: 'Support MIHF fellowship shuttle program development', note: 'Runs parallel to day-job work', urgent: false },
+      ],
+      context: 'Managing a 30-year-old vanpool program across a 20-county region. Recently accepted into the Eno Center for Transportation Mid-Manager Program — a significant professional development milestone. Program is in July in Seattle.',
+      tags: ['DART', 'Vanpool', 'Eno Center', 'MIHF'],
+      footer: 'Eno Center: July · Seattle'
+    },
+    mihf: {
+      icon: '🏥',
+      name: 'MIHF Fellowship',
+      color: 'var(--c-mihf)',
+      role: 'Health Connect Fellow · Mid Iowa Health Foundation',
+      badge: 'active',
+      badgeLabel: 'Active',
+      priority: 'active',
+      tasks: [
+        { text: 'Finish Part 2 — workforce transportation barriers series', urgent: true },
+        { text: 'Finish Part 3 — workforce transportation barriers series', urgent: true },
+        { text: 'Continue shuttle program development plan', note: 'Using vanpool program components', urgent: false },
+      ],
+      context: 'Three-part series on workforce transportation barriers — the groundwork for a new shuttle program built from DART vanpool infrastructure. Part 1 done. Parts 2 and 3 are in progress. This is the externally-accountable, deadline-driven fellowship deliverable.',
+      tags: ['MIHF', 'Health Connect', 'Shuttle Program', 'Workforce Transportation'],
+      footer: '3-part series · Parts 2 & 3 remaining'
+    },
+    naacp: {
+      icon: '✊',
+      name: 'NAACP',
+      color: 'var(--c-naacp)',
+      role: 'Branch President · NAACP Des Moines',
+      badge: 'urgent',
+      badgeLabel: '⚡ URGENT',
+      priority: 'urgent',
+      tasks: [
+        { text: 'Audit what has been dropped or gone overdue', urgent: true },
+        { text: 'Identify most critical open obligations', urgent: true },
+        { text: 'Re-establish communication with branch', urgent: true },
+        { text: 'Create a catch-up action plan', urgent: true },
+      ],
+      context: 'Victoria is the president of the NAACP Des Moines branch. She has acknowledged serious neglect of this work and needs to pull it together ASAP. First step is an honest audit of what has lapsed.',
+      tags: ['NAACP', 'Civil Rights', 'Des Moines', 'Community Leadership'],
+      footer: '⚡ Needs immediate attention'
+    },
+    guns: {
+      icon: '🛡️',
+      name: 'Colonel Young Gun Club',
+      color: 'var(--c-guns)',
+      role: 'Vice President · Iowa Chapter · NAAGA',
+      badge: 'urgent',
+      badgeLabel: '⚡ URGENT',
+      priority: 'urgent',
+      tasks: [
+        { text: 'Audit what has been dropped or gone overdue', urgent: true },
+        { text: 'Identify most critical open obligations', urgent: true },
+        { text: 'Reconnect with chapter leadership', urgent: true },
+        { text: 'Create catch-up action plan', urgent: true },
+      ],
+      context: 'Iowa chapter of the National African American Gun Association. Victoria is Vice President and has acknowledged serious neglect. Needs the same audit-and-catch-up approach as NAACP.',
+      tags: ['NAAGA', 'Colonel Young Gun Club', 'Iowa', 'Gun Rights'],
+      footer: '⚡ Needs immediate attention'
+    },
+    campaign: {
+      icon: '🗳️',
+      name: "Heather's Campaign",
+      color: 'var(--c-campaign)',
+      role: 'Campaign Supporter · Polk County Supervisor Race',
+      badge: 'active',
+      badgeLabel: 'Active',
+      priority: 'active',
+      tasks: [
+        { text: 'Clarify current campaign support needs from Heather', urgent: false },
+        { text: 'Coordinate campaign support with podcast pivot plan', note: 'Heather ran after Ep 1', urgent: false },
+      ],
+      context: 'Mac friend Heather is running for Polk County Supervisor. She started this journey through the Change in Plain Sight podcast and jumped into the race after episode 1. Victoria supports her campaign while also navigating a pivot for the podcast.',
+      tags: ['Heather', 'Polk County', 'Supervisor', 'Campaign'],
+      footer: 'Polk County Supervisor race'
+    },
+    podcast: {
+      icon: '🎙️',
+      name: 'Change in Plain Sight',
+      color: 'var(--c-podcast)',
+      role: 'Co-host (transitioning to Solo) · Podcast',
+      badge: 'active',
+      badgeLabel: 'Active',
+      priority: 'active',
+      tasks: [
+        { text: 'Finish Episode 2', urgent: false },
+        { text: 'Finish Episode 3', urgent: false },
+        { text: 'Draft solo pivot strategy', note: 'Use Heather campaign to transition; leave door open for her return', urgent: false },
+        { text: 'Define rebrand/relaunch plan for solo format', urgent: false },
+      ],
+      context: 'Change in Plain Sight surfaces hidden systems, policies, and decisions that shape everyday life. Co-founded with Heather. Episode 1 is done. Heather\'s campaign run creates an opportunity to pivot to a solo show — with the possibility of Heather returning later.',
+      tags: ['Podcast', 'Change in Plain Sight', 'Heather', 'Civic Power'],
+      footer: 'Ep 2 & 3 · Then solo pivot'
+    },
+    brand: {
+      icon: '✨',
+      name: 'Brand & Business',
+      color: 'var(--c-brand)',
+      role: 'Owner · Brilliance Collective → Change by Design',
+      badge: 'active',
+      badgeLabel: 'In Progress',
+      priority: 'active',
+      tasks: [
+        { text: 'Define the "Change by Design" brand vision and positioning', urgent: false },
+        { text: 'Map Brilliance Collective into Change by Design', note: 'Merge plan', urgent: false },
+        { text: 'Identify what services/offerings live under this umbrella', urgent: false },
+      ],
+      context: 'Brilliance Collective is Victoria\'s existing small business. "Change by Design" is the new personal brand umbrella being developed to tie together all of her work — podcast, consulting, civic leadership, and more. Needs a clear direction and merge strategy.',
+      tags: ['Brilliance Collective', 'Change by Design', 'Brand', 'Business'],
+      footer: 'Merging into Change by Design'
+    },
+    glow: {
+      icon: '🌟',
+      name: 'Glow Up',
+      color: 'var(--c-glow)',
+      role: 'Personal Development · Dr. Victoria Henderson Weber',
+      badge: 'goal',
+      badgeLabel: 'Long-term',
+      priority: 'goal',
+      tasks: [
+        { text: 'Research Minetta Institute / San Jose State masters program', note: 'Transportation Management', urgent: false },
+        { text: 'Identify application requirements and timeline', urgent: false },
+        { text: 'Continue building credentials toward doctoral path', urgent: false },
+      ],
+      context: 'The long-term goal is Dr. Victoria Henderson Weber. This involves a masters in Transportation Management (Minetta Institute / San Jose State), continued leadership development (Eno Center), and intentional personal growth across all life areas.',
+      tags: ['Dr. VHW', 'Masters Degree', 'Minetta', 'San Jose State', 'Eno Center'],
+      footer: 'Goal: Dr. Victoria Henderson Weber'
+    },
+    family: {
+      icon: '💛',
+      name: 'Family',
+      color: 'var(--c-family)',
+      role: 'Mom · Langston (10) & Zora (3)',
+      badge: 'active',
+      badgeLabel: 'Always Active',
+      priority: 'active',
+      tasks: [
+        { text: 'Identify Langston\'s current priorities and needs', note: 'Age 10 — school, activities, development', urgent: false },
+        { text: 'Identify Zora\'s current priorities and needs', note: 'Age 3 — development, childcare, routine', urgent: false },
+      ],
+      context: 'Two kids with very different needs. Langston is 10 — school age, activities, starting to have his own world. Zora is 3 — early childhood, routines, development. Both are a priority.',
+      tags: ['Langston', 'Zora', 'Family'],
+      footer: 'Langston (10) · Zora (3)'
+    },
+    finances: {
+      icon: '💰',
+      name: 'Finances',
+      color: 'var(--c-finances)',
+      role: 'Personal Finance',
+      badge: 'goal',
+      badgeLabel: 'Needs Attention',
+      priority: 'goal',
+      tasks: [
+        { text: 'Full financial audit — income, expenses, debts', urgent: false },
+        { text: 'Set up a working budget and savings system', urgent: false },
+        { text: 'Identify financial goals (short and long term)', urgent: false },
+      ],
+      context: 'Getting finances in order is a stated priority. Starting with a clear audit of the current picture before building systems.',
+      tags: ['Budget', 'Savings', 'Financial Planning'],
+      footer: 'Audit → Budget → System'
+    },
+    home: {
+      icon: '🏠',
+      name: 'Home',
+      color: 'var(--c-home)',
+      role: 'Home Design & Organization',
+      badge: 'goal',
+      badgeLabel: 'Someday',
+      priority: 'goal',
+      tasks: [
+        { text: 'Map out what needs to change, room by room', urgent: false },
+        { text: 'Identify quick wins vs. bigger projects', urgent: false },
+        { text: 'Design a home that actively makes you happy', urgent: false },
+      ],
+      context: 'Home reorganization and redesign — the goal is a space that feels intentional and makes Victoria happy, not just functional. Think about what kind of environment supports her and her kids best.',
+      tags: ['Home', 'Design', 'Organization'],
+      footer: 'Organize → Redesign → Love it'
+    }
+  };
+
+  // ─── RENDER CARDS ─────────────────────────────────────
+  function makeCard(id, data) {
+    const card = document.createElement('div');
+    card.className = 'area-card';
+    card.style.setProperty('--card-color', data.color);
+    card.style.cssText += `--card-color: ${data.color};`;
+    card.querySelector ? null : null;
+
+    const taskHtml = data.tasks.slice(0, 3).map(t => `
+      <li class="task-item">
+        <span class="task-dot" style="background:${data.color}"></span>
+        <span>${t.text}</span>
+      </li>
+    `).join('');
+
+    card.innerHTML = `
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${data.color};border-radius:14px 14px 0 0;"></div>
+      <div class="card-header">
+        <span class="card-icon">${data.icon}</span>
+        <span class="card-badge badge-${data.badge}">${data.badgeLabel}</span>
+      </div>
+      <h3>${data.name}</h3>
+      <div class="card-role">${data.role}</div>
+      <ul class="task-list">${taskHtml}</ul>
+      ${data.tasks.length > 3 ? `<div style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;">+${data.tasks.length - 3} more</div>` : ''}
+      <div class="card-footer">
+        <span>${data.footer}</span>
+        <span style="color:var(--text-muted)">→</span>
+      </div>
+    `;
+
+    card.addEventListener('click', () => showArea(id));
+    return card;
+  }
+
+  function renderGrid() {
+    const urgentGrid = document.getElementById('urgent-grid');
+    const activeGrid = document.getElementById('active-grid');
+    const goalGrid = document.getElementById('goal-grid');
+
+    Object.entries(areas).forEach(([id, data]) => {
+      const card = makeCard(id, data);
+      if (data.priority === 'urgent') urgentGrid.appendChild(card);
+      else if (data.priority === 'active') activeGrid.appendChild(card);
+      else goalGrid.appendChild(card);
+    });
+  }
+
+  // ─── AREA DETAIL VIEW ─────────────────────────────────
+  function showArea(id, tabBtn) {
+    const data = areas[id];
+    if (!data) return;
+
+    // Update nav
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    if (tabBtn) {
+      tabBtn.classList.add('active');
+    } else {
+      document.querySelectorAll('.nav-tab').forEach(t => {
+        if (t.textContent.trim() === data.name) t.classList.add('active');
+      });
+    }
+
+    document.getElementById('view-overview').style.display = 'none';
+    document.getElementById('view-area').style.display = 'block';
+
+    const taskHtml = data.tasks.map(t => `
+      <div class="detail-task">
+        <span class="detail-task-dot" style="background:${data.color}"></span>
+        <div>
+          <div class="detail-task-text">${t.text}</div>
+          ${t.note ? `<div class="detail-task-note">${t.note}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    const tagsHtml = data.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+    document.getElementById('area-detail-content').innerHTML = `
+      <div class="detail-header">
+        <div class="detail-icon">${data.icon}</div>
+        <div class="detail-title">
+          <h2>${data.name}</h2>
+          <p>${data.role}</p>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Context</h4>
+        <div class="context-block">${data.context}</div>
+        <div style="margin-top:12px">${tagsHtml}</div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Open Tasks (${data.tasks.length})</h4>
+        ${taskHtml}
+      </div>
+    `;
+  }
+
+  // ─── TAB NAVIGATION ───────────────────────────────────
+  function switchTab(view, btn) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-overview').style.display = 'block';
+    document.getElementById('view-area').style.display = 'none';
+  }
+
+  function goBack() {
+    document.getElementById('view-overview').style.display = 'block';
+    document.getElementById('view-area').style.display = 'none';
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.nav-tab').classList.add('active');
+  }
+
+  // ─── DAILY CHECKLIST ──────────────────────────────────
+  const today = new Date().toDateString();
+  const isWeekday = [1,2,3,4,5].includes(new Date().getDay());
+  const isFriday = new Date().getDay() === 5;
+
+  const checklistItems = [
+    {
+      id: 'energy',
+      label: '<strong>Check your energy level.</strong> High / Medium / Low?',
+      trigger: 'Match today\'s tasks to your energy before opening the task board.',
+      always: true
+    },
+    {
+      id: 'top3',
+      label: '<strong>Open task board</strong> — what are your top 3 for today?',
+      trigger: 'dashboard.html → filter by today\'s energy level.',
+      always: true
+    },
+    {
+      id: 'capture',
+      label: '<strong>Capture folder check.</strong> Anything in Google Drive / Capture?',
+      trigger: 'If yes → open Cowork and say "process capture folder".',
+      always: true
+    },
+    {
+      id: 'workemail',
+      label: '<strong>Work inbox check (M–F).</strong> Any action items in Outlook?',
+      trigger: 'If yes → open Cowork and say "check work inbox".',
+      always: isWeekday
+    },
+    {
+      id: 'commitments',
+      label: '<strong>Commitments scan.</strong> Did you make any promises yesterday?',
+      trigger: 'Any "I\'ll get that to you" moments → add to task board or tell Claude.',
+      always: true
+    },
+    {
+      id: 'friday',
+      label: '<strong>Weekly Review (Friday).</strong> Open Cowork for full review.',
+      trigger: 'Say "weekly review" — Claude will run the full Friday protocol.',
+      always: isFriday
+    }
+  ].filter(item => item.always);
+
+  const savedState = JSON.parse(localStorage.getItem?.('checklist-' + today) || 'null') || {};
+
+  function renderChecklist() {
+    const container = document.getElementById('checklist-items');
+    container.innerHTML = checklistItems.map(item => `
+      <div class="check-item ${savedState[item.id] ? 'done' : ''}" onclick="toggleCheck('${item.id}', this)">
+        <div class="check-box">${savedState[item.id] ? '✓' : ''}</div>
+        <div>
+          <div class="check-label">${item.label}</div>
+          <div class="check-trigger">${item.trigger}</div>
+        </div>
+      </div>
+    `).join('');
+    updateProgress();
+  }
+
+  function toggleCheck(id, el) {
+    savedState[id] = !savedState[id];
+    el.classList.toggle('done');
+    el.querySelector('.check-box').textContent = savedState[id] ? '✓' : '';
+    try { localStorage.setItem('checklist-' + today, JSON.stringify(savedState)); } catch(e) {}
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const done = Object.values(savedState).filter(Boolean).length;
+    const total = checklistItems.length;
+    const el = document.getElementById('checklist-progress');
+    el.textContent = done === total ? '✓ All done' : `${done} / ${total} done`;
+    el.style.color = done === total ? '#22c55e' : 'var(--text-muted)';
+  }
+
+  function resetChecklist() {
+    checklistItems.forEach(i => { savedState[i.id] = false; });
+    try { localStorage.removeItem('checklist-' + today); } catch(e) {}
+    renderChecklist();
+  }
+
+  renderChecklist();
+
+  // ─── INIT ─────────────────────────────────────────────
+  renderGrid();
+</script>
+</body>
+</html>
