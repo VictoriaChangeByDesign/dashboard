@@ -3,927 +3,642 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Victoria's Life Dashboard</title>
+  <title>Victoria · Command Center</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0f1117;
-      --bg-card: #1a1d27;
-      --bg-card-hover: #1f2235;
-      --border: rgba(255,255,255,0.08);
-      --border-hover: rgba(255,255,255,0.18);
-      --text: #f0f0f0;
-      --text-secondary: #9a9aaa;
-      --text-muted: #5c5c70;
-
-      --c-work:     #3b82f6;
-      --c-mihf:     #10b981;
-      --c-naacp:    #ef4444;
-      --c-guns:     #8b5cf6;
-      --c-campaign: #f59e0b;
-      --c-podcast:  #ec4899;
-      --c-brand:    #f97316;
-      --c-glow:     #eab308;
-      --c-family:   #06b6d4;
-      --c-finances: #22c55e;
-      --c-home:     #a78bfa;
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0f1117;--bg2:#14161f;--card:#1a1d27;--card2:#1f2235;
+      --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
+      --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
+      --work:#3b82f6;--mihf:#10b981;--naacp:#ef4444;--guns:#8b5cf6;
+      --campaign:#f59e0b;--podcast:#ec4899;--brand:#f97316;
+      --glow:#eab308;--family:#06b6d4;--finances:#22c55e;--home:#a78bfa;
     }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 0;
-    }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
     /* HEADER */
-    .header {
-      padding: 28px 32px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
+    .hdr{padding:20px 28px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px}
+    .hdr h1{font-size:1.4rem;font-weight:700;letter-spacing:-.03em}
+    .hdr-sub{color:var(--t2);font-size:.8rem;margin-top:3px}
+    .hdr-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .pill{font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid;cursor:default}
+    .pill-red{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:#fca5a5}
+    .pill-btn{background:rgba(255,255,255,.05);border-color:var(--border);color:var(--t2);cursor:pointer}
+    .pill-btn:hover{border-color:var(--border2);color:var(--text)}
 
-    .header-left h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
+    /* CHECKLIST */
+    .cl-wrap{margin:16px 28px 0;background:var(--card);border:1px solid var(--border);border-radius:12px}
+    .cl-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;cursor:pointer;user-select:none}
+    .cl-hdr-l{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
+    .cl-hdr-r{display:flex;gap:10px;align-items:center;font-size:.72rem;color:var(--t2)}
+    .cl-reset{background:none;border:1px solid var(--border);color:var(--t3);font-size:.68rem;padding:2px 8px;border-radius:5px;cursor:pointer;font-family:inherit}
+    .cl-body{padding:10px 18px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:5px}
+    .cl-body.hidden{display:none}
+    .ci{display:flex;gap:8px;padding:6px 8px;border-radius:7px;cursor:pointer;transition:background .15s;align-items:flex-start}
+    .ci:hover{background:rgba(255,255,255,.04)}
+    .ci.done .ci-lbl{text-decoration:line-through;color:var(--t3)}
+    .ci-box{width:16px;height:16px;min-width:16px;border:1.5px solid rgba(255,255,255,.2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;margin-top:2px;transition:all .15s;flex-shrink:0}
+    .ci.done .ci-box{background:#22c55e;border-color:#22c55e;color:#fff}
+    .ci-lbl{font-size:.77rem;color:var(--t2);line-height:1.4}
+    .ci-sub{font-size:.68rem;color:#f59e0b;margin-top:1px}
 
-    .header-left .subtitle {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      margin-top: 4px;
-    }
+    /* NAV */
+    .nav{display:flex;gap:2px;padding:16px 28px 0;border-bottom:1px solid var(--border);overflow-x:auto}
+    .nav::-webkit-scrollbar{display:none}
+    .nt{padding:7px 16px;font-size:.8rem;font-weight:500;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;margin-bottom:-1px;transition:color .15s}
+    .nt:hover{color:var(--t2)}
+    .nt.active{color:var(--text);border-bottom-color:#fff}
 
-    .header-right {
-      text-align: right;
-    }
+    /* CONTENT */
+    .content{padding:24px 28px}
+    .loading{text-align:center;padding:60px;color:var(--t3);font-size:.9rem}
+    .slabel{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin:20px 0 10px}
+    .slabel:first-child{margin-top:0}
 
-    .date-display {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
+    /* AREA CARDS */
+    .agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+    .ac{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+    .ac:hover{background:var(--card2);border-color:var(--border2);transform:translateY(-1px)}
+    .ac-top{display:flex;justify-content:space-between;margin-bottom:10px}
+    .badge{display:inline-flex;font-size:.67rem;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.04em}
+    .b-urgent{background:rgba(239,68,68,.2);color:#fca5a5}
+    .b-active{background:rgba(16,185,129,.15);color:#6ee7b7}
+    .b-goal{background:rgba(139,92,246,.15);color:#c4b5fd}
+    .b-p1{background:rgba(239,68,68,.15);color:#fca5a5}
+    .b-p2{background:rgba(245,158,11,.15);color:#fcd34d}
+    .b-p3{background:rgba(92,92,112,.2);color:var(--t2)}
+    .ac h3{font-size:.9rem;font-weight:600;margin-bottom:3px}
+    .ac-role{font-size:.71rem;color:var(--t3);margin-bottom:12px}
+    .ac-tasks{list-style:none}
+    .ac-task{display:flex;gap:7px;padding:4px 0;font-size:.75rem;color:var(--t2);border-bottom:1px solid rgba(255,255,255,.03)}
+    .ac-task:last-child{border:none}
+    .ac-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0}
+    .ac-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.7rem;color:var(--t3);display:flex;justify-content:space-between}
 
-    /* DAILY CHECKLIST */
-    .daily-checklist {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 24px;
-      margin: 20px 32px 0;
-    }
+    /* MATRIX */
+    .matrix{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:600px){.matrix{grid-template-columns:1fr}}
+    .quad{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+    .qlabel{font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:6px}
+    .ql1{background:rgba(239,68,68,.15);color:#fca5a5}
+    .ql2{background:rgba(59,130,246,.15);color:#93c5fd}
+    .ql3{background:rgba(245,158,11,.15);color:#fcd34d}
+    .ql4{background:rgba(92,92,112,.2);color:var(--t2)}
+    .quad h3{font-size:.85rem;font-weight:700;margin-bottom:2px}
+    .quad-desc{font-size:.7rem;color:var(--t3);margin-bottom:12px}
+    .qt{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start}
+    .qt:last-child{border:none}
+    .qt-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+    .qt-body{flex:1;min-width:0}
+    .qt-title{font-size:.77rem;font-weight:500;line-height:1.3}
+    .qt-meta{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center}
+    .qt.done .qt-title{text-decoration:line-through;color:var(--t3)}
+    .done-btn{background:none;border:1px solid var(--border);color:var(--t3);font-size:.63rem;padding:1px 7px;border-radius:4px;cursor:pointer;font-family:inherit;flex-shrink:0;margin-top:2px;transition:all .15s;white-space:nowrap}
+    .done-btn:hover{border-color:#22c55e;color:#22c55e}
+    .done-btn.undone{border-color:rgba(34,197,94,.4);color:#86efac}
+    .tag-sm{font-size:.63rem;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--t2);border:1px solid var(--border)}
+    .due-ok{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#86efac}
+    .due-soon{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fcd34d}
+    .due-late{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#fca5a5}
+    .e-high{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25);color:#fca5a5}
+    .e-med{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25);color:#fcd34d}
+    .e-low{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25);color:#86efac}
 
-    .daily-checklist h3 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* TASK LIST */
+    .filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+    .fl{color:var(--t3);font-size:.73rem;margin-right:2px}
+    .fbtn{background:var(--card);border:1px solid var(--border);color:var(--t2);font-size:.73rem;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .15s}
+    .fbtn:hover{border-color:var(--border2);color:var(--text)}
+    .fbtn.on{border-color:rgba(255,255,255,.4);color:var(--text);background:var(--card2)}
+    .sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+    .tlist{display:flex;flex-direction:column;gap:8px}
+    .titem{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;gap:11px;align-items:flex-start;transition:all .15s}
+    .titem:hover{background:var(--card2);border-color:var(--border2)}
+    .titem.done{opacity:.45}
+    .titem.done .t-title{text-decoration:line-through;color:var(--t3)}
+    .tcheck{width:20px;height:20px;min-width:20px;border:1.5px solid var(--border2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;transition:all .15s;flex-shrink:0}
+    .tcheck:hover{border-color:#22c55e}
+    .titem.done .tcheck{background:#22c55e;border-color:#22c55e;color:#fff}
+    .t-body{flex:1;min-width:0}
+    .t-title{font-size:.84rem;font-weight:500;line-height:1.4;margin-bottom:5px}
+    .t-note{font-size:.74rem;color:var(--t2);margin-bottom:6px}
+    .t-tags{display:flex;gap:4px;flex-wrap:wrap}
+    .area-chip{font-size:.65rem;padding:2px 6px;border-radius:4px;border:1px solid;background:rgba(255,255,255,.04)}
 
-    .daily-checklist h3 span {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      font-weight: 400;
-      text-transform: none;
-      letter-spacing: 0;
-    }
+    /* DETAIL */
+    .detail{display:none}
+    .detail.open{display:block}
+    .back{display:inline-flex;align-items:center;gap:5px;background:none;border:none;color:var(--t2);font-size:.8rem;cursor:pointer;font-family:inherit;padding:0;margin-bottom:18px}
+    .back:hover{color:var(--text)}
+    .d-hdr{display:flex;gap:14px;align-items:center;margin-bottom:20px}
+    .d-icon{font-size:2rem;width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);border-radius:12px;flex-shrink:0}
+    .d-hdr h2{font-size:1.25rem;font-weight:700}
+    .d-hdr p{font-size:.78rem;color:var(--t2);margin-top:3px}
+    .d-sec{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+    .d-sec h4{font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:10px}
+    .d-ctx{font-size:.82rem;color:var(--t2);line-height:1.6}
 
-    .checklist-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 8px;
-    }
+    /* MODAL */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-bg.open{display:flex}
+    .modal{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:24px;max-width:420px;width:100%}
+    .modal h3{font-size:1rem;font-weight:600;margin-bottom:8px}
+    .modal p{font-size:.8rem;color:var(--t2);margin-bottom:14px;line-height:1.5}
+    .modal a{color:#93c5fd}
+    .modal input{width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:.84rem;padding:10px 12px;border-radius:8px;font-family:inherit;outline:none;margin-bottom:12px}
+    .modal input:focus{border-color:rgba(255,255,255,.3)}
+    .modal-btns{display:flex;gap:8px;justify-content:flex-end}
+    .mbtn{background:var(--card2);border:1px solid var(--border2);color:var(--text);font-size:.8rem;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit}
+    .mbtn-p{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
+    .smsg{font-size:.73rem;color:#86efac;margin-bottom:8px;min-height:18px}
 
-    .check-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-      user-select: none;
-    }
-
-    .check-item:hover { background: rgba(255,255,255,0.04); }
-
-    .check-item.done .check-label { text-decoration: line-through; color: var(--text-muted); }
-
-    .check-box {
-      width: 18px; height: 18px; min-width: 18px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 5px;
-      margin-top: 1px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
-      font-size: 11px;
-    }
-
-    .check-item.done .check-box {
-      background: #22c55e;
-      border-color: #22c55e;
-      color: white;
-    }
-
-    .check-label { font-size: 0.82rem; line-height: 1.4; color: var(--text-secondary); }
-    .check-label strong { color: var(--text); font-weight: 500; }
-    .check-trigger {
-      font-size: 0.72rem;
-      color: var(--c-campaign);
-      margin-top: 2px;
-    }
-
-    .reset-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      padding: 3px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .reset-btn:hover { color: var(--text); border-color: var(--border-hover); }
-
-    .urgent-banner {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 500;
-    }
-
-    /* NAV TABS */
-    .nav {
-      display: flex;
-      gap: 2px;
-      padding: 16px 32px 0;
-      border-bottom: 1px solid var(--border);
-      overflow-x: auto;
-    }
-
-    .nav::-webkit-scrollbar { display: none; }
-
-    .nav-tab {
-      padding: 8px 16px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      white-space: nowrap;
-      transition: all 0.15s;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      font-family: inherit;
-      margin-bottom: -1px;
-    }
-
-    .nav-tab:hover { color: var(--text-secondary); }
-    .nav-tab.active { color: var(--text); border-bottom-color: white; }
-
-    /* MAIN CONTENT */
-    .content {
-      padding: 28px 32px;
-    }
-
-    /* OVERVIEW GRID */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-
-    .area-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .area-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      border-radius: 14px 14px 0 0;
-    }
-
-    .area-card:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-    }
-
-    .area-card .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .area-card .card-icon {
-      font-size: 1.4rem;
-      line-height: 1;
-    }
-
-    .area-card .card-badge {
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .badge-urgent {
-      background: rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
-    }
-
-    .badge-active {
-      background: rgba(16, 185, 129, 0.15);
-      color: #6ee7b7;
-    }
-
-    .badge-upcoming {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fcd34d;
-    }
-
-    .badge-goal {
-      background: rgba(139, 92, 246, 0.15);
-      color: #c4b5fd;
-    }
-
-    .badge-paused {
-      background: rgba(100, 100, 120, 0.2);
-      color: var(--text-muted);
-    }
-
-    .area-card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .area-card .card-role {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
-
-    .task-list {
-      list-style: none;
-    }
-
-    .task-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 5px 0;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .task-item:last-child { border-bottom: none; }
-
-    .task-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      margin-top: 5px;
-      flex-shrink: 0;
-    }
-
-    .card-footer {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      font-size: 0.73rem;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* INDIVIDUAL AREA VIEW */
-    .area-detail {
-      display: none;
-      max-width: 780px;
-    }
-
-    .area-detail.visible { display: block; }
-
-    .detail-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-
-    .detail-icon {
-      font-size: 2.2rem;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-    }
-
-    .detail-title h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .detail-title p {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      margin-top: 3px;
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-secondary);
-      font-size: 0.82rem;
-      cursor: pointer;
-      margin-bottom: 20px;
-      background: none;
-      border: none;
-      font-family: inherit;
-      padding: 0;
-    }
-
-    .back-btn:hover { color: var(--text); }
-
-    .detail-section {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    .detail-section h4 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-
-    .detail-task {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.85rem;
-    }
-
-    .detail-task:last-child { border-bottom: none; }
-
-    .detail-task-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 4px;
-      flex-shrink: 0;
-    }
-
-    .detail-task-text { color: var(--text); line-height: 1.4; }
-    .detail-task-note { color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
-
-    .context-block {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .tag {
-      display: inline-block;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      font-size: 0.72rem;
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin: 2px;
-    }
-
-    /* OVERVIEW VIEW  */
-    #view-overview { display: block; }
-    #view-area { display: none; }
-
-    .section-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      margin-top: 24px;
-    }
-
-    .section-label:first-child { margin-top: 0; }
-
-    .progress-bar {
-      height: 4px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.3s;
-    }
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 22px;border-radius:8px;font-size:.82rem;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:200;white-space:nowrap}
+    .toast.show{opacity:1}
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
+<div class="hdr">
+  <div>
     <h1>Victoria Henderson Weber</h1>
-    <div class="subtitle">Life Command Center &nbsp;·&nbsp; Des Moines, IA</div>
+    <div class="hdr-sub" id="date-line"></div>
   </div>
-  <div class="header-right">
-    <div class="date-display" id="date-display"></div>
-    <div class="urgent-banner">⚡ 2 areas need immediate attention: NAACP · Gun Club</div>
+  <div class="hdr-r">
+    <span class="pill pill-red" id="urgent-pill">⚡ Loading…</span>
+    <button class="pill pill-btn" onclick="openSettings()">⚙ Settings</button>
   </div>
 </div>
 
-<!-- DAILY CHECKLIST -->
-<div class="daily-checklist" id="daily-checklist">
-  <h3>Daily Routine Checklist <span id="checklist-progress"></span> <button class="reset-btn" onclick="resetChecklist()">Reset</button></h3>
-  <div class="checklist-grid" id="checklist-items"></div>
+<div class="cl-wrap">
+  <div class="cl-hdr" onclick="toggleCL()">
+    <span class="cl-hdr-l">Daily Routine</span>
+    <div class="cl-hdr-r">
+      <span id="cl-prog"></span>
+      <button class="cl-reset" onclick="event.stopPropagation();resetCL()">Reset</button>
+      <span id="cl-arr">▾</span>
+    </div>
+  </div>
+  <div class="cl-body" id="cl-body"></div>
 </div>
 
 <div class="nav">
-  <button class="nav-tab active" onclick="switchTab('overview', this)">All Areas</button>
-  <button class="nav-tab" onclick="showArea('work', this)">DART & Work</button>
-  <button class="nav-tab" onclick="showArea('mihf', this)">MIHF Fellowship</button>
-  <button class="nav-tab" onclick="showArea('naacp', this)">NAACP</button>
-  <button class="nav-tab" onclick="showArea('guns', this)">Gun Club</button>
-  <button class="nav-tab" onclick="showArea('campaign', this)">Campaign</button>
-  <button class="nav-tab" onclick="showArea('podcast', this)">Podcast</button>
-  <button class="nav-tab" onclick="showArea('brand', this)">Brand</button>
-  <button class="nav-tab" onclick="showArea('glow', this)">Glow Up</button>
-  <button class="nav-tab" onclick="showArea('family', this)">Family</button>
-  <button class="nav-tab" onclick="showArea('finances', this)">Finances</button>
-  <button class="nav-tab" onclick="showArea('home', this)">Home</button>
+  <button class="nt active" data-view="areas" onclick="show('areas',this)">Life Areas</button>
+  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Eisenhower Matrix</button>
+  <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
 </div>
 
 <div class="content">
+  <div id="loading" class="loading">Loading your tasks from GitHub…</div>
 
-  <!-- OVERVIEW GRID -->
-  <div id="view-overview">
-    <div class="section-label">🔴 Urgent — balls dropping</div>
-    <div class="grid" id="urgent-grid"></div>
-
-    <div class="section-label">🟡 Active — in motion</div>
-    <div class="grid" id="active-grid"></div>
-
-    <div class="section-label">🔵 Goals & Someday</div>
-    <div class="grid" id="goal-grid"></div>
+  <div id="v-areas" style="display:none">
+    <div class="slabel">🔴 Urgent — needs action now</div><div class="agrid" id="ag-urgent"></div>
+    <div class="slabel">🟡 Active — in motion</div><div class="agrid" id="ag-active"></div>
+    <div class="slabel">🔵 Goals & Someday</div><div class="agrid" id="ag-goal"></div>
   </div>
 
-  <!-- INDIVIDUAL AREA DETAIL -->
-  <div id="view-area">
-    <button class="back-btn" onclick="goBack()">← All Areas</button>
-    <div id="area-detail-content"></div>
+  <div id="v-matrix" style="display:none">
+    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> Urgent = deadline within 7 days or has active external consequence. Important = moves you toward your goals,with real stakes. Do Q1 first. Protect time for Q2. Minimize Q3. Drop Q4.</p>
+    <div class="matrix">
+      <div class="quad" style="border-top:2px solid #ef4444">
+        <span class="qlabel ql1">Q1 — Do First</span>
+        <h3>Urgent + Important</h3>
+        <p class="quad-desc">Active deadlines, external accountability, real consequences now</p>
+        <div id="q1"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #3b82f6">
+        <span class="qlabel ql2">Q2 — Schedule</span>
+        <h3>Important, Not Urgent</h3>
+        <p class="quad-desc">Your highest-value work — protect and schedule this time</p>
+        <div id="q2"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #f59e0b">
+        <span class="qlabel ql3">Q3 — Minimize</span>
+        <h3>Urgent, Not Important</h3>
+        <p class="quad-desc">Delegate, defer, or do fast — someone else's deadline</p>
+        <div id="q3"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #5c5c70">
+        <span class="qlabel ql4">Q4 — Later</span>
+        <h3>Not Urgent, Not Important</h3>
+        <p class="quad-desc">Someday / Maybe — revisit quarterly</p>
+        <div id="q4"></div>
+      </div>
+    </div>
   </div>
 
+  <div id="v-tasks" style="display:none">
+    <div class="filters">
+      <span class="fl">Energy:</span>
+      <button class="fbtn on" onclick="filt('e','all',this)">All</button>
+      <button class="fbtn" onclick="filt('e','High',this)">🔴 High</button>
+      <button class="fbtn" onclick="filt('e','Medium',this)">🟡 Medium</button>
+      <button class="fbtn" onclick="filt('e','Low',this)">🟢 Low</button>
+      <div class="sep"></div>
+      <span class="fl">Priority:</span>
+      <button class="fbtn on" onclick="filt('p','all',this)">All</button>
+      <button class="fbtn" onclick="filt('p','P1',this)">P1</button>
+      <button class="fbtn" onclick="filt('p','P2',this)">P2</button>
+      <button class="fbtn" onclick="filt('p','P3',this)">P3</button>
+    </div>
+    <div class="tlist" id="tlist"></div>
+  </div>
+
+  <div class="detail" id="detail">
+    <button class="back" onclick="closeDetail()">← All Areas</button>
+    <div id="detail-body"></div>
+  </div>
 </div>
 
+<div class="modal-bg" id="smodal">
+  <div class="modal">
+    <h3>Settings — GitHub Sync</h3>
+    <p>Add a GitHub Personal Access Token with <code>repo</code> scope to sync task completions from any device.<br><br>
+    <a href="https://github.com/settings/tokens/new?scopes=repo&description=Victoria+Dashboard" target="_blank">Create token on GitHub →</a></p>
+    <div class="smsg" id="smsg"></div>
+    <input type="password" id="tok-in" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <div class="modal-btns">
+      <button class="mbtn" onclick="closeSM()">Cancel</button>
+      <button class="mbtn mbtn-p" onclick="saveTok()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-  // ─── DATE ──────────────────────────────────────────────
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const now = new Date();
-  document.getElementById('date-display').textContent =
-    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+const RAW = 'https://raw.githubusercontent.com/VictoriaChangeByDesign/dashboard/main/TASKS.md?t='+Date.now();
+const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/TASKS.md';
 
-  // ─── AREA DATA ─────────────────────────────────────────
-  const areas = {
-    work: {
-      icon: '🚌',
-      name: 'DART & Work',
-      color: 'var(--c-work)',
-      role: 'Caravan (Vanpool) Manager · 20-county region',
-      badge: 'active',
-      badgeLabel: 'Active',
-      priority: 'active',
-      tasks: [
-        { text: 'Prepare for Eno Center Mid-Manager Program', note: 'July · Seattle', urgent: false },
-        { text: 'Support MIHF fellowship shuttle program development', note: 'Runs parallel to day-job work', urgent: false },
-      ],
-      context: 'Managing a 30-year-old vanpool program across a 20-county region. Recently accepted into the Eno Center for Transportation Mid-Manager Program — a significant professional development milestone. Program is in July in Seattle.',
-      tags: ['DART', 'Vanpool', 'Eno Center', 'MIHF'],
-      footer: 'Eno Center: July · Seattle'
-    },
-    mihf: {
-      icon: '🏥',
-      name: 'MIHF Fellowship',
-      color: 'var(--c-mihf)',
-      role: 'Health Connect Fellow · Mid Iowa Health Foundation',
-      badge: 'active',
-      badgeLabel: 'Active',
-      priority: 'active',
-      tasks: [
-        { text: 'Finish Part 2 — workforce transportation barriers series', urgent: true },
-        { text: 'Finish Part 3 — workforce transportation barriers series', urgent: true },
-        { text: 'Continue shuttle program development plan', note: 'Using vanpool program components', urgent: false },
-      ],
-      context: 'Three-part series on workforce transportation barriers — the groundwork for a new shuttle program built from DART vanpool infrastructure. Part 1 done. Parts 2 and 3 are in progress. This is the externally-accountable, deadline-driven fellowship deliverable.',
-      tags: ['MIHF', 'Health Connect', 'Shuttle Program', 'Workforce Transportation'],
-      footer: '3-part series · Parts 2 & 3 remaining'
-    },
-    naacp: {
-      icon: '✊',
-      name: 'NAACP',
-      color: 'var(--c-naacp)',
-      role: 'Branch President · NAACP Des Moines',
-      badge: 'urgent',
-      badgeLabel: '⚡ URGENT',
-      priority: 'urgent',
-      tasks: [
-        { text: 'Audit what has been dropped or gone overdue', urgent: true },
-        { text: 'Identify most critical open obligations', urgent: true },
-        { text: 'Re-establish communication with branch', urgent: true },
-        { text: 'Create a catch-up action plan', urgent: true },
-      ],
-      context: 'Victoria is the president of the NAACP Des Moines branch. She has acknowledged serious neglect of this work and needs to pull it together ASAP. First step is an honest audit of what has lapsed.',
-      tags: ['NAACP', 'Civil Rights', 'Des Moines', 'Community Leadership'],
-      footer: '⚡ Needs immediate attention'
-    },
-    guns: {
-      icon: '🛡️',
-      name: 'Colonel Young Gun Club',
-      color: 'var(--c-guns)',
-      role: 'Vice President · Iowa Chapter · NAAGA',
-      badge: 'urgent',
-      badgeLabel: '⚡ URGENT',
-      priority: 'urgent',
-      tasks: [
-        { text: 'Audit what has been dropped or gone overdue', urgent: true },
-        { text: 'Identify most critical open obligations', urgent: true },
-        { text: 'Reconnect with chapter leadership', urgent: true },
-        { text: 'Create catch-up action plan', urgent: true },
-      ],
-      context: 'Iowa chapter of the National African American Gun Association. Victoria is Vice President and has acknowledged serious neglect. Needs the same audit-and-catch-up approach as NAACP.',
-      tags: ['NAAGA', 'Colonel Young Gun Club', 'Iowa', 'Gun Rights'],
-      footer: '⚡ Needs immediate attention'
-    },
-    campaign: {
-      icon: '🗳️',
-      name: "Heather's Campaign",
-      color: 'var(--c-campaign)',
-      role: 'Campaign Supporter · Polk County Supervisor Race',
-      badge: 'active',
-      badgeLabel: 'Active',
-      priority: 'active',
-      tasks: [
-        { text: 'Clarify current campaign support needs from Heather', urgent: false },
-        { text: 'Coordinate campaign support with podcast pivot plan', note: 'Heather ran after Ep 1', urgent: false },
-      ],
-      context: 'Mac friend Heather is running for Polk County Supervisor. She started this journey through the Change in Plain Sight podcast and jumped into the race after episode 1. Victoria supports her campaign while also navigating a pivot for the podcast.',
-      tags: ['Heather', 'Polk County', 'Supervisor', 'Campaign'],
-      footer: 'Polk County Supervisor race'
-    },
-    podcast: {
-      icon: '🎙️',
-      name: 'Change in Plain Sight',
-      color: 'var(--c-podcast)',
-      role: 'Co-host (transitioning to Solo) · Podcast',
-      badge: 'active',
-      badgeLabel: 'Active',
-      priority: 'active',
-      tasks: [
-        { text: 'Finish Episode 2', urgent: false },
-        { text: 'Finish Episode 3', urgent: false },
-        { text: 'Draft solo pivot strategy', note: 'Use Heather campaign to transition; leave door open for her return', urgent: false },
-        { text: 'Define rebrand/relaunch plan for solo format', urgent: false },
-      ],
-      context: 'Change in Plain Sight surfaces hidden systems, policies, and decisions that shape everyday life. Co-founded with Heather. Episode 1 is done. Heather\'s campaign run creates an opportunity to pivot to a solo show — with the possibility of Heather returning later.',
-      tags: ['Podcast', 'Change in Plain Sight', 'Heather', 'Civic Power'],
-      footer: 'Ep 2 & 3 · Then solo pivot'
-    },
-    brand: {
-      icon: '✨',
-      name: 'Brand & Business',
-      color: 'var(--c-brand)',
-      role: 'Owner · Brilliance Collective → Change by Design',
-      badge: 'active',
-      badgeLabel: 'In Progress',
-      priority: 'active',
-      tasks: [
-        { text: 'Define the "Change by Design" brand vision and positioning', urgent: false },
-        { text: 'Map Brilliance Collective into Change by Design', note: 'Merge plan', urgent: false },
-        { text: 'Identify what services/offerings live under this umbrella', urgent: false },
-      ],
-      context: 'Brilliance Collective is Victoria\'s existing small business. "Change by Design" is the new personal brand umbrella being developed to tie together all of her work — podcast, consulting, civic leadership, and more. Needs a clear direction and merge strategy.',
-      tags: ['Brilliance Collective', 'Change by Design', 'Brand', 'Business'],
-      footer: 'Merging into Change by Design'
-    },
-    glow: {
-      icon: '🌟',
-      name: 'Glow Up',
-      color: 'var(--c-glow)',
-      role: 'Personal Development · Dr. Victoria Henderson Weber',
-      badge: 'goal',
-      badgeLabel: 'Long-term',
-      priority: 'goal',
-      tasks: [
-        { text: 'Research Minetta Institute / San Jose State masters program', note: 'Transportation Management', urgent: false },
-        { text: 'Identify application requirements and timeline', urgent: false },
-        { text: 'Continue building credentials toward doctoral path', urgent: false },
-      ],
-      context: 'The long-term goal is Dr. Victoria Henderson Weber. This involves a masters in Transportation Management (Minetta Institute / San Jose State), continued leadership development (Eno Center), and intentional personal growth across all life areas.',
-      tags: ['Dr. VHW', 'Masters Degree', 'Minetta', 'San Jose State', 'Eno Center'],
-      footer: 'Goal: Dr. Victoria Henderson Weber'
-    },
-    family: {
-      icon: '💛',
-      name: 'Family',
-      color: 'var(--c-family)',
-      role: 'Mom · Langston (10) & Zora (3)',
-      badge: 'active',
-      badgeLabel: 'Always Active',
-      priority: 'active',
-      tasks: [
-        { text: 'Identify Langston\'s current priorities and needs', note: 'Age 10 — school, activities, development', urgent: false },
-        { text: 'Identify Zora\'s current priorities and needs', note: 'Age 3 — development, childcare, routine', urgent: false },
-      ],
-      context: 'Two kids with very different needs. Langston is 10 — school age, activities, starting to have his own world. Zora is 3 — early childhood, routines, development. Both are a priority.',
-      tags: ['Langston', 'Zora', 'Family'],
-      footer: 'Langston (10) · Zora (3)'
-    },
-    finances: {
-      icon: '💰',
-      name: 'Finances',
-      color: 'var(--c-finances)',
-      role: 'Personal Finance',
-      badge: 'goal',
-      badgeLabel: 'Needs Attention',
-      priority: 'goal',
-      tasks: [
-        { text: 'Full financial audit — income, expenses, debts', urgent: false },
-        { text: 'Set up a working budget and savings system', urgent: false },
-        { text: 'Identify financial goals (short and long term)', urgent: false },
-      ],
-      context: 'Getting finances in order is a stated priority. Starting with a clear audit of the current picture before building systems.',
-      tags: ['Budget', 'Savings', 'Financial Planning'],
-      footer: 'Audit → Budget → System'
-    },
-    home: {
-      icon: '🏠',
-      name: 'Home',
-      color: 'var(--c-home)',
-      role: 'Home Design & Organization',
-      badge: 'goal',
-      badgeLabel: 'Someday',
-      priority: 'goal',
-      tasks: [
-        { text: 'Map out what needs to change, room by room', urgent: false },
-        { text: 'Identify quick wins vs. bigger projects', urgent: false },
-        { text: 'Design a home that actively makes you happy', urgent: false },
-      ],
-      context: 'Home reorganization and redesign — the goal is a space that feels intentional and makes Victoria happy, not just functional. Think about what kind of environment supports her and her kids best.',
-      tags: ['Home', 'Design', 'Organization'],
-      footer: 'Organize → Redesign → Love it'
+const AREAS = {
+  DART:      {i:'🚌',n:'DART & Work',     c:'var(--work)',     r:'Caravan Manager · DART',                          p:'active', b:'active',  ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
+  MIHF:      {i:'🏥',n:'MIHF Fellowship', c:'var(--mihf)',     r:'Health Connect Fellow · MIHF',                    p:'active', b:'active',  ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
+  NAACP:     {i:'✊',n:'NAACP',           c:'var(--naacp)',    r:'Branch President · NAACP Des Moines',             p:'urgent', b:'urgent',  ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
+  'Gun Club':{i:'🛡️',n:'Gun Club',        c:'var(--guns)',     r:'Vice President · Colonel Young Gun Club (NAAGA)', p:'urgent', b:'urgent',  ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
+  Campaign:  {i:'🗳️',n:'Campaign',        c:'var(--campaign)', r:'Supporter · Heather for Polk County Supervisor',  p:'active', b:'active',  ctx:"Supporting Heather's Polk County Supervisor race. She ran after podcast ep 1. Coordinate support with podcast pivot."},
+  Podcast:   {i:'🎙️',n:'Podcast',         c:'var(--podcast)',  r:'Co-host → Solo Pivot · Change in Plain Sight',   p:'active', b:'active',  ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
+  Brand:     {i:'✨',n:'Brand & Business', c:'var(--brand)',    r:'Owner · Brilliance Collective → Change by Design',p:'active', b:'active',  ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
+  Glow:      {i:'🌟',n:'Glow Up',         c:'var(--glow)',     r:'Personal Dev → Dr. Victoria Henderson Weber',    p:'goal',   b:'goal',    ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
+  Family:    {i:'💛',n:'Family',           c:'var(--family)',   r:'Mom · Langston (10) & Zora (3)',                 p:'active', b:'active',  ctx:'Two kids with very different needs. Langston is 10. Zora is 3. Both are a priority.'},
+  Finances:  {i:'💰',n:'Finances',         c:'var(--finances)', r:'Personal Finance',                               p:'goal',   b:'goal',    ctx:'Full audit first, then a working budget and savings system.'},
+  Home:      {i:'🏠',n:'Home',             c:'var(--home)',     r:'Home Design & Organization',                     p:'goal',   b:'goal',    ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
+  Setup:     {i:'⚙️',n:'Setup',            c:'var(--t2)',       r:'System Setup',                                   p:'active', b:'active',  ctx:'One-time system setup tasks.'},
+  General:   {i:'📋',n:'General',          c:'var(--t2)',       r:'General',                                        p:'active', b:'active',  ctx:'General tasks.'},
+  'Eno Center':{i:'🎓',n:'Eno Center',     c:'var(--work)',     r:'Mid-Manager Program · July, Seattle',            p:'active', b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
+};
+
+let tasks=[], curView='areas', eF='all', pF='all', doneS={}, clOpen=true;
+const today=new Date().toDateString();
+const isFri=new Date().getDay()===5;
+const isWkd=[1,2,3,4,5].includes(new Date().getDay());
+let clS={};
+
+$ry{doneS=JSON.parse(localStorage.getItem('ds')||'{}');}catch(e){}
+try{clS=JSON.parse(localStorage.getItem('cl-'+today)||'{}');}catch(e){}
+
+// DATE
+const dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const mn=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const nd=new Date();
+document.getElementById('date-line').textContent=`${dn[nd.getDay()]}, ${mn[nd.getMonth()]} ${nd.getDate()}, ${nd.getFullYear()} · Des Moines, IA`;
+
+// CHECKLIST
+const CLI=[
+  {id:'energy',l:'<strong>Check energy.</strong> High / Medium / Low?',     s:'Use Tasks tab → filter by energy to match your capacity.',        show:true},
+  {id:'top3',  l:'<strong>Open Tasks → do top 3.</strong>',                  s:'P1 goes first. No exceptions.',                                   show:true},
+  {id:'cap',   l:'<strong>Capture folder.</strong> Anything in Drive?',      s:'If yes → Cowork: "process capture folder"',                       show:true},
+  {id:'work',  l:'<strong>Work inbox check (M–F).</strong>',                 s:'If action items → Cowork: "check work inbox"',                    show:isWkd&&!isFri},
+  {id:'comm',  l:'<strong>Commitments scan.</strong> Any promises to keep?', s:'Said "I\'ll get that to you"? Add it now.',                       show:true},
+  {id:'fri',   l:'<strong>Friday Weekly Review.</strong>',                   s:'Open Cowork → "weekly review". Full triage of all life areas.',   show:isFri},
+].filter(x=>x.show);
+
+function initCL(){
+  document.getElementById('cl-body').innerHTML=CLI.map(i=>`
+    <div class="ci ${clS[i.id]?'done':''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
+      <div class="ci-box">${clS[i.id]?'✓':''}</div>
+      <div><div class="ci-lbl">${i.l}</div><div class="ci-sub">${i.s}</div></div>
+    </div>`).join('');
+  updCL();
+}
+function togCI(id){
+  clS[id]=!clS[id];
+  const el=document.getElementById('ci-'+id);
+  el.classList.toggle('done',clS[id]);
+  el.querySelector('.ci-box').textContent=clS[id]?'✓':'';
+  try{localStorage.setItem('cl-'+today,JSON.stringify(clS));}catch(e){}
+  updCL();
+}
+function updCL(){
+  const d=Object.values(clS).filter(Boolean).length,t=CLI.length;
+  const el=document.getElementById('cl-prog');
+  el.textContent=d===t?'✓ All done':`${d}/${t}`;
+  el.style.color=d===t?'#22c55e':'var(--t2)';
+}
+function toggleCL(){clOpen=!clOpen;document.getElementById('cl-body').classList.toggle('hidden',!clOpen);document.getElementById('cl-arr').textContent=clOpen?'▾':'▸';}
+function resetCL(){CLI.forEach(i=>{clS[i.id]=false;});try{localStorage.removeItem('cl-'+today);}catch(e){}initCL();}
+
+// LOAD TASKS
+async function load(){
+  try{
+    const r=await fetch(RAW);
+    if(!r.ok)throw new Error();
+    tasks=parse(await r.text());
+    renderAll();
+    document.getElementById('loading').style.display='none';
+    document.getElementById('v-areas').style.display='block';
+  }catch(e){
+    document.getElementById('loading').textContent='Could not load tasks. Check connection or GitHub Pages is up.';
+  }
+}
+
+function parse(md){
+  const out=[];let sec='',cur=null;
+  for(const ln of md.split('\n')){
+    if(ln.startsWith('## ')){if(cur)out.push(cur);cur=null;sec=ln.slice(3).trim();continue;}
+    const m=ln.match(/^- \[([ x])\] \*\*(\[([^\]]+)\]\s*)?([^*]+)\*\*(.*)/);
+    if(m){
+      if(cur)out.push(cur);
+      const area=(m[3]||'General').trim();
+      const title=m[4].trim().replace(/\s*[-–]\s*$/,'');
+      const rest=m[5]||'';
+      const pm=rest.match(/\|\s*(P[123])\s*\|/);
+      const pri=pm?pm[1]:'P3';
+      const energy=rest.includes('🔴')?'High':rest.includes('🟢')?'Low':'Medium';
+      const dm=(rest+' '+title).match(/due\s+(\d{4}-\d{2}-\d{2})/i);
+      const due=dm?dm[1]:null;
+      const nm=rest.match(/^[^|]*[-–]\s*([^|🔴🟡🟢]+)/);
+      const notes=nm?nm[1].trim().replace(/\s*due\s+\d{4}-\d{2}-\d{2}/i,'').trim():'';
+      const done=m[1]==='x'||!!doneS[title];
+      cur={id:String(out.length),area,title,notes,pri,energy,due,sec,done};
     }
-  };
+  }
+  if(cur)out.push(cur);
+  return out.filter(t=>t.sec!=='Done');
+}
 
-  // ─── RENDER CARDS ─────────────────────────────────────
-  function makeCard(id, data) {
-    const card = document.createElement('div');
-    card.className = 'area-card';
-    card.style.setProperty('--card-color', data.color);
-    card.style.cssText += `--card-color: ${data.color};`;
-    card.querySelector ? null : null;
+function renderAll(){updUrgent();renderAreas();renderMatrix();renderTasks();}
 
-    const taskHtml = data.tasks.slice(0, 3).map(t => `
-      <li class="task-item">
-        <span class="task-dot" style="background:${data.color}"></span>
-        <span>${t.text}</span>
-      </li>
-    `).join('');
+function updUrgent(){
+  const u=tasks.filter(t=>!t.done&&t.pri==='P1').length;
+  const el=document.getElementById('urgent-pill');
+  el.textContent=u?`⚡ ${u} urgent item${u>1?'s':''}`:'✓ No urgent items';
+  el.className='pill '+(u?'pill-red':'pill-btn');
+}
 
-    card.innerHTML = `
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${data.color};border-radius:14px 14px 0 0;"></div>
-      <div class="card-header">
-        <span class="card-icon">${data.icon}</span>
-        <span class="card-badge badge-${data.badge}">${data.badgeLabel}</span>
+// AREAS
+function renderAreas(){
+  ['urgent','active','goal'].forEach(p=>document.getElementById('ag-'+p).innerHTML='');
+  const byArea={};
+  tasks.forEach(t=>{if(!byArea[t.area])byArea[t.area]=[];byArea[t.area].push(t);});
+  Object.entries(AREAS).forEach(([k,d])=>{
+    if(k==='Setup'||k==='General')return;
+    const ts=(byArea[k]||[]).filter(t=>!t.done);
+    const card=mkCard(k,d,ts);
+    document.getElementById('ag-'+d.p)?.appendChild(card);
+  });
+}
+
+function mkCard(k,d,ts){
+  const el=document.createElement('div');
+  el.className='ac';
+  const bLabel=d.b==='urgent'?'⚡ Urgent':d.b==='active'?'Active':d.b==='upcoming'?'Upcoming':'Goal';
+  el.innerHTML=`
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
+    <div class="ac-top"><span style="font-size:1.3rem">${d.i}</span><span class="badge b-${d.b}">${bLabel}</span></div>
+    <h3>${d.n}</h3><div class="ac-role">${d.r}</div>
+    <ul class="ac-tasks">
+      ${ts.slice(0,3).map(t=>`<li class="ac-task"><span class="ac-dot" style="background:${d.c}"></span><span>${t.title}${t.due?` <span style="font-size:.67rem;color:${dueColor(t.due)}">· ${fmtDue(t.due)}</span>`:''}</span></li>`).join('')}
+      ${ts.length===0?`<li style="font-size:.74rem;color:var(--t3);padding:4px 0">No open tasks</li>`:''}
+    </ul>
+    ${ts.length>3?`<div style="font-size:.7rem;color:var(--t3);margin-top:5px">+${ts.length-3} more</div>`:''}
+    <div class="ac-foot"><span>${ts.length} open task${ts.length!==1?'s':''}</span><span>→</span></div>`;
+  el.onclick=()=>openDetail(k);
+  return el;
+}
+
+// MATRIX
+function renderMatrix(){
+  ['q1','q2','q3','q4'].forEach(q=>document.getElementById(q).innerHTML='');
+  tasks.filter(t=>!t.done).forEach(t=>{
+    const urgent=t.pri==='P1'||nearDL(t.due);
+    const imp=t.pri==='P1'||t.pri==='P2';
+    const q=urgent&&imp?'q1':!urgent&&imp?'q2':urgent&&!imp?'q3':'q4';
+    document.getElementById(q).appendChild(mkQT(t));
+  });
+}
+
+function mkQT(t){
+  const a=AREAS[t.area]||AREAS.General;
+  const el=document.createElement('div');
+  el.className='qt'+(t.done?' done':'');
+  el.id='qt'+t.id;
+  el.innerHTML=`
+    <span class="qt-dot" style="background:${a.c}"></span>
+    <div class="qt-body">
+      <div class="qt-title">${t.title}</div>
+      <div classgoal'].forEach(p=>document.getElementById('ag-'+p).innerHTML='');
+  const byArea={};
+  tasks.forEach(t=>{if(!byArea[t.area])byArea[t.area]=[];byArea[t.area].push(t);});
+  Object.entries(AREAS).forEach(([k,d])=>{
+    if(k==='Setup'||k==='General')return;
+    const ts=(byArea[k]||[]).filter(t=>!t.done);
+    const card=mkCard(k,d,ts);
+    document.getElementById('ag-'+d.p)?.appendChild(card);
+  });
+}
+
+function mkCard(k,d,ts){
+  const el=document.createElement('div');
+  el.className='ac';
+  const bLabel=d.b==='urgent'?'⚡ Urgent':d.b==='active'?'Active':d.b==='upcoming'?'Upcoming':'Goal';
+  el.innerHTML=`
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
+    <div class="ac-top"><span style="font-size:1.3rem">${d.i}</span><span class="badge b-${d.b}">${bLabel}</span></div>
+    <h3>${d.n}</h3><div class="ac-role">${d.r}</div>
+    <ul class="ac-tasks">
+      ${ts.slice(0,3).map(t=>`<li class="ac-task"><span class="ac-dot" style="background:${d.c}"></span><span>${t.title}${t.due?` <span style="font-size:.67rem;color:${dueColor(t.due)}">· ${fmtDue(t.due)}</span>`:''}</span></li>`).join('')}
+      ${ts.length===0?`<li style="font-size:.74rem;color:var(--t3);padding:4px 0">No open tasks</li>`:''}
+    </ul>
+    ${ts.length>3?`<div style="font-size:.7rem;color:var(--t3);margin-top:5px">+${ts.length-3} more</div>`:''}
+    <div class="ac-foot"><span>${ts.length} open task${ts.length!==1?'s':''}</span><span>→</span></div>`;
+  el.onclick=()=>openDetail(k);
+  return el;
+}
+
+// MATRIX
+function renderMatrix(){
+  ['q1','q2','q3','q4'].forEach(q=>document.getElementById(q).innerHTML='');
+  tasks.filter(t=>!t.done).forEach(t=>{
+    const urgent=t.pri==='P1'||nearDL(t.due);
+    const imp=t.pri==='P1'||t.pri==='P2';
+    const q=urgent&&imp?'q1':!urgent&&imp?'q2':urgent&&!imp?'q3':'q4';
+    document.getElementById(q).appendChild(mkQT(t));
+  });
+}
+
+function mkQT(t){
+  const a=AREAS[t.area]||AREAS.General;
+  const el=document.createElement('div');
+  el.className='qt'+(t.done?' done':'');
+  el.id='qt'+t.id;
+  el.innerHTML=`
+    <span class="qt-dot" style="background:${a.c}"></span>
+    <div class="qt-body">
+      <div class="qt-title">${t.title}</div>
+      <div class="qt-meta">
+        <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+        <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
+        ${t.due?`<span class="tag-sm ${dueClass(t.due)}">${fmtDue(t.due)}</span>`:''}
       </div>
-      <h3>${data.name}</h3>
-      <div class="card-role">${data.role}</div>
-      <ul class="task-list">${taskHtml}</ul>
-      ${data.tasks.length > 3 ? `<div style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;">+${data.tasks.length - 3} more</div>` : ''}
-      <div class="card-footer">
-        <span>${data.footer}</span>
-        <span style="color:var(--text-muted)">→</span>
+    </div>
+    <button class="done-btn ${t.done?'undone':''}" onclick="markDone('${t.id}',event)">${t.done?'↩':'✓ Done'}</button>`;
+  return el;
+}
+
+// TASK LIST
+function renderTasks(){
+  const list=document.getElementById('tlist');
+  list.innerHTML='';
+  const f=tasks.filter(t=>(eF==='all'||t.energy===eF)&&(pF==='all'||t.pri===pF));
+  if(!f.length){list.innerHTML='<div style="color:var(--t3);font-size:.84rem;padding:16px 0">No tasks match this filter.</div>';return;}
+  f.sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;return (a.pri||'P3').localeCompare(b.pri||'P3');})
+   .forEach(t=>list.appendChild(mkTItem(t)));
+}
+
+function mkTItem(t){
+  const a=AREAS[t.area]||AREAS.General;
+  const el=document.createElement('div');
+  el.className='titem'+(t.done?' done':'');
+  el.id='ti'+t.id;
+  el.innerHTML=`
+    <div class="tcheck" onclick="markDone('${t.id}',event)">${t.done?'✓':''}</div>
+    <div class="t-body">
+      <div class="t-title">${t.title}</div>
+      ${t.notes?`<div class="t-note">${t.notes}</div>`:''}
+      <div class="t-tags">
+        <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${t.area}</span>
+        <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+        <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
+        ${t.due?`<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>`:''}
       </div>
-    `;
+    </div>`;
+  return el;
+}
 
-    card.addEventListener('click', () => showArea(id));
-    return card;
-  }
+// MARK DONE
+async function markDone(id,ev){
+  ev.stopPropagation();
+  const t=tasks.find(x=>x.id===id);
+  if(!t)return;
+  t.done=!t.done;
+  doneS[t.title]=t.done;
+  try{localStorage.setItem('ds',JSON.stringify(doneS));}catch(e){}
+  // Update all instances in DOM
+  ['qt','ti'].forEach(pfx=>{
+    const el=document.getElementById(pfx+id);
+    if(!el)return;
+    el.classList.toggle('done',t.done);
+    const db=el.querySelector('.done-btn');if(db){db.textContent=t.done?'↩':'✓ Done';db.classList.toggle('undone',t.done);}
+    const ck=el.querySelector('.tcheck');if(ck)ck.textContent=t.done?'✓':'';
+  });
+  updUrgent();
+  const tok=localStorage.getItem('gh-tok');
+  if(tok){toast('Syncing to GitHub…');await ghSync(tok,t);}
+  else toast(t.done?'Done ✓ — add GitHub token in Settings to sync everywhere':'Restored');
+}
 
-  function renderGrid() {
-    const urgentGrid = document.getElementById('urgent-grid');
-    const activeGrid = document.getElementById('active-grid');
-    const goalGrid = document.getElementById('goal-grid');
+async function ghSync(tok,t){
+  try{
+    const fr=await fetch(API,{headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'}});
+    if(!fr.ok)throw 0;
+    const fd=await fr.json();
+    const sha=fd.sha;
+    const orig=decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
+    const updated=orig.split('\n').map(ln=>{
+      if(!ln.includes(t.title))return ln;
+      return t.done?ln.replace('- [ ]','- [x]'):ln.replace('- [x]','- [ ]');
+    }).join('\n');
+    const pr=await fetch(API,{method:'PUT',headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:(t.done?'✓ ':'↩ ')+t.title.slice(0,50),content:btoa(unescape(encodeURIComponent(updated))),sha})});
+    toast(pr.ok?(t.done?'✓ Synced to GitHub':'↩ Restored on GitHub'):'Sync failed — check token');
+  }catch(e){toast('GitHub sync error — check Settings');}
+}
 
-    Object.entries(areas).forEach(([id, data]) => {
-      const card = makeCard(id, data);
-      if (data.priority === 'urgent') urgentGrid.appendChild(card);
-      else if (data.priority === 'active') activeGrid.appendChild(card);
-      else goalGrid.appendChild(card);
-    });
-  }
+// DETAIL
+function openDetail(k){
+  const d=AREAS[k];if(!d)return;
+  const open=tasks.filter(t=>t.area===k&&!t.done);
+  const done=tasks.filter(t=>t.area===k&&t.done);
+  ['v-areas','v-matrix','v-tasks'].forEach(v=>document.getElementById(v).style.display='none');
+  document.getElementById('detail').classList.add('open');
+  document.getElementById('detail-body').innerHTML=`
+    <div class="d-hdr"><div class="d-icon">${d.i}</div><div><h2>${d.n}</h2><p>${d.r}</p></div></div>
+    <div class="d-sec"><h4>Context</h4><div class="d-ctx">${d.ctx}</div></div>
+    <div class="d-sec"><h4>Open Tasks (${open.length})</h4>
+      ${open.length?open.map(t=>`
+        <div class="qt">
+          <span class="qt-dot" style="background:${d.c}"></span>
+          <div class="qt-body">
+            <div class="qt-title">${t.title}</div>
+            <div class="qt-meta">
+              <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+              <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
+              ${t.due?`<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>`:''}
+            </div>
+            ${t.notes?`<div style="font-size:.72rem;color:var(--t3);margin-top:3px">${t.notes}</div>`:''}
+          </div>
+          <button class="done-btn" onclick="markDone('${t.id}',event)">✓ Done</button>
+        </div>`).join(''):'<p style="font-size:.8rem;color:var(--t3)">No open tasks.</p>'}
+    </div>
+    ${done.length?`<div class="d-sec"><h4>Completed (${done.length})</h4>${done.map(t=>`<div style="font-size:.77rem;color:var(--t3);padding:4px 0;text-decoration:line-through">${t.title}</div>`).join('')}</div>`:''}`;
+}
+function closeDetail(){document.getElementById('detail').classList.remove('open');show(curView,document.querySelector('.nt.active'));}
 
-  // ─── AREA DETAIL VIEW ─────────────────────────────────
-  function showArea(id, tabBtn) {
-    const data = areas[id];
-    if (!data) return;
+// VIEW SWITCHING
+function show(v,btn){
+  curView=v;
+  document.querySelectorAll('.nt').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('detail').classList.remove('open');
+  ['areas','matrix','tasks'].forEach(x=>document.getElementById('v-'+x).style.display=x===v?'block':'none');
+}
 
-    // Update nav
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    if (tabBtn) {
-      tabBtn.classList.add('active');
-    } else {
-      document.querySelectorAll('.nav-tab').forEach(t => {
-        if (t.textContent.trim() === data.name) t.classList.add('active');
-      });
-    }
+function filt(type,val,btn){
+  if(type==='e')eF=val;else pF=val;
+  btn.closest('.filters').querySelectorAll('.fbtn').forEach(b=>{
+    if(b.getAttribute('onclick')?.includes(`'${type}'`))b.classList.remove('on');
+  });
+  btn.classList.add('on');
+  renderTasks();
+}
 
-    document.getElementById('view-overview').style.display = 'none';
-    document.getElementById('view-area').style.display = 'block';
+// HELPERS
+function eIcon(e){return e==='High'?'🔴 High':e==='Low'?'🟢 Low':'🟡 Med';}
+function eClass(e){return e==='High'?'e-high':e==='Low'?'e-low':'e-med';}
+function nearDL(d){if(!d)return false;return(new Date(d+' 12:00')-new Date())/86400000<=7;}
+function dueClass(d){if(!d)return'';const days=(new Date(d+' 12:00')-new Date())/86400000;return days<0?'due-late':days<=7?'due-soon':'due-ok';}
+function dueColor(d){const c=dueClass(d);return c==='due-late'?'#fca5a5':c==='due-soon'?'#fcd34d':'#86efac';}
+function fmtDue(d){
+  if(!d)return'';
+  const days=Math.round((new Date(d+' 12:00')-new Date())/86400000);
+  if(days<0)return`${Math.abs(days)}d overdue`;if(days===0)return'Today';if(days===1)return'Tomorrow';
+  if(days<=7)return`${days}d`;
+  const dt=new Date(d+' 12:00');return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
 
-    const taskHtml = data.tasks.map(t => `
-      <div class="detail-task">
-        <span class="detail-task-dot" style="background:${data.color}"></span>
-        <div>
-          <div class="detail-task-text">${t.text}</div>
-          ${t.note ? `<div class="detail-task-note">${t.note}</div>` : ''}
-        </div>
-      </div>
-    `).join('');
+// SETTINGS
+function openSettings(){document.getElementById('smodal').classList.add('open');const t=localStorage.getItem('gh-tok');if(t)document.getElementById('tok-in').value=t;}
+function closeSM(){document.getElementById('smodal').classList.remove('open');}
+function saveTok(){const t=document.getElementById('tok-in').value.trim();if(!t){document.getElementById('smsg').textContent='Enter a token.';return;}try{localStorage.setItem('gh-tok',t);}catch(e){}document.getElementById('smsg').textContent='✓ Saved — mark-done now syncs to GitHub.';}
+document.getElementById('smodal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSM();});
 
-    const tagsHtml = data.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+// TOAST
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);}
 
-    document.getElementById('area-detail-content').innerHTML = `
-      <div class="detail-header">
-        <div class="detail-icon">${data.icon}</div>
-        <div class="detail-title">
-          <h2>${data.name}</h2>
-          <p>${data.role}</p>
-        </div>
-      </div>
-
-      <div class="detail-section">
-        <h4>Context</h4>
-        <div class="context-block">${data.context}</div>
-        <div style="margin-top:12px">${tagsHtml}</div>
-      </div>
-
-      <div class="detail-section">
-        <h4>Open Tasks (${data.tasks.length})</h4>
-        ${taskHtml}
-      </div>
-    `;
-  }
-
-  // ─── TAB NAVIGATION ───────────────────────────────────
-  function switchTab(view, btn) {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('view-overview').style.display = 'block';
-    document.getElementById('view-area').style.display = 'none';
-  }
-
-  function goBack() {
-    document.getElementById('view-overview').style.display = 'block';
-    document.getElementById('view-area').style.display = 'none';
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector('.nav-tab').classList.add('active');
-  }
-
-  // ─── DAILY CHECKLIST ──────────────────────────────────
-  const today = new Date().toDateString();
-  const isWeekday = [1,2,3,4,5].includes(new Date().getDay());
-  const isFriday = new Date().getDay() === 5;
-
-  const checklistItems = [
-    {
-      id: 'energy',
-      label: '<strong>Check your energy level.</strong> High / Medium / Low?',
-      trigger: 'Match today\'s tasks to your energy before opening the task board.',
-      always: true
-    },
-    {
-      id: 'top3',
-      label: '<strong>Open task board</strong> — what are your top 3 for today?',
-      trigger: 'dashboard.html → filter by today\'s energy level.',
-      always: true
-    },
-    {
-      id: 'capture',
-      label: '<strong>Capture folder check.</strong> Anything in Google Drive / Capture?',
-      trigger: 'If yes → open Cowork and say "process capture folder".',
-      always: true
-    },
-    {
-      id: 'workemail',
-      label: '<strong>Work inbox check (M–F).</strong> Any action items in Outlook?',
-      trigger: 'If yes → open Cowork and say "check work inbox".',
-      always: isWeekday
-    },
-    {
-      id: 'commitments',
-      label: '<strong>Commitments scan.</strong> Did you make any promises yesterday?',
-      trigger: 'Any "I\'ll get that to you" moments → add to task board or tell Claude.',
-      always: true
-    },
-    {
-      id: 'friday',
-      label: '<strong>Weekly Review (Friday).</strong> Open Cowork for full review.',
-      trigger: 'Say "weekly review" — Claude will run the full Friday protocol.',
-      always: isFriday
-    }
-  ].filter(item => item.always);
-
-  const savedState = JSON.parse(localStorage.getItem?.('checklist-' + today) || 'null') || {};
-
-  function renderChecklist() {
-    const container = document.getElementById('checklist-items');
-    container.innerHTML = checklistItems.map(item => `
-      <div class="check-item ${savedState[item.id] ? 'done' : ''}" onclick="toggleCheck('${item.id}', this)">
-        <div class="check-box">${savedState[item.id] ? '✓' : ''}</div>
-        <div>
-          <div class="check-label">${item.label}</div>
-          <div class="check-trigger">${item.trigger}</div>
-        </div>
-      </div>
-    `).join('');
-    updateProgress();
-  }
-
-  function toggleCheck(id, el) {
-    savedState[id] = !savedState[id];
-    el.classList.toggle('done');
-    el.querySelector('.check-box').textContent = savedState[id] ? '✓' : '';
-    try { localStorage.setItem('checklist-' + today, JSON.stringify(savedState)); } catch(e) {}
-    updateProgress();
-  }
-
-  function updateProgress() {
-    const done = Object.values(savedState).filter(Boolean).length;
-    const total = checklistItems.length;
-    const el = document.getElementById('checklist-progress');
-    el.textContent = done === total ? '✓ All done' : `${done} / ${total} done`;
-    el.style.color = done === total ? '#22c55e' : 'var(--text-muted)';
-  }
-
-  function resetChecklist() {
-    checklistItems.forEach(i => { savedState[i.id] = false; });
-    try { localStorage.removeItem('checklist-' + today); } catch(e) {}
-    renderChecklist();
-  }
-
-  renderChecklist();
-
-  // ─── INIT ─────────────────────────────────────────────
-  renderGrid();
+// START
+initCL();
+load();
 </script>
 </body>
 </html>
