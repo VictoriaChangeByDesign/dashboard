@@ -272,311 +272,397 @@ const RAW = './TASKS.md?t=' + Date.now();
 const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/TASKS.md';
 
 const AREAS = {
-  DART:      {i:'🚌',n:'DART & Work',     c:'var(--work)',     r:'Caravan Manager · DART',                          p:'active', b:'active',  ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
-  MIHF:      {i:'🏥',n:'MIHF Fellowship', c:'var(--mihf)',     r:'Health Connect Fellow · MIHF',                    p:'active', b:'active',  ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
-  NAACP:     {i:'✊',n:'NAACP',           c:'var(--naacp)',    r:'Branch President · NAACP Des Moines',             p:'urgent', b:'urgent',  ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
-  'Gun Club':{i:'🛡️',n:'Gun Club',        c:'var(--guns)',     r:'Vice President · Colonel Young Gun Club (NAAGA)', p:'urgent', b:'urgent',  ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
-  Campaign:  {i:'🗳️',n:'Campaign',        c:'var(--campaign)', r:'Supporter · Heather for Polk County Supervisor',  p:'active', b:'active',  ctx:"Supporting Heather's Polk County Supervisor race. She ran after podcast ep 1. Coordinate support with podcast pivot."},
-  Podcast:   {i:'🎙️',n:'Podcast',         c:'var(--podcast)',  r:'Co-host → Solo Pivot · Change in Plain Sight',   p:'active', b:'active',  ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
-  Brand:     {i:'✨',n:'Brand & Business', c:'var(--brand)',    r:'Owner · Brilliance Collective → Change by Design',p:'active', b:'active',  ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
-  Glow:      {i:'🌟',n:'Glow Up',         c:'var(--glow)',     r:'Personal Dev → Dr. Victoria Henderson Weber',    p:'goal',   b:'goal',    ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
-  Family:    {i:'💛',n:'Family',           c:'var(--family)',   r:'Mom · Langston (10) & Zora (3)',                 p:'active', b:'active',  ctx:'Two kids with very different needs. Langston is 10. Zora is 3. Both are a priority.'},
-  Finances:  {i:'💰',n:'Finances',         c:'var(--finances)', r:'Personal Finance',                               p:'goal',   b:'goal',    ctx:'Full audit first, then a working budget and savings system.'},
-  Home:      {i:'🏠',n:'Home',             c:'var(--home)',     r:'Home Design & Organization',                     p:'goal',   b:'goal',    ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
-  Setup:     {i:'⚙️',n:'Setup',            c:'var(--t2)',       r:'System Setup',                                   p:'active', b:'active',  ctx:'One-time system setup tasks.'},
-  General:   {i:'📋',n:'General',          c:'var(--t2)',       r:'General',                                        p:'active', b:'active',  ctx:'General tasks.'},
-  'Eno Center':{i:'🎓',n:'Eno Center',     c:'var(--work)',     r:'Mid-Manager Program · July, Seattle',            p:'active', b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
+  DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
+  MIHF: {i:'🏥',n:'MIHF Fellowship',c:'var(--mihf)',r:'Health Connect Fellow · MIHF',p:'active',b:'active',ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
+  NAACP: {i:'✊',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
+  'Gun Club': {i:'🛡️',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
+  Campaign: {i:'🗳️',n:'Campaign',c:'var(--campaign)',r:'Supporter · Heather for Polk County Supervisor',p:'active',b:'active',ctx:"Supporting Heather's Polk County Supervisor race. She ran after podcast ep 1. Coordinate support with podcast pivot."},
+  Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Co-host → Solo Pivot · Change in Plain Sight',p:'active',b:'active',ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
+  Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Owner · Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
+  Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Dev → Dr. Victoria Henderson Weber',p:'goal',b:'goal',ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
+  Family: {i:'💛',n:'Family',c:'var(--family)',r:'Mom · Langston (10) & Zora (3)',p:'active',b:'active',ctx:'Two kids with very different needs. Langston is 10. Zora is 3. Both are a priority.'},
+  Finances: {i:'💰',n:'Finances',c:'var(--finances)',r:'Personal Finance',p:'goal',b:'goal',ctx:'Full audit first, then a working budget and savings system.'},
+  Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
+  Setup: {i:'⚙️',n:'Setup',c:'var(--t2)',r:'System Setup',p:'active',b:'active',ctx:'One-time system setup tasks.'},
+  General: {i:'📋',n:'General',c:'var(--t2)',r:'General',p:'active',b:'active',ctx:'General tasks.'},
+  'Eno Center': {i:'🎓',n:'Eno Center',c:'var(--work)',r:'Mid-Manager Program · July, Seattle',p:'active',b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
 };
 
-let tasks=[], curView='areas', eF='all', pF='all', doneS={}, clOpen=true;
-const today=new Date().toDateString();
-const isFri=new Date().getDay()===5;
-const isWkd=[1,2,3,4,5].includes(new Date().getDay());
-let clS={};
+let tasks = [];
+let curView = 'areas';
+let eF = 'all';
+let pF = 'all';
+let doneS = {};
+let clOpen = true;
 
-try{doneS=JSON.parse(localStorage.getItem('ds')||'{}');}catch(e){}
-try{clS=JSON.parse(localStorage.getItem('cl-'+today)||'{}');}catch(e){}
+const today = new Date().toDateString();
+const isFri = new Date().getDay() === 5;
+const isWkd = [1,2,3,4,5].includes(new Date().getDay());
+let clS = {};
+
+try { doneS = JSON.parse(localStorage.getItem('ds') || '{}'); } catch (e) {}
+try { clS = JSON.parse(localStorage.getItem('cl-' + today) || '{}'); } catch (e) {}
 
 // DATE
-const dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const mn=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const nd=new Date();
-document.getElementById('date-line').textContent=`${dn[nd.getDay()]}, ${mn[nd.getMonth()]} ${nd.getDate()}, ${nd.getFullYear()} · Des Moines, IA`;
+const dn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const mn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const nd = new Date();
+document.getElementById('date-line').textContent =
+  `${dn[nd.getDay()]}, ${mn[nd.getMonth()]} ${nd.getDate()}, ${nd.getFullYear()} · Des Moines, IA`;
 
 // CHECKLIST
-const CLI=[
-  {id:'energy',l:'<strong>Check energy.</strong> High / Medium / Low?',     s:'Use Tasks tab → filter by energy to match your capacity.',        show:true},
-  {id:'top3',  l:'<strong>Open Tasks → do top 3.</strong>',                  s:'P1 goes first. No exceptions.',                                   show:true},
-  {id:'cap',   l:'<strong>Capture folder.</strong> Anything in Drive?',      s:'If yes → Cowork: "process capture folder"',                       show:true},
-  {id:'work',  l:'<strong>Work inbox check (M–F).</strong>',                 s:'If action items → Cowork: "check work inbox"',                    show:isWkd&&!isFri},
-  {id:'comm',  l:'<strong>Commitments scan.</strong> Any promises to keep?', s:'Said "I\'ll get that to you"? Add it now.',                       show:true},
-  {id:'fri',   l:'<strong>Friday Weekly Review.</strong>',                   s:'Open Cowork → "weekly review". Full triage of all life areas.',   show:isFri},
-].filter(x=>x.show);
+const CLI = [
+  {id:'energy',l:'<strong>Check energy.</strong> High / Medium / Low?',s:'Use Tasks tab → filter by energy to match your capacity.',show:true},
+  {id:'top3',l:'<strong>Open Tasks → do top 3.</strong>',s:'P1 goes first. No exceptions.',show:true},
+  {id:'cap',l:'<strong>Capture folder.</strong> Anything in Drive?',s:'If yes → Cowork: "process capture folder"',show:true},
+  {id:'work',l:'<strong>Work inbox check (M–F).</strong>',s:'If action items → Cowork: "check work inbox"',show:isWkd && !isFri},
+  {id:'comm',l:'<strong>Commitments scan.</strong> Any promises to keep?',s:'Said "I\'ll get that to you"? Add it now.',show:true},
+  {id:'fri',l:'<strong>Friday Weekly Review.</strong>',s:'Open Cowork → "weekly review". Full triage of all life areas.',show:isFri},
+].filter(x => x.show);
 
 function initCL(){
-  document.getElementById('cl-body').innerHTML=CLI.map(i=>`
-    <div class="ci ${clS[i.id]?'done':''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
-      <div class="ci-box">${clS[i.id]?'✓':''}</div>
-      <div><div class="ci-lbl">${i.l}</div><div class="ci-sub">${i.s}</div></div>
-    </div>`).join('');
+  document.getElementById('cl-body').innerHTML = CLI.map(i => `
+    <div class="ci ${clS[i.id] ? 'done' : ''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
+      <div class="ci-box">${clS[i.id] ? '✓' : ''}</div>
+      <div>
+        <div class="ci-lbl">${i.l}</div>
+        <div class="ci-sub">${i.s}</div>
+      </div>
+    </div>
+  `).join('');
   updCL();
 }
+
 function togCI(id){
-  clS[id]=!clS[id];
-  const el=document.getElementById('ci-'+id);
-  el.classList.toggle('done',clS[id]);
-  el.querySelector('.ci-box').textContent=clS[id]?'✓':'';
-  try{localStorage.setItem('cl-'+today,JSON.stringify(clS));}catch(e){}
+  clS[id] = !clS[id];
+  const el = document.getElementById('ci-' + id);
+  el.classList.toggle('done', clS[id]);
+  el.querySelector('.ci-box').textContent = clS[id] ? '✓' : '';
+  try { localStorage.setItem('cl-' + today, JSON.stringify(clS)); } catch (e) {}
   updCL();
 }
+
 function updCL(){
-  const d=Object.values(clS).filter(Boolean).length,t=CLI.length;
-  const el=document.getElementById('cl-prog');
-  el.textContent=d===t?'✓ All done':`${d}/${t}`;
-  el.style.color=d===t?'#22c55e':'var(--t2)';
+  const d = Object.values(clS).filter(Boolean).length;
+  const t = CLI.length;
+  const el = document.getElementById('cl-prog');
+  el.textContent = d === t ? '✓ All done' : `${d}/${t}`;
+  el.style.color = d === t ? '#22c55e' : 'var(--t2)';
 }
-function toggleCL(){clOpen=!clOpen;document.getElementById('cl-body').classList.toggle('hidden',!clOpen);document.getElementById('cl-arr').textContent=clOpen?'▾':'▸';}
-function resetCL(){CLI.forEach(i=>{clS[i.id]=false;});try{localStorage.removeItem('cl-'+today);}catch(e){}initCL();}
+
+function toggleCL(){
+  clOpen = !clOpen;
+  document.getElementById('cl-body').classList.toggle('hidden', !clOpen);
+  document.getElementById('cl-arr').textContent = clOpen ? '▾' : '▸';
+}
+
+function resetCL(){
+  CLI.forEach(i => { clS[i.id] = false; });
+  try { localStorage.removeItem('cl-' + today); } catch (e) {}
+  initCL();
+}
 
 // LOAD TASKS
 async function load(){
+  const loading = document.getElementById('loading');
   try{
-    const r=await fetch(RAW);
-    if(!r.ok)throw new Error();
-    tasks=parse(await r.text());
+    const r = await fetch(RAW, { cache: 'no-store' });
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const md = await r.text();
+    tasks = parse(md);
     renderAll();
-    document.getElementById('loading').style.display='none';
-    document.getElementById('v-areas').style.display='block';
+    loading.style.display = 'none';
+    document.getElementById('v-areas').style.display = 'block';
   }catch(e){
-    document.getElementById('loading').textContent='Could not load tasks. Check connection or GitHub Pages is up.';
+    console.error('Load failed:', e);
+    loading.textContent = 'Could not load tasks. Refresh and try again.';
   }
 }
 
 function parse(md){
-  const out=[];let sec='',cur=null;
+  const out = [];
+  let sec = '';
+  let cur = null;
+
   for(const ln of md.split('\n')){
-    if(ln.startsWith('## ')){if(cur)out.push(cur);cur=null;sec=ln.slice(3).trim();continue;}
-    const m=ln.match(/^- \[([ x])\] \*\*(\[([^\]]+)\]\s*)?([^*]+)\*\*(.*)/);
+    if(ln.startsWith('## ')){
+      if(cur) out.push(cur);
+      cur = null;
+      sec = ln.slice(3).trim();
+      continue;
+    }
+
+    const m = ln.match(/^- \[([ x])\] \*\*(?:\[([^\]]+)\]\s*)?([^*]+)\*\*(.*)/);
     if(m){
-      if(cur)out.push(cur);
-      const area=(m[3]||'General').trim();
-      const title=m[4].trim().replace(/\s*[-–]\s*$/,'');
-      const rest=m[5]||'';
-      const pm=rest.match(/\|\s*(P[123])\s*\|/);
-      const pri=pm?pm[1]:'P3';
-      const energy=rest.includes('🔴')?'High':rest.includes('🟢')?'Low':'Medium';
-      const dm=(rest+' '+title).match(/due\s+(\d{4}-\d{2}-\d{2})/i);
-      const due=dm?dm[1]:null;
-      const nm=rest.match(/^[^|]*[-–]\s*([^|🔴🟡🟢]+)/);
-      const notes=nm?nm[1].trim().replace(/\s*due\s+\d{4}-\d{2}-\d{2}/i,'').trim():'';
-      const done=m[1]==='x'||!!doneS[title];
-      cur={id:String(out.length),area,title,notes,pri,energy,due,sec,done};
+      if(cur) out.push(cur);
+
+      const area = (m[2] || 'General').trim();
+      const title = m[3].trim().replace(/\s*[-–]\s*$/, '');
+      const rest = m[4] || '';
+
+      const pm = rest.match(/\|\s*(P[123])\s*\|/);
+      const pri = pm ? pm[1] : 'P3';
+      const energy = rest.includes('🔴') ? 'High' : rest.includes('🟢') ? 'Low' : 'Medium';
+
+      const dm = (rest + ' ' + title).match(/due\s+(\d{4}-\d{2}-\d{2})/i);
+      const due = dm ? dm[1] : null;
+
+      const nm = rest.match(/^[^|]*[-–]\s*([^|🔴🟡🟢]+)/);
+      const notes = nm ? nm[1].trim().replace(/\s*due\s+\d{4}-\d{2}-\d{2}/i, '').trim() : '';
+
+      const done = m[1] === 'x' || !!doneS[title];
+      cur = { id: String(out.length), area, title, notes, pri, energy, due, sec, done };
     }
   }
-  if(cur)out.push(cur);
-  return out.filter(t=>t.sec!=='Done');
+
+  if(cur) out.push(cur);
+  return out.filter(t => t.sec !== 'Done');
 }
 
-function renderAll(){updUrgent();renderAreas();renderMatrix();renderTasks();}
+function renderAll(){
+  updUrgent();
+  renderAreas();
+  renderMatrix();
+  renderTasks();
+}
 
 function updUrgent(){
-  const u=tasks.filter(t=>!t.done&&t.pri==='P1').length;
-  const el=document.getElementById('urgent-pill');
-  el.textContent=u?`⚡ ${u} urgent item${u>1?'s':''}`:'✓ No urgent items';
-  el.className='pill '+(u?'pill-red':'pill-btn');
+  const u = tasks.filter(t => !t.done && t.pri === 'P1').length;
+  const el = document.getElementById('urgent-pill');
+  el.textContent = u ? `⚡ ${u} urgent item${u > 1 ? 's' : ''}` : '✓ No urgent items';
+  el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
 
 // AREAS
 function renderAreas(){
-  ['urgent','active','goal'].forEach(p=>document.getElementById('ag-'+p).innerHTML='');
-  const byArea={};
-  tasks.forEach(t=>{if(!byArea[t.area])byArea[t.area]=[];byArea[t.area].push(t);});
-  Object.entries(AREAS).forEach(([k,d])=>{
-    if(k==='Setup'||k==='General')return;
-    const ts=(byArea[k]||[]).filter(t=>!t.done);
-    const card=mkCard(k,d,ts);
-    document.getElementById('ag-'+d.p)?.appendChild(card);
+  ['urgent','active','goal'].forEach(p => {
+    document.getElementById('ag-' + p).innerHTML = '';
+  });
+
+  const byArea = {};
+  tasks.forEach(t => {
+    if(!byArea[t.area]) byArea[t.area] = [];
+    byArea[t.area].push(t);
+  });
+
+  Object.entries(AREAS).forEach(([k,d]) => {
+    if(k === 'Setup' || k === 'General') return;
+    const ts = (byArea[k] || []).filter(t => !t.done);
+    const card = mkCard(k, d, ts);
+    const bucket = document.getElementById('ag-' + d.p);
+    if(bucket) bucket.appendChild(card);
   });
 }
 
 function mkCard(k,d,ts){
-  const el=document.createElement('div');
-  el.className='ac';
-  const bLabel=d.b==='urgent'?'⚡ Urgent':d.b==='active'?'Active':d.b==='upcoming'?'Upcoming':'Goal';
-  el.innerHTML=`
+  const el = document.createElement('div');
+  el.className = 'ac';
+  const bLabel = d.b === 'urgent' ? '⚡ Urgent' : d.b === 'active' ? 'Active' : d.b === 'upcoming' ? 'Upcoming' : 'Goal';
+
+  el.innerHTML = `
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
-    <div class="ac-top"><span style="font-size:1.3rem">${d.i}</span><span class="badge b-${d.b}">${bLabel}</span></div>
-    <h3>${d.n}</h3><div class="ac-role">${d.r}</div>
+    <div class="ac-top">
+      <span style="font-size:1.3rem">${d.i}</span>
+      <span class="badge b-${d.b}">${bLabel}</span>
+    </div>
+    <h3>${d.n}</h3>
+    <div class="ac-role">${d.r}</div>
     <ul class="ac-tasks">
-      ${ts.slice(0,3).map(t=>`<li class="ac-task"><span class="ac-dot" style="background:${d.c}"></span><span>${t.title}${t.due?` <span style="font-size:.67rem;color:${dueColor(t.due)}">· ${fmtDue(t.due)}</span>`:''}</span></li>`).join('')}
-      ${ts.length===0?`<li style="font-size:.74rem;color:var(--t3);padding:4px 0">No open tasks</li>`:''}
+      ${ts.slice(0,3).map(t => `
+        <li class="ac-task">
+          <span class="ac-dot" style="background:${d.c}"></span>
+          <span>${t.title}${t.due ? ` <span style="font-size:.67rem;color:${dueColor(t.due)}">· ${fmtDue(t.due)}</span>` : ''}</span>
+        </li>
+      `).join('')}
+      ${ts.length === 0 ? `<li style="font-size:.74rem;color:var(--t3);padding:4px 0">No open tasks</li>` : ''}
     </ul>
-    ${ts.length>3?`<div style="font-size:.7rem;color:var(--t3);margin-top:5px">+${ts.length-3} more</div>`:''}
-    <div class="ac-foot"><span>${ts.length} open task${ts.length!==1?'s':''}</span><span>→</span></div>`;
-  el.onclick=()=>openDetail(k);
+    ${ts.length > 3 ? `<div style="font-size:.7rem;color:var(--t3);margin-top:5px">+${ts.length - 3} more</div>` : ''}
+    <div class="ac-foot"><span>${ts.length} open task${ts.length !== 1 ? 's' : ''}</span><span>→</span></div>
+  `;
+  el.onclick = () => openDetail(k);
   return el;
 }
 
 // MATRIX
 function renderMatrix(){
-  ['q1','q2','q3','q4'].forEach(q=>document.getElementById(q).innerHTML='');
-  tasks.filter(t=>!t.done).forEach(t=>{
-    const urgent=t.pri==='P1'||nearDL(t.due);
-    const imp=t.pri==='P1'||t.pri==='P2';
-    const q=urgent&&imp?'q1':!urgent&&imp?'q2':urgent&&!imp?'q3':'q4';
+  ['q1','q2','q3','q4'].forEach(q => {
+    document.getElementById(q).innerHTML = '';
+  });
+
+  tasks.filter(t => !t.done).forEach(t => {
+    const urgent = t.pri === 'P1' || nearDL(t.due);
+    const imp = t.pri === 'P1' || t.pri === 'P2';
+    const q = urgent && imp ? 'q1' : !urgent && imp ? 'q2' : urgent && !imp ? 'q3' : 'q4';
     document.getElementById(q).appendChild(mkQT(t));
   });
 }
 
 function mkQT(t){
-  const a=AREAS[t.area]||AREAS.General;
-  const el=document.createElement('div');
-  el.className='qt'+(t.done?' done':'');
-  el.id='qt'+t.id;
-  el.innerHTML=`
-    <span class="qt-dot" style="background:${a.c}"></span>
-    <div class="qt-body">
-      <div class="qt-title">${t.title}</div>
-      <div classgoal'].forEach(p=>document.getElementById('ag-'+p).innerHTML='');
-  const byArea={};
-  tasks.forEach(t=>{if(!byArea[t.area])byArea[t.area]=[];byArea[t.area].push(t);});
-  Object.entries(AREAS).forEach(([k,d])=>{
-    if(k==='Setup'||k==='General')return;
-    const ts=(byArea[k]||[]).filter(t=>!t.done);
-    const card=mkCard(k,d,ts);
-    document.getElementById('ag-'+d.p)?.appendChild(card);
-  });
-}
+  const a = AREAS[t.area] || AREAS.General;
+  const el = document.createElement('div');
+  el.className = 'qt' + (t.done ? ' done' : '');
+  el.id = 'qt' + t.id;
 
-function mkCard(k,d,ts){
-  const el=document.createElement('div');
-  el.className='ac';
-  const bLabel=d.b==='urgent'?'⚡ Urgent':d.b==='active'?'Active':d.b==='upcoming'?'Upcoming':'Goal';
-  el.innerHTML=`
-    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
-    <div class="ac-top"><span style="font-size:1.3rem">${d.i}</span><span class="badge b-${d.b}">${bLabel}</span></div>
-    <h3>${d.n}</h3><div class="ac-role">${d.r}</div>
-    <ul class="ac-tasks">
-      ${ts.slice(0,3).map(t=>`<li class="ac-task"><span class="ac-dot" style="background:${d.c}"></span><span>${t.title}${t.due?` <span style="font-size:.67rem;color:${dueColor(t.due)}">· ${fmtDue(t.due)}</span>`:''}</span></li>`).join('')}
-      ${ts.length===0?`<li style="font-size:.74rem;color:var(--t3);padding:4px 0">No open tasks</li>`:''}
-    </ul>
-    ${ts.length>3?`<div style="font-size:.7rem;color:var(--t3);margin-top:5px">+${ts.length-3} more</div>`:''}
-    <div class="ac-foot"><span>${ts.length} open task${ts.length!==1?'s':''}</span><span>→</span></div>`;
-  el.onclick=()=>openDetail(k);
-  return el;
-}
-
-// MATRIX
-function renderMatrix(){
-  ['q1','q2','q3','q4'].forEach(q=>document.getElementById(q).innerHTML='');
-  tasks.filter(t=>!t.done).forEach(t=>{
-    const urgent=t.pri==='P1'||nearDL(t.due);
-    const imp=t.pri==='P1'||t.pri==='P2';
-    const q=urgent&&imp?'q1':!urgent&&imp?'q2':urgent&&!imp?'q3':'q4';
-    document.getElementById(q).appendChild(mkQT(t));
-  });
-}
-
-function mkQT(t){
-  const a=AREAS[t.area]||AREAS.General;
-  const el=document.createElement('div');
-  el.className='qt'+(t.done?' done':'');
-  el.id='qt'+t.id;
-  el.innerHTML=`
+  el.innerHTML = `
     <span class="qt-dot" style="background:${a.c}"></span>
     <div class="qt-body">
       <div class="qt-title">${t.title}</div>
       <div class="qt-meta">
         <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
         <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
-        ${t.due?`<span class="tag-sm ${dueClass(t.due)}">${fmtDue(t.due)}</span>`:''}
+        ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">${fmtDue(t.due)}</span>` : ''}
       </div>
     </div>
-    <button class="done-btn ${t.done?'undone':''}" onclick="markDone('${t.id}',event)">${t.done?'↩':'✓ Done'}</button>`;
+    <button class="done-btn ${t.done ? 'undone' : ''}" onclick="markDone('${t.id}',event)">${t.done ? '↩' : '✓ Done'}</button>
+  `;
   return el;
 }
 
 // TASK LIST
 function renderTasks(){
-  const list=document.getElementById('tlist');
-  list.innerHTML='';
-  const f=tasks.filter(t=>(eF==='all'||t.energy===eF)&&(pF==='all'||t.pri===pF));
-  if(!f.length){list.innerHTML='<div style="color:var(--t3);font-size:.84rem;padding:16px 0">No tasks match this filter.</div>';return;}
-  f.sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;return (a.pri||'P3').localeCompare(b.pri||'P3');})
-   .forEach(t=>list.appendChild(mkTItem(t)));
+  const list = document.getElementById('tlist');
+  list.innerHTML = '';
+
+  const f = tasks.filter(t =>
+    (eF === 'all' || t.energy === eF) &&
+    (pF === 'all' || t.pri === pF)
+  );
+
+  if(!f.length){
+    list.innerHTML = '<div style="color:var(--t3);font-size:.84rem;padding:16px 0">No tasks match this filter.</div>';
+    return;
+  }
+
+  f.sort((a,b) => {
+    if(a.done !== b.done) return a.done ? 1 : -1;
+    return (a.pri || 'P3').localeCompare(b.pri || 'P3');
+  }).forEach(t => list.appendChild(mkTItem(t)));
 }
 
 function mkTItem(t){
-  const a=AREAS[t.area]||AREAS.General;
-  const el=document.createElement('div');
-  el.className='titem'+(t.done?' done':'');
-  el.id='ti'+t.id;
-  el.innerHTML=`
-    <div class="tcheck" onclick="markDone('${t.id}',event)">${t.done?'✓':''}</div>
+  const a = AREAS[t.area] || AREAS.General;
+  const el = document.createElement('div');
+  el.className = 'titem' + (t.done ? ' done' : '');
+  el.id = 'ti' + t.id;
+
+  el.innerHTML = `
+    <div class="tcheck" onclick="markDone('${t.id}',event)">${t.done ? '✓' : ''}</div>
     <div class="t-body">
       <div class="t-title">${t.title}</div>
-      ${t.notes?`<div class="t-note">${t.notes}</div>`:''}
+      ${t.notes ? `<div class="t-note">${t.notes}</div>` : ''}
       <div class="t-tags">
         <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${t.area}</span>
         <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
         <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
-        ${t.due?`<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>`:''}
+        ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
       </div>
-    </div>`;
+    </div>
+  `;
   return el;
 }
 
 // MARK DONE
 async function markDone(id,ev){
   ev.stopPropagation();
-  const t=tasks.find(x=>x.id===id);
-  if(!t)return;
-  t.done=!t.done;
-  doneS[t.title]=t.done;
-  try{localStorage.setItem('ds',JSON.stringify(doneS));}catch(e){}
-  // Update all instances in DOM
-  ['qt','ti'].forEach(pfx=>{
-    const el=document.getElementById(pfx+id);
-    if(!el)return;
-    el.classList.toggle('done',t.done);
-    const db=el.querySelector('.done-btn');if(db){db.textContent=t.done?'↩':'✓ Done';db.classList.toggle('undone',t.done);}
-    const ck=el.querySelector('.tcheck');if(ck)ck.textContent=t.done?'✓':'';
+  const t = tasks.find(x => x.id === id);
+  if(!t) return;
+
+  t.done = !t.done;
+  doneS[t.title] = t.done;
+
+  try { localStorage.setItem('ds', JSON.stringify(doneS)); } catch (e) {}
+
+  ['qt','ti'].forEach(pfx => {
+    const el = document.getElementById(pfx + id);
+    if(!el) return;
+    el.classList.toggle('done', t.done);
+    const db = el.querySelector('.done-btn');
+    if(db){
+      db.textContent = t.done ? '↩' : '✓ Done';
+      db.classList.toggle('undone', t.done);
+    }
+    const ck = el.querySelector('.tcheck');
+    if(ck) ck.textContent = t.done ? '✓' : '';
   });
+
   updUrgent();
-  const tok=localStorage.getItem('gh-tok');
-  if(tok){toast('Syncing to GitHub…');await ghSync(tok,t);}
-  else toast(t.done?'Done ✓ — add GitHub token in Settings to sync everywhere':'Restored');
+
+  const tok = localStorage.getItem('gh-tok');
+  if(tok){
+    toast('Syncing to GitHub…');
+    await ghSync(tok, t);
+  }else{
+    toast(t.done ? 'Done ✓ — add GitHub token in Settings to sync everywhere' : 'Restored');
+  }
 }
 
 async function ghSync(tok,t){
   try{
-    const fr=await fetch(API,{headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'}});
-    if(!fr.ok)throw 0;
-    const fd=await fr.json();
-    const sha=fd.sha;
-    const orig=decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
-    const updated=orig.split('\n').map(ln=>{
-      if(!ln.includes(t.title))return ln;
-      return t.done?ln.replace('- [ ]','- [x]'):ln.replace('- [x]','- [ ]');
+    const fr = await fetch(API, {
+      headers: {
+        Authorization: 'token ' + tok,
+        Accept: 'application/vnd.github+json'
+      }
+    });
+    if(!fr.ok) throw new Error('Read failed');
+
+    const fd = await fr.json();
+    const sha = fd.sha;
+    const orig = decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
+    const updated = orig.split('\n').map(ln => {
+      if(!ln.includes(t.title)) return ln;
+      return t.done ? ln.replace('- [ ]','- [x]') : ln.replace('- [x]','- [ ]');
     }).join('\n');
-    const pr=await fetch(API,{method:'PUT',headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json','Content-Type':'application/json'},
-      body:JSON.stringify({message:(t.done?'✓ ':'↩ ')+t.title.slice(0,50),content:btoa(unescape(encodeURIComponent(updated))),sha})});
-    toast(pr.ok?(t.done?'✓ Synced to GitHub':'↩ Restored on GitHub'):'Sync failed — check token');
-  }catch(e){toast('GitHub sync error — check Settings');}
+
+    const pr = await fetch(API, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'token ' + tok,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: (t.done ? '✓ ' : '↩ ') + t.title.slice(0,50),
+        content: btoa(unescape(encodeURIComponent(updated))),
+        sha
+      })
+    });
+
+    toast(pr.ok ? (t.done ? '✓ Synced to GitHub' : '↩ Restored on GitHub') : 'Sync failed — check token');
+  }catch(e){
+    console.error('GitHub sync error:', e);
+    toast('GitHub sync error — check Settings');
+  }
 }
 
 // DETAIL
 function openDetail(k){
-  const d=AREAS[k];if(!d)return;
-  const open=tasks.filter(t=>t.area===k&&!t.done);
-  const done=tasks.filter(t=>t.area===k&&t.done);
-  ['v-areas','v-matrix','v-tasks'].forEach(v=>document.getElementById(v).style.display='none');
+  const d = AREAS[k];
+  if(!d) return;
+
+  const open = tasks.filter(t => t.area === k && !t.done);
+  const done = tasks.filter(t => t.area === k && t.done);
+
+  ['v-areas','v-matrix','v-tasks'].forEach(v => {
+    document.getElementById(v).style.display = 'none';
+  });
+
   document.getElementById('detail').classList.add('open');
-  document.getElementById('detail-body').innerHTML=`
-    <div class="d-hdr"><div class="d-icon">${d.i}</div><div><h2>${d.n}</h2><p>${d.r}</p></div></div>
-    <div class="d-sec"><h4>Context</h4><div class="d-ctx">${d.ctx}</div></div>
-    <div class="d-sec"><h4>Open Tasks (${open.length})</h4>
-      ${open.length?open.map(t=>`
+  document.getElementById('detail-body').innerHTML = `
+    <div class="d-hdr">
+      <div class="d-icon">${d.i}</div>
+      <div>
+        <h2>${d.n}</h2>
+        <p>${d.r}</p>
+      </div>
+    </div>
+    <div class="d-sec">
+      <h4>Context</h4>
+      <div class="d-ctx">${d.ctx}</div>
+    </div>
+    <div class="d-sec">
+      <h4>Open Tasks (${open.length})</h4>
+      ${open.length ? open.map(t => `
         <div class="qt">
           <span class="qt-dot" style="background:${d.c}"></span>
           <div class="qt-body">
@@ -584,57 +670,110 @@ function openDetail(k){
             <div class="qt-meta">
               <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
               <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
-              ${t.due?`<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>`:''}
+              ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
             </div>
-            ${t.notes?`<div style="font-size:.72rem;color:var(--t3);margin-top:3px">${t.notes}</div>`:''}
+            ${t.notes ? `<div style="font-size:.72rem;color:var(--t3);margin-top:3px">${t.notes}</div>` : ''}
           </div>
           <button class="done-btn" onclick="markDone('${t.id}',event)">✓ Done</button>
-        </div>`).join(''):'<p style="font-size:.8rem;color:var(--t3)">No open tasks.</p>'}
+        </div>
+      `).join('') : '<p style="font-size:.8rem;color:var(--t3)">No open tasks.</p>'}
     </div>
-    ${done.length?`<div class="d-sec"><h4>Completed (${done.length})</h4>${done.map(t=>`<div style="font-size:.77rem;color:var(--t3);padding:4px 0;text-decoration:line-through">${t.title}</div>`).join('')}</div>`:''}`;
+    ${done.length ? `
+      <div class="d-sec">
+        <h4>Completed (${done.length})</h4>
+        ${done.map(t => `<div style="font-size:.77rem;color:var(--t3);padding:4px 0;text-decoration:line-through">${t.title}</div>`).join('')}
+      </div>
+    ` : ''}
+  `;
 }
-function closeDetail(){document.getElementById('detail').classList.remove('open');show(curView,document.querySelector('.nt.active'));}
+
+function closeDetail(){
+  document.getElementById('detail').classList.remove('open');
+  show(curView, document.querySelector('.nt.active'));
+}
 
 // VIEW SWITCHING
 function show(v,btn){
-  curView=v;
-  document.querySelectorAll('.nt').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
+  curView = v;
+  document.querySelectorAll('.nt').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
   document.getElementById('detail').classList.remove('open');
-  ['areas','matrix','tasks'].forEach(x=>document.getElementById('v-'+x).style.display=x===v?'block':'none');
+  ['areas','matrix','tasks'].forEach(x => {
+    document.getElementById('v-' + x).style.display = x === v ? 'block' : 'none';
+  });
 }
 
 function filt(type,val,btn){
-  if(type==='e')eF=val;else pF=val;
-  btn.closest('.filters').querySelectorAll('.fbtn').forEach(b=>{
-    if(b.getAttribute('onclick')?.includes(`'${type}'`))b.classList.remove('on');
+  if(type === 'e') eF = val;
+  else pF = val;
+
+  btn.closest('.filters').querySelectorAll('.fbtn').forEach(b => {
+    if(b.getAttribute('onclick')?.includes(`'${type}'`)) b.classList.remove('on');
   });
+
   btn.classList.add('on');
   renderTasks();
 }
 
 // HELPERS
-function eIcon(e){return e==='High'?'🔴 High':e==='Low'?'🟢 Low':'🟡 Med';}
-function eClass(e){return e==='High'?'e-high':e==='Low'?'e-low':'e-med';}
-function nearDL(d){if(!d)return false;return(new Date(d+' 12:00')-new Date())/86400000<=7;}
-function dueClass(d){if(!d)return'';const days=(new Date(d+' 12:00')-new Date())/86400000;return days<0?'due-late':days<=7?'due-soon':'due-ok';}
-function dueColor(d){const c=dueClass(d);return c==='due-late'?'#fca5a5':c==='due-soon'?'#fcd34d':'#86efac';}
+function eIcon(e){ return e === 'High' ? '🔴 High' : e === 'Low' ? '🟢 Low' : '🟡 Med'; }
+function eClass(e){ return e === 'High' ? 'e-high' : e === 'Low' ? 'e-low' : 'e-med'; }
+function nearDL(d){
+  if(!d) return false;
+  return (new Date(d + ' 12:00') - new Date()) / 86400000 <= 7;
+}
+function dueClass(d){
+  if(!d) return '';
+  const days = (new Date(d + ' 12:00') - new Date()) / 86400000;
+  return days < 0 ? 'due-late' : days <= 7 ? 'due-soon' : 'due-ok';
+}
+function dueColor(d){
+  const c = dueClass(d);
+  return c === 'due-late' ? '#fca5a5' : c === 'due-soon' ? '#fcd34d' : '#86efac';
+}
 function fmtDue(d){
-  if(!d)return'';
-  const days=Math.round((new Date(d+' 12:00')-new Date())/86400000);
-  if(days<0)return`${Math.abs(days)}d overdue`;if(days===0)return'Today';if(days===1)return'Tomorrow';
-  if(days<=7)return`${days}d`;
-  const dt=new Date(d+' 12:00');return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(!d) return '';
+  const days = Math.round((new Date(d + ' 12:00') - new Date()) / 86400000);
+  if(days < 0) return `${Math.abs(days)}d overdue`;
+  if(days === 0) return 'Today';
+  if(days === 1) return 'Tomorrow';
+  if(days <= 7) return `${days}d`;
+  const dt = new Date(d + ' 12:00');
+  return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
 }
 
 // SETTINGS
-function openSettings(){document.getElementById('smodal').classList.add('open');const t=localStorage.getItem('gh-tok');if(t)document.getElementById('tok-in').value=t;}
-function closeSM(){document.getElementById('smodal').classList.remove('open');}
-function saveTok(){const t=document.getElementById('tok-in').value.trim();if(!t){document.getElementById('smsg').textContent='Enter a token.';return;}try{localStorage.setItem('gh-tok',t);}catch(e){}document.getElementById('smsg').textContent='✓ Saved — mark-done now syncs to GitHub.';}
-document.getElementById('smodal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSM();});
+function openSettings(){
+  document.getElementById('smodal').classList.add('open');
+  const t = localStorage.getItem('gh-tok');
+  if(t) document.getElementById('tok-in').value = t;
+}
+
+function closeSM(){
+  document.getElementById('smodal').classList.remove('open');
+}
+
+function saveTok(){
+  const t = document.getElementById('tok-in').value.trim();
+  if(!t){
+    document.getElementById('smsg').textContent = 'Enter a token.';
+    return;
+  }
+  try { localStorage.setItem('gh-tok', t); } catch (e) {}
+  document.getElementById('smsg').textContent = '✓ Saved — mark-done now syncs to GitHub.';
+}
+
+document.getElementById('smodal').addEventListener('click', e => {
+  if(e.target === e.currentTarget) closeSM();
+});
 
 // TOAST
-function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);}
+function toast(m){
+  const el = document.getElementById('toast');
+  el.textContent = m;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3200);
+}
 
 // START
 initCL();
