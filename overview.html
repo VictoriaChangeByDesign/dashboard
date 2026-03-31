@@ -294,7 +294,7 @@ const isFri=new Date().getDay()===5;
 const isWkd=[1,2,3,4,5].includes(new Date().getDay());
 let clS={};
 
-$ry{doneS=JSON.parse(localStorage.getItem('ds')||'{}');}catch(e){}
+try{doneS=JSON.parse(localStorage.getItem('ds')||'{}');}catch(e){}
 try{clS=JSON.parse(localStorage.getItem('cl-'+today)||'{}');}catch(e){}
 
 // DATE
