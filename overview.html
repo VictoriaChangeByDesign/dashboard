@@ -268,15 +268,22 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const RAW = './TASKS.md?t=' + Date.now();
-const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/TASKS.md';
+const RAW = './tasks.json?t=' + Date.now();
+const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/tasks.json';
 
 const AREAS = {
   DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
-  MIHF: {i:'🏥',n:'MIHF Fellowship',c:'var(--mihf)',r:'Health Connect Fellow · MIHF',p:'active',b:'active',ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
   NAACP: {i:'✊',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
   'Gun Club': {i:'🛡️',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
-  Campaign: {i:'🗳️',n:'Campaign',c:'var(--campaign)',r:'Supporter · Heather for Polk County Supervisor',p:'active',b:'active',ctx:"Supporting Heather's Polk County Supervisor race. She ran after podcast ep 1. Coordinate support with podcast pivot."},
+  Friends: {
+  i:'🗳️',
+  n:'Friends',
+  c:'var(--friends)',
+  r:'Strategic relationships · Community leadership circle',
+  p:'active',
+  b:'active',
+  ctx:"Long-arc relationships. Tasks here are relationship-driven, not tied to a single initiative."
+},
   Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Co-host → Solo Pivot · Change in Plain Sight',p:'active',b:'active',ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
   Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Owner · Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
   Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Dev → Dr. Victoria Henderson Weber',p:'goal',b:'goal',ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
@@ -285,7 +292,6 @@ const AREAS = {
   Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
   Setup: {i:'⚙️',n:'Setup',c:'var(--t2)',r:'System Setup',p:'active',b:'active',ctx:'One-time system setup tasks.'},
   General: {i:'📋',n:'General',c:'var(--t2)',r:'General',p:'active',b:'active',ctx:'General tasks.'},
-  'Eno Center': {i:'🎓',n:'Eno Center',c:'var(--work)',r:'Mid-Manager Program · July, Seattle',p:'active',b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
 };
 
 let tasks = [];
@@ -368,55 +374,42 @@ async function load(){
   try{
     const r = await fetch(RAW, { cache: 'no-store' });
     if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const md = await r.text();
-    tasks = parse(md);
+    const rawTasks = await r.json();
+    tasks = mapJsonTasks(rawTasks);
     renderAll();
     loading.style.display = 'none';
     document.getElementById('v-areas').style.display = 'block';
   }catch(e){
     console.error('Load failed:', e);
-    loading.textContent = 'Could not load tasks. Refresh and try again.';
+    loading.textContent = 'Could not load tasks.json. Refresh and try again.';
   }
 }
 
-function parse(md){
-  const out = [];
-  let sec = '';
-  let cur = null;
+function mapJsonTasks(rawTasks){
+  return (rawTasks || []).map((t, i) => ({
+    id: t.id || String(i),
+    area: normalizeArea(t.area),
+    title: t.title || t.raw_input || 'Untitled task',
+    notes: t.raw_input && t.raw_input !== t.title ? t.raw_input : '',
+    pri: t.priority || 'P3',
+    energy: t.energy || 'Medium',
+    due: t.due_date || null,
+    sec: t.eisenhower || '',
+    done: (t.status || 'open') !== 'open',
+    importance: t.importance || '',
+    urgency: t.urgency || '',
+    eisenhower: t.eisenhower || ''
+  }));
+}
 
-  for(const ln of md.split('\n')){
-    if(ln.startsWith('## ')){
-      if(cur) out.push(cur);
-      cur = null;
-      sec = ln.slice(3).trim();
-      continue;
-    }
-
-    const m = ln.match(/^- \[([ x])\] \*\*(?:\[([^\]]+)\]\s*)?([^*]+)\*\*(.*)/);
-    if(m){
-      if(cur) out.push(cur);
-
-      const area = (m[2] || 'General').trim();
-      const title = m[3].trim().replace(/\s*[-–]\s*$/, '');
-      const rest = m[4] || '';
-
-      const pm = rest.match(/\|\s*(P[123])\s*\|/);
-      const pri = pm ? pm[1] : 'P3';
-      const energy = rest.includes('🔴') ? 'High' : rest.includes('🟢') ? 'Low' : 'Medium';
-
-      const dm = (rest + ' ' + title).match(/due\s+(\d{4}-\d{2}-\d{2})/i);
-      const due = dm ? dm[1] : null;
-
-      const nm = rest.match(/^[^|]*[-–]\s*([^|🔴🟡🟢]+)/);
-      const notes = nm ? nm[1].trim().replace(/\s*due\s+\d{4}-\d{2}-\d{2}/i, '').trim() : '';
-
-      const done = m[1] === 'x' || !!doneS[title];
-      cur = { id: String(out.length), area, title, notes, pri, energy, due, sec, done };
-    }
-  }
-
-  if(cur) out.push(cur);
-  return out.filter(t => t.sec !== 'Done');
+function normalizeArea(area){
+  const map = {
+    'DART & Work': 'DART',
+    'Brand & Business': 'Brand',
+    'Glow Up': 'Glow',
+    'Friends': 'General'
+  };
+  return map[area] || area || 'General';
 }
 
 function renderAll(){
@@ -490,9 +483,12 @@ function renderMatrix(){
   });
 
   tasks.filter(t => !t.done).forEach(t => {
-    const urgent = t.pri === 'P1' || nearDL(t.due);
-    const imp = t.pri === 'P1' || t.pri === 'P2';
-    const q = urgent && imp ? 'q1' : !urgent && imp ? 'q2' : urgent && !imp ? 'q3' : 'q4';
+    const q =
+      t.eisenhower === 'Do First' ? 'q1' :
+      t.eisenhower === 'Schedule' ? 'q2' :
+      t.eisenhower === 'Minimize' ? 'q3' :
+      'q4';
+
     document.getElementById(q).appendChild(mkQT(t));
   });
 }
@@ -564,11 +560,11 @@ function mkTItem(t){
 // MARK DONE
 async function markDone(id,ev){
   ev.stopPropagation();
-  const t = tasks.find(x => x.id === id);
+  const t = tasks.find(x => String(x.id) === String(id));
   if(!t) return;
 
   t.done = !t.done;
-  doneS[t.title] = t.done;
+  doneS[t.id] = t.done;
 
   try { localStorage.setItem('ds', JSON.stringify(doneS)); } catch (e) {}
 
@@ -609,10 +605,12 @@ async function ghSync(tok,t){
     const fd = await fr.json();
     const sha = fd.sha;
     const orig = decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
-    const updated = orig.split('\n').map(ln => {
-      if(!ln.includes(t.title)) return ln;
-      return t.done ? ln.replace('- [ ]','- [x]') : ln.replace('- [x]','- [ ]');
-    }).join('\n');
+    const arr = JSON.parse(orig);
+
+    const idx = arr.findIndex(x => String(x.id) === String(t.id));
+    if(idx === -1) throw new Error('Task not found in tasks.json');
+
+    arr[idx].status = t.done ? 'done' : 'open';
 
     const pr = await fetch(API, {
       method: 'PUT',
@@ -622,8 +620,8 @@ async function ghSync(tok,t){
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: (t.done ? '✓ ' : '↩ ') + t.title.slice(0,50),
-        content: btoa(unescape(encodeURIComponent(updated))),
+        message: (t.done ? '✓ ' : '↩ ') + (t.title || 'task'),
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2)))),
         sha
       })
     });
