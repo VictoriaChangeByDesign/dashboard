@@ -12,12 +12,11 @@
       --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
       --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
       --work:#3b82f6;--mihf:#10b981;--naacp:#ef4444;--guns:#8b5cf6;
-      --campaign:#f59e0b;--podcast:#ec4899;--brand:#f97316;
+      --friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
       --glow:#eab308;--family:#06b6d4;--finances:#22c55e;--home:#a78bfa;
     }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-    /* HEADER */
     .hdr{padding:20px 28px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px}
     .hdr h1{font-size:1.4rem;font-weight:700;letter-spacing:-.03em}
     .hdr-sub{color:var(--t2);font-size:.8rem;margin-top:3px}
@@ -27,7 +26,6 @@
     .pill-btn{background:rgba(255,255,255,.05);border-color:var(--border);color:var(--t2);cursor:pointer}
     .pill-btn:hover{border-color:var(--border2);color:var(--text)}
 
-    /* CHECKLIST */
     .cl-wrap{margin:16px 28px 0;background:var(--card);border:1px solid var(--border);border-radius:12px}
     .cl-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;cursor:pointer;user-select:none}
     .cl-hdr-l{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
@@ -43,20 +41,21 @@
     .ci-lbl{font-size:.77rem;color:var(--t2);line-height:1.4}
     .ci-sub{font-size:.68rem;color:#f59e0b;margin-top:1px}
 
-    /* NAV */
-    .nav{display:flex;gap:2px;padding:16px 28px 0;border-bottom:1px solid var(--border);overflow-x:auto}
+    .nav{display:flex;gap:2px;padding:16px 28px 0;border-bottom:1px solid var(--border);overflow-x:auto;align-items:center}
     .nav::-webkit-scrollbar{display:none}
     .nt{padding:7px 16px;font-size:.8rem;font-weight:500;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;margin-bottom:-1px;transition:color .15s}
     .nt:hover{color:var(--t2)}
     .nt.active{color:var(--text);border-bottom-color:#fff}
+    .nav-dd{position:relative}
+    .dd-menu{position:absolute;top:calc(100% + 6px);left:0;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:160px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+    .dd-item{display:block;width:100%;text-align:left;background:none;border:none;color:var(--t2);font-size:.8rem;padding:8px 12px;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .15s;white-space:nowrap}
+    .dd-item:hover{background:rgba(255,255,255,.06);color:var(--text)}
 
-    /* CONTENT */
     .content{padding:24px 28px}
     .loading{text-align:center;padding:60px;color:var(--t3);font-size:.9rem}
     .slabel{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin:20px 0 10px}
     .slabel:first-child{margin-top:0}
 
-    /* AREA CARDS */
     .agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
     .ac{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
     .ac:hover{background:var(--card2);border-color:var(--border2);transform:translateY(-1px)}
@@ -76,7 +75,6 @@
     .ac-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0}
     .ac-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.7rem;color:var(--t3);display:flex;justify-content:space-between}
 
-    /* MATRIX */
     .matrix{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     @media(max-width:600px){.matrix{grid-template-columns:1fr}}
     .quad{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
@@ -105,7 +103,6 @@
     .e-med{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25);color:#fcd34d}
     .e-low{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25);color:#86efac}
 
-    /* TASK LIST */
     .filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
     .fl{color:var(--t3);font-size:.73rem;margin-right:2px}
     .fbtn{background:var(--card);border:1px solid var(--border);color:var(--t2);font-size:.73rem;padding:5px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .15s}
@@ -126,7 +123,6 @@
     .t-tags{display:flex;gap:4px;flex-wrap:wrap}
     .area-chip{font-size:.65rem;padding:2px 6px;border-radius:4px;border:1px solid;background:rgba(255,255,255,.04)}
 
-    /* DETAIL */
     .detail{display:none}
     .detail.open{display:block}
     .back{display:inline-flex;align-items:center;gap:5px;background:none;border:none;color:var(--t2);font-size:.8rem;cursor:pointer;font-family:inherit;padding:0;margin-bottom:18px}
@@ -139,7 +135,6 @@
     .d-sec h4{font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:10px}
     .d-ctx{font-size:.82rem;color:var(--t2);line-height:1.6}
 
-    /* MODAL */
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
     .modal-bg.open{display:flex}
     .modal{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:24px;max-width:420px;width:100%}
@@ -153,9 +148,76 @@
     .mbtn-p{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
     .smsg{font-size:.73rem;color:#86efac;margin-bottom:8px;min-height:18px}
 
-    /* TOAST */
     .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 22px;border-radius:8px;font-size:.82rem;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:200;white-space:nowrap}
     .toast.show{opacity:1}
+
+    .kb-wrap{display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;align-items:flex-start}
+    .kb-wrap::-webkit-scrollbar{height:5px}
+    .kb-wrap::-webkit-scrollbar-track{background:var(--bg)}
+    .kb-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+    .kb-col{min-width:230px;flex:0 0 230px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column}
+    .kb-col-hdr{padding:12px 14px 10px;border-bottom:1px solid var(--border)}
+    .kb-col-name{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t2)}
+    .kb-col-count{font-size:.67rem;color:var(--t3);margin-top:2px}
+    .kb-cards{padding:10px;flex:1;display:flex;flex-direction:column;gap:7px;min-height:60px}
+    .kb-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;transition:border-color .15s}
+    .kb-card:hover{border-color:var(--border2)}
+    .kb-card.kb-done{opacity:.4}
+    .kb-card-title{font-size:.78rem;font-weight:500;margin-bottom:6px;line-height:1.35}
+    .kb-card-meta{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+    .kb-card-note{font-size:.7rem;color:var(--t3);margin-top:2px;margin-bottom:7px;line-height:1.4;border-top:1px solid var(--border);padding-top:6px}
+    .kb-mv-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+    .kb-mv{font-size:.62rem;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--t3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+    .kb-mv:hover{border-color:var(--border2);color:var(--t2)}
+    .kb-note-row{display:flex;gap:5px;margin-top:4px}
+    .kb-note-in{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-size:.7rem;padding:4px 8px;border-radius:6px;font-family:inherit;outline:none;resize:none;min-height:30px}
+    .kb-note-in:focus{border-color:rgba(255,255,255,.25)}
+    .kb-note-in::placeholder{color:var(--t3)}
+    .kb-note-save{font-size:.68rem;padding:4px 9px;background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--t2);border-radius:6px;cursor:pointer;font-family:inherit;flex-shrink:0;align-self:flex-end}
+    .kb-note-save:hover{color:var(--text)}
+    .kb-empty{font-size:.72rem;color:var(--t3);padding:4px 2px}
+
+    .idea-stages{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+    .stage-tab{font-size:.75rem;padding:5px 14px;border-radius:20px;background:var(--card);border:1px solid var(--border);color:var(--t2);cursor:pointer;font-family:inherit;transition:all .15s}
+    .stage-tab:hover{border-color:var(--border2);color:var(--text)}
+    .stage-tab.on{border-color:rgba(255,255,255,.35);color:var(--text);background:var(--card2)}
+    .idea-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+    .idea-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s}
+    .idea-card:hover{background:var(--card2);border-color:var(--border2)}
+    .idea-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+    .idea-card-title{font-size:.85rem;font-weight:600;line-height:1.35;flex:1}
+    .idea-card-raw{font-size:.74rem;color:var(--t2);margin-bottom:10px;line-height:1.45}
+    .idea-card-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+    .stage-sel{font-size:.68rem;padding:4px 8px;background:var(--bg2);border:1px solid var(--border2);color:var(--t2);border-radius:6px;cursor:pointer;font-family:inherit;outline:none}
+    .stage-sel:focus{border-color:rgba(255,255,255,.3)}
+    .promote-btn{font-size:.68rem;padding:3px 10px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#86efac;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s}
+    .promote-btn:hover{background:rgba(34,197,94,.2)}
+
+    .res-groups{display:flex;flex-direction:column;gap:22px}
+    .res-group-hdr{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .res-list{display:flex;flex-direction:column;gap:6px}
+    .res-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;transition:all .15s}
+    .res-item:hover{background:var(--card2);border-color:var(--border2)}
+    .res-body{flex:1;min-width:0}
+    .res-title{font-size:.82rem;font-weight:500;margin-bottom:4px}
+    .res-raw{font-size:.73rem;color:var(--t2);margin-bottom:7px;line-height:1.45}
+    .res-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .res-status-sel{font-size:.68rem;padding:4px 8px;background:var(--bg2);border:1px solid var(--border2);color:var(--t2);border-radius:6px;cursor:pointer;font-family:inherit;outline:none;flex-shrink:0;align-self:center}
+    .res-status-sel:focus{border-color:rgba(255,255,255,.3)}
+
+    .ref-top-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+    .ref-search{flex:1;min-width:200px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:.84rem;padding:9px 14px;border-radius:10px;font-family:inherit;outline:none}
+    .ref-search:focus{border-color:var(--border2)}
+    .ref-search::placeholder{color:var(--t3)}
+    .ref-area-sel{font-size:.78rem;padding:8px 12px;background:var(--card);border:1px solid var(--border);color:var(--t2);border-radius:10px;cursor:pointer;font-family:inherit;outline:none}
+    .ref-area-sel:focus{border-color:var(--border2)}
+    .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+    .ref-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;transition:all .15s}
+    .ref-card:hover{background:var(--card2);border-color:var(--border2)}
+    .ref-card-title{font-size:.82rem;font-weight:500;margin-bottom:5px;line-height:1.35}
+    .ref-card-raw{font-size:.73rem;color:var(--t2);margin-bottom:8px;line-height:1.45}
+    .ref-card-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px}
+    .ref-date{font-size:.67rem;color:var(--t3)}
   </style>
 </head>
 <body>
@@ -187,6 +249,15 @@
   <button class="nt active" data-view="areas" onclick="show('areas',this)">Life Areas</button>
   <button class="nt" data-view="matrix" onclick="show('matrix',this)">Eisenhower Matrix</button>
   <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
+  <button class="nt" data-view="kanban" onclick="show('kanban',this)">Kanban</button>
+  <div class="nav-dd">
+    <button class="nt" id="nt-ideation" onclick="toggleIdeation(event)">Ideation ▾</button>
+    <div class="dd-menu" id="ideation-menu" style="display:none">
+      <button class="dd-item" onclick="showSub('ideas')">💡 Ideas</button>
+      <button class="dd-item" onclick="showSub('research')">🔬 Research</button>
+      <button class="dd-item" onclick="showSub('references')">📚 References</button>
+    </div>
+  </div>
 </div>
 
 <div class="content">
@@ -199,7 +270,7 @@
   </div>
 
   <div id="v-matrix" style="display:none">
-    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> Urgent = deadline within 7 days or has active external consequence. Important = moves you toward your goals,with real stakes. Do Q1 first. Protect time for Q2. Minimize Q3. Drop Q4.</p>
+    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> Urgent = deadline within 7 days or has active external consequence. Important = moves you toward your goals, with real stakes. Do Q1 first. Protect time for Q2. Minimize Q3. Drop Q4.</p>
     <div class="matrix">
       <div class="quad" style="border-top:2px solid #ef4444">
         <span class="qlabel ql1">Q1 — Do First</span>
@@ -245,6 +316,38 @@
     <div class="tlist" id="tlist"></div>
   </div>
 
+  <div id="v-kanban" style="display:none">
+    <div class="kb-wrap" id="kb-wrap"></div>
+  </div>
+
+  <div id="v-ideas" style="display:none">
+    <div class="idea-stages">
+      <span style="font-size:.73rem;color:var(--t3);margin-right:4px">Stage:</span>
+      <button class="stage-tab on" onclick="filtIdeas('all',this)">All</button>
+      <button class="stage-tab" onclick="filtIdeas('raw',this)">Raw</button>
+      <button class="stage-tab" onclick="filtIdeas('exploring',this)">Exploring</button>
+      <button class="stage-tab" onclick="filtIdeas('ready',this)">Ready to Act</button>
+      <button class="stage-tab" onclick="filtIdeas('archived',this)">Archived</button>
+    </div>
+    <div class="idea-grid" id="idea-grid"></div>
+    <div id="idea-empty" style="display:none;color:var(--t3);font-size:.84rem;padding:20px 0">No ideas in this stage yet.</div>
+  </div>
+
+  <div id="v-research" style="display:none">
+    <div class="res-groups" id="res-groups"></div>
+  </div>
+
+  <div id="v-references" style="display:none">
+    <div class="ref-top-row">
+      <input class="ref-search" id="ref-search" placeholder="🔍  Search references…" oninput="filterRefs()">
+      <select class="ref-area-sel" id="ref-area-sel" onchange="filtRefArea(this.value)">
+        <option value="all">All Areas</option>
+      </select>
+    </div>
+    <div class="ref-grid" id="ref-grid"></div>
+    <div id="ref-empty" style="display:none;color:var(--t3);font-size:.84rem;padding:20px 0">No references found.</div>
+  </div>
+
   <div class="detail" id="detail">
     <button class="back" onclick="closeDetail()">← All Areas</button>
     <div id="detail-body"></div>
@@ -254,7 +357,7 @@
 <div class="modal-bg" id="smodal">
   <div class="modal">
     <h3>Settings — GitHub Sync</h3>
-    <p>Add a GitHub Personal Access Token with <code>repo</code> scope to sync task completions from any device.<br><br>
+    <p>Add a GitHub Personal Access Token with <code>repo</code> scope to sync task completions and ideation updates from any device.<br><br>
     <a href="https://github.com/settings/tokens/new?scopes=repo&description=Victoria+Dashboard" target="_blank">Create token on GitHub →</a></p>
     <div class="smsg" id="smsg"></div>
     <input type="password" id="tok-in" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
@@ -270,20 +373,18 @@
 <script>
 const RAW = './tasks.json?t=' + Date.now();
 const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/tasks.json';
+const IDEAS_RAW = './ideas.json?t=' + Date.now();
+const IDEAS_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/ideas.json';
+const RESEARCH_RAW = './research.json?t=' + Date.now();
+const RESEARCH_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/research.json';
+const REFS_RAW = './references.json?t=' + Date.now();
 
 const AREAS = {
   DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
+  MIHF: {i:'🏥',n:'MIHF Fellowship',c:'var(--mihf)',r:'Health Connect Fellow · MIHF',p:'active',b:'active',ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
   NAACP: {i:'✊',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
   'Gun Club': {i:'🛡️',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
-  Friends: {
-  i:'🗳️',
-  n:'Friends',
-  c:'var(--friends)',
-  r:'Strategic relationships · Community leadership circle',
-  p:'active',
-  b:'active',
-  ctx:"Long-arc relationships. Tasks here are relationship-driven, not tied to a single initiative."
-},
+  Friends: {i:'🗳️',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Long-arc relationships including Heather. Support spans campaign work, podcast collaboration, and personal connection. Tasks here are relationship-driven, not tied to a single initiative.'},
   Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Co-host → Solo Pivot · Change in Plain Sight',p:'active',b:'active',ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
   Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Owner · Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
   Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Dev → Dr. Victoria Henderson Weber',p:'goal',b:'goal',ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
@@ -292,31 +393,35 @@ const AREAS = {
   Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
   Setup: {i:'⚙️',n:'Setup',c:'var(--t2)',r:'System Setup',p:'active',b:'active',ctx:'One-time system setup tasks.'},
   General: {i:'📋',n:'General',c:'var(--t2)',r:'General',p:'active',b:'active',ctx:'General tasks.'},
+  'Eno Center': {i:'🎓',n:'Eno Center',c:'var(--work)',r:'Mid-Manager Program · July, Seattle',p:'active',b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
 };
 
 let tasks = [];
+let ideas = [];
+let researchItems = [];
+let references = [];
 let curView = 'areas';
 let eF = 'all';
 let pF = 'all';
-let doneS = {};
 let clOpen = true;
+let ideaStageF = 'all';
+let refAreaF = 'all';
+let refSearchQ = '';
+let ideationOpen = false;
 
 const today = new Date().toDateString();
 const isFri = new Date().getDay() === 5;
 const isWkd = [1,2,3,4,5].includes(new Date().getDay());
 let clS = {};
 
-try { doneS = JSON.parse(localStorage.getItem('ds') || '{}'); } catch (e) {}
 try { clS = JSON.parse(localStorage.getItem('cl-' + today) || '{}'); } catch (e) {}
 
-// DATE
 const dn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const mn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const nd = new Date();
 document.getElementById('date-line').textContent =
   `${dn[nd.getDay()]}, ${mn[nd.getMonth()]} ${nd.getDate()}, ${nd.getFullYear()} · Des Moines, IA`;
 
-// CHECKLIST
 const CLI = [
   {id:'energy',l:'<strong>Check energy.</strong> High / Medium / Low?',s:'Use Tasks tab → filter by energy to match your capacity.',show:true},
   {id:'top3',l:'<strong>Open Tasks → do top 3.</strong>',s:'P1 goes first. No exceptions.',show:true},
@@ -325,6 +430,21 @@ const CLI = [
   {id:'comm',l:'<strong>Commitments scan.</strong> Any promises to keep?',s:'Said "I\'ll get that to you"? Add it now.',show:true},
   {id:'fri',l:'<strong>Friday Weekly Review.</strong>',s:'Open Cowork → "weekly review". Full triage of all life areas.',show:isFri},
 ].filter(x => x.show);
+
+const ALL_VIEWS = ['areas','matrix','tasks','kanban','ideas','research','references'];
+const KB_COLS = [
+  { id:'backlog',     label:'Backlog',            color:'var(--t3)' },
+  { id:'this-week',   label:'This Week',          color:'var(--work)' },
+  { id:'in-progress', label:'In Progress',        color:'#f59e0b' },
+  { id:'waiting',     label:'Waiting / Blocked',  color:'#ef4444' },
+  { id:'done',        label:'Done',               color:'#22c55e' }
+];
+const IDEA_STAGES = ['raw','exploring','ready','archived'];
+const IDEA_STAGE_LABELS = { raw:'Raw', exploring:'Exploring', ready:'Ready to Act', archived:'Archived' };
+const IDEA_STAGE_COLORS = { raw:'var(--t3)', exploring:'var(--work)', ready:'#22c55e', archived:'#5c5c70' };
+const RES_STATUSES = ['to-research','in-progress','complete'];
+const RES_STATUS_LABELS = { 'to-research':'To Research', 'in-progress':'In Progress', 'complete':'Complete' };
+const RES_STATUS_COLORS = { 'to-research':'var(--t3)', 'in-progress':'#f59e0b', 'complete':'#22c55e' };
 
 function initCL(){
   document.getElementById('cl-body').innerHTML = CLI.map(i => `
@@ -338,7 +458,6 @@ function initCL(){
   `).join('');
   updCL();
 }
-
 function togCI(id){
   clS[id] = !clS[id];
   const el = document.getElementById('ci-' + id);
@@ -347,7 +466,6 @@ function togCI(id){
   try { localStorage.setItem('cl-' + today, JSON.stringify(clS)); } catch (e) {}
   updCL();
 }
-
 function updCL(){
   const d = Object.values(clS).filter(Boolean).length;
   const t = CLI.length;
@@ -355,34 +473,25 @@ function updCL(){
   el.textContent = d === t ? '✓ All done' : `${d}/${t}`;
   el.style.color = d === t ? '#22c55e' : 'var(--t2)';
 }
-
 function toggleCL(){
   clOpen = !clOpen;
   document.getElementById('cl-body').classList.toggle('hidden', !clOpen);
   document.getElementById('cl-arr').textContent = clOpen ? '▾' : '▸';
 }
-
 function resetCL(){
   CLI.forEach(i => { clS[i.id] = false; });
   try { localStorage.removeItem('cl-' + today); } catch (e) {}
   initCL();
 }
 
-// LOAD TASKS
-async function load(){
-  const loading = document.getElementById('loading');
-  try{
-    const r = await fetch(RAW, { cache: 'no-store' });
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const rawTasks = await r.json();
-    tasks = mapJsonTasks(rawTasks);
-    renderAll();
-    loading.style.display = 'none';
-    document.getElementById('v-areas').style.display = 'block';
-  }catch(e){
-    console.error('Load failed:', e);
-    loading.textContent = 'Could not load tasks.json. Refresh and try again.';
-  }
+function normalizeArea(area){
+  const map = {
+    'DART & Work': 'DART',
+    'Brand & Business': 'Brand',
+    'Glow Up': 'Glow',
+    'Friends': 'Friends'
+  };
+  return map[area] || area || 'General';
 }
 
 function mapJsonTasks(rawTasks){
@@ -395,21 +504,86 @@ function mapJsonTasks(rawTasks){
     energy: t.energy || 'Medium',
     due: t.due_date || null,
     sec: t.eisenhower || '',
-    done: (t.status || 'open') !== 'open' || !!doneS[t.id || String(i)],
+    done: (t.status || 'open') !== 'open',
     importance: t.importance || '',
     urgency: t.urgency || '',
-    eisenhower: t.eisenhower || ''
+    eisenhower: t.eisenhower || '',
+    kanban_col: t.kanban_col || 'backlog',
+    kanban_note: t.kanban_note || ''
   }));
 }
 
-function normalizeArea(area){
-  const map = {
-    'DART & Work': 'DART',
-    'Brand & Business': 'Brand',
-    'Glow Up': 'Glow',
-    'Friends': 'General'
+function mapIdea(i, idx){
+  return {
+    id: i.id || `idea_${idx}`,
+    title: i.title || i.raw_input || 'Untitled idea',
+    raw_input: i.raw_input || '',
+    area: normalizeArea(i.area),
+    stage: i.stage || 'raw',
+    created_at: i.created_at || ''
   };
-  return map[area] || area || 'General';
+}
+
+function mapResearch(r, idx){
+  return {
+    id: r.id || `research_${idx}`,
+    title: r.title || r.raw_input || 'Untitled research item',
+    raw_input: r.raw_input || '',
+    area: normalizeArea(r.area),
+    status: r.status || 'to-research',
+    created_at: r.created_at || ''
+  };
+}
+
+function mapReference(r, idx){
+  return {
+    id: r.id || `ref_${idx}`,
+    title: r.title || r.raw_input || 'Untitled reference',
+    raw_input: r.raw_input || '',
+    area: normalizeArea(r.area),
+    created_at: r.created_at || ''
+  };
+}
+
+async function load(){
+  const loading = document.getElementById('loading');
+  try{
+    const [taskRes, ideaRes, researchRes, refRes] = await Promise.all([
+      fetch(RAW, { cache: 'no-store' }),
+      fetch(IDEAS_RAW, { cache: 'no-store' }),
+      fetch(RESEARCH_RAW, { cache: 'no-store' }),
+      fetch(REFS_RAW, { cache: 'no-store' })
+    ]);
+
+    if(!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
+
+    tasks = mapJsonTasks(await taskRes.json());
+    ideas = ideaRes.ok ? (await ideaRes.json()).map(mapIdea) : [];
+    researchItems = researchRes.ok ? (await researchRes.json()).map(mapResearch) : [];
+    references = refRes.ok ? (await refRes.json()).map(mapReference) : [];
+
+    populateReferenceAreaDropdown();
+    renderAll();
+    loading.style.display = 'none';
+    document.getElementById('v-areas').style.display = 'block';
+  }catch(e){
+    console.error('Load failed:', e);
+    loading.textContent = 'Could not load dashboard data. Refresh and try again.';
+  }
+}
+
+function populateReferenceAreaDropdown(){
+  const sel = document.getElementById('ref-area-sel');
+  if(!sel) return;
+  sel.innerHTML = '<option value="all">All Areas</option>';
+  const areas = [...new Set(references.map(r => normalizeArea(r.area)).filter(Boolean))].sort();
+  areas.forEach(area => {
+    const a = AREAS[area] || AREAS.General;
+    const opt = document.createElement('option');
+    opt.value = area;
+    opt.textContent = `${a.i} ${a.n || area}`;
+    sel.appendChild(opt);
+  });
 }
 
 function renderAll(){
@@ -417,6 +591,10 @@ function renderAll(){
   renderAreas();
   renderMatrix();
   renderTasks();
+  renderKanban();
+  renderIdeas();
+  renderResearch();
+  renderReferences();
 }
 
 function updUrgent(){
@@ -426,18 +604,15 @@ function updUrgent(){
   el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
 
-// AREAS
 function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
     document.getElementById('ag-' + p).innerHTML = '';
   });
-
   const byArea = {};
   tasks.forEach(t => {
     if(!byArea[t.area]) byArea[t.area] = [];
     byArea[t.area].push(t);
   });
-
   Object.entries(AREAS).forEach(([k,d]) => {
     if(k === 'Setup' || k === 'General') return;
     const ts = (byArea[k] || []).filter(t => !t.done);
@@ -451,7 +626,6 @@ function mkCard(k,d,ts){
   const el = document.createElement('div');
   el.className = 'ac';
   const bLabel = d.b === 'urgent' ? '⚡ Urgent' : d.b === 'active' ? 'Active' : d.b === 'upcoming' ? 'Upcoming' : 'Goal';
-
   el.innerHTML = `
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
     <div class="ac-top">
@@ -476,19 +650,16 @@ function mkCard(k,d,ts){
   return el;
 }
 
-// MATRIX
 function renderMatrix(){
   ['q1','q2','q3','q4'].forEach(q => {
     document.getElementById(q).innerHTML = '';
   });
-
   tasks.filter(t => !t.done).forEach(t => {
     const q =
       t.eisenhower === 'Do First' ? 'q1' :
       t.eisenhower === 'Schedule' ? 'q2' :
       t.eisenhower === 'Minimize' ? 'q3' :
       'q4';
-
     document.getElementById(q).appendChild(mkQT(t));
   });
 }
@@ -498,7 +669,6 @@ function mkQT(t){
   const el = document.createElement('div');
   el.className = 'qt' + (t.done ? ' done' : '');
   el.id = 'qt' + t.id;
-
   el.innerHTML = `
     <span class="qt-dot" style="background:${a.c}"></span>
     <div class="qt-body">
@@ -514,21 +684,17 @@ function mkQT(t){
   return el;
 }
 
-// TASK LIST
 function renderTasks(){
   const list = document.getElementById('tlist');
   list.innerHTML = '';
-
   const f = tasks.filter(t =>
     (eF === 'all' || t.energy === eF) &&
     (pF === 'all' || t.pri === pF)
   );
-
   if(!f.length){
     list.innerHTML = '<div style="color:var(--t3);font-size:.84rem;padding:16px 0">No tasks match this filter.</div>';
     return;
   }
-
   f.sort((a,b) => {
     if(a.done !== b.done) return a.done ? 1 : -1;
     return (a.pri || 'P3').localeCompare(b.pri || 'P3');
@@ -540,7 +706,6 @@ function mkTItem(t){
   const el = document.createElement('div');
   el.className = 'titem' + (t.done ? ' done' : '');
   el.id = 'ti' + t.id;
-
   el.innerHTML = `
     <div class="tcheck" onclick="markDone('${t.id}',event)">${t.done ? '✓' : ''}</div>
     <div class="t-body">
@@ -557,42 +722,27 @@ function mkTItem(t){
   return el;
 }
 
-// MARK DONE
 async function markDone(id,ev){
   ev.stopPropagation();
   const t = tasks.find(x => String(x.id) === String(id));
   if(!t) return;
-
   t.done = !t.done;
-  doneS[t.id] = t.done;
-
-  try { localStorage.setItem('ds', JSON.stringify(doneS)); } catch (e) {}
-
-  ['qt','ti'].forEach(pfx => {
-    const el = document.getElementById(pfx + id);
-    if(!el) return;
-    el.classList.toggle('done', t.done);
-    const db = el.querySelector('.done-btn');
-    if(db){
-      db.textContent = t.done ? '↩' : '✓ Done';
-      db.classList.toggle('undone', t.done);
-    }
-    const ck = el.querySelector('.tcheck');
-    if(ck) ck.textContent = t.done ? '✓' : '';
-  });
-
+  t.kanban_col = t.done ? 'done' : (t.kanban_col === 'done' ? 'backlog' : t.kanban_col);
   updUrgent();
-
+  renderTasks();
+  renderMatrix();
+  renderAreas();
+  renderKanban();
   const tok = localStorage.getItem('gh-tok');
   if(tok){
     toast('Syncing to GitHub…');
-    await ghSync(tok, t);
+    await syncTaskToGitHub(tok, t, t.done ? 'done' : 'open');
   }else{
-    toast(t.done ? 'Done ✓ — add GitHub token in Settings to sync everywhere' : 'Restored');
+    toast('Add GitHub token in Settings to sync across devices');
   }
 }
 
-async function ghSync(tok,t){
+async function syncTaskToGitHub(tok, task, newStatus){
   try{
     const fr = await fetch(API, {
       headers: {
@@ -601,16 +751,16 @@ async function ghSync(tok,t){
       }
     });
     if(!fr.ok) throw new Error('Read failed');
-
     const fd = await fr.json();
     const sha = fd.sha;
     const orig = decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
     const arr = JSON.parse(orig);
-
-    const idx = arr.findIndex(x => String(x.id) === String(t.id));
+    const idx = arr.findIndex(x => String(x.id) === String(task.id));
     if(idx === -1) throw new Error('Task not found in tasks.json');
 
-    arr[idx].status = t.done ? 'done' : 'open';
+    arr[idx].status = newStatus;
+    arr[idx].kanban_col = task.kanban_col || 'backlog';
+    arr[idx].kanban_note = task.kanban_note || '';
 
     const pr = await fetch(API, {
       method: 'PUT',
@@ -620,31 +770,29 @@ async function ghSync(tok,t){
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: (t.done ? '✓ ' : '↩ ') + (t.title || 'task'),
+        message: (newStatus === 'done' ? '✓ ' : '↩ ') + (task.title || 'task'),
         content: btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2)))),
         sha
       })
     });
 
-    toast(pr.ok ? (t.done ? '✓ Synced to GitHub' : '↩ Restored on GitHub') : 'Sync failed — check token');
+    if(!pr.ok) throw new Error('Write failed');
+    toast(newStatus === 'done' ? '✓ Synced to GitHub' : '↩ Restored on GitHub');
   }catch(e){
     console.error('GitHub sync error:', e);
     toast('GitHub sync error — check Settings');
   }
 }
 
-// DETAIL
 function openDetail(k){
   const d = AREAS[k];
   if(!d) return;
-
   const open = tasks.filter(t => t.area === k && !t.done);
   const done = tasks.filter(t => t.area === k && t.done);
-
-  ['v-areas','v-matrix','v-tasks'].forEach(v => {
-    document.getElementById(v).style.display = 'none';
+  ['v-areas','v-matrix','v-tasks','v-kanban','v-ideas','v-research','v-references'].forEach(v => {
+    const el = document.getElementById(v);
+    if(el) el.style.display = 'none';
   });
-
   document.getElementById('detail').classList.add('open');
   document.getElementById('detail-body').innerHTML = `
     <div class="d-hdr">
@@ -684,42 +832,346 @@ function openDetail(k){
     ` : ''}
   `;
 }
-
-function closeDetail(){
+function closeDetail() {
   document.getElementById('detail').classList.remove('open');
-  show(curView, document.querySelector('.nt.active'));
+  const activeBtn = document.querySelector('.nt.active');
+  show(curView, curView === 'areas' ? activeBtn : null);
 }
 
-// VIEW SWITCHING
-function show(v,btn){
+function show(v, btn) {
   curView = v;
+  const isIdeation = ['ideas','research','references'].includes(v);
   document.querySelectorAll('.nt').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (isIdeation) document.getElementById('nt-ideation').classList.add('active');
   document.getElementById('detail').classList.remove('open');
-  ['areas','matrix','tasks'].forEach(x => {
-    document.getElementById('v-' + x).style.display = x === v ? 'block' : 'none';
+  ALL_VIEWS.forEach(x => {
+    const el = document.getElementById('v-' + x);
+    if (el) el.style.display = 'none';
   });
+  const target = document.getElementById('v-' + v);
+  if (target) target.style.display = 'block';
+  if (v === 'kanban') renderKanban();
+  if (v === 'ideas') renderIdeas();
+  if (v === 'research') renderResearch();
+  if (v === 'references') renderReferences();
 }
+function showSub(v) {
+  ideationOpen = false;
+  document.getElementById('ideation-menu').style.display = 'none';
+  document.getElementById('nt-ideation').textContent = 'Ideation ▾';
+  show(v, null);
+}
+function toggleIdeation(e) {
+  e.stopPropagation();
+  ideationOpen = !ideationOpen;
+  document.getElementById('ideation-menu').style.display = ideationOpen ? 'block' : 'none';
+  document.getElementById('nt-ideation').textContent = 'Ideation ' + (ideationOpen ? '▴' : '▾');
+}
+document.addEventListener('click', () => {
+  if (ideationOpen) {
+    ideationOpen = false;
+    document.getElementById('ideation-menu').style.display = 'none';
+    document.getElementById('nt-ideation').textContent = 'Ideation ▾';
+  }
+});
 
 function filt(type,val,btn){
   if(type === 'e') eF = val;
   else pF = val;
-
   btn.closest('.filters').querySelectorAll('.fbtn').forEach(b => {
     if(b.getAttribute('onclick')?.includes(`'${type}'`)) b.classList.remove('on');
   });
-
   btn.classList.add('on');
   renderTasks();
 }
 
-// HELPERS
+function renderKanban() {
+  const wrap = document.getElementById('kb-wrap');
+  if (!wrap) return;
+  const grouped = {};
+  KB_COLS.forEach(c => grouped[c.id] = []);
+  tasks.forEach(t => {
+    const col = t.done ? 'done' : (t.kanban_col || 'backlog');
+    if (grouped[col]) grouped[col].push(t);
+  });
+  wrap.innerHTML = KB_COLS.map(col => `
+    <div class="kb-col" style="border-top:2px solid ${col.color}">
+      <div class="kb-col-hdr">
+        <div class="kb-col-name">${col.label}</div>
+        <div class="kb-col-count">${grouped[col.id].length} task${grouped[col.id].length !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="kb-cards">
+        ${grouped[col.id].length ? grouped[col.id].map(t => mkKbCard(t, col.id)).join('') : '<div class="kb-empty">Empty</div>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function mkKbCard(t, curCol) {
+  const a = AREAS[t.area] || AREAS.General;
+  const note = t.kanban_note || '';
+  const otherCols = KB_COLS.filter(c => c.id !== curCol);
+  return `
+    <div class="kb-card ${curCol === 'done' ? 'kb-done' : ''}">
+      <div class="kb-card-title">${t.title}</div>
+      <div class="kb-card-meta">
+        <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${t.area}</span>
+        <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+        ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">${fmtDue(t.due)}</span>` : ''}
+      </div>
+      ${note ? `<div class="kb-card-note">${note}</div>` : ''}
+      <div class="kb-mv-row">
+        ${otherCols.map(c => `<button class="kb-mv" onclick="moveKb('${t.id}','${c.id}')">${c.label}</button>`).join('')}
+      </div>
+      <div class="kb-note-row">
+        <textarea class="kb-note-in" id="kn-${t.id}" rows="1" placeholder="Add a note…">${note}</textarea>
+        <button class="kb-note-save" onclick="saveKbNote('${t.id}')">Save</button>
+      </div>
+    </div>
+  `;
+}
+
+async function moveKb(id, col) {
+  const t = tasks.find(x => String(x.id) === String(id));
+  if(!t) return;
+  t.kanban_col = col;
+  if(col === 'done') t.done = true;
+  const tok = localStorage.getItem('gh-tok');
+  renderKanban();
+  renderTasks();
+  renderMatrix();
+  renderAreas();
+  if(!tok){
+    toast('Add GitHub token in Settings to sync across devices');
+    return;
+  }
+  try{
+    await syncTaskToGitHub(tok, t, col === 'done' ? 'done' : (t.done ? 'done' : 'open'));
+    toast('Moved to ' + (KB_COLS.find(c => c.id === col)?.label || col));
+  }catch{
+    toast('Move failed');
+  }
+}
+
+async function saveKbNote(id) {
+  const t = tasks.find(x => String(x.id) === String(id));
+  const inp = document.getElementById('kn-' + id);
+  if(!t || !inp) return;
+  t.kanban_note = inp.value.trim();
+  const tok = localStorage.getItem('gh-tok');
+  if(!tok){
+    toast('Add GitHub token in Settings to sync across devices');
+    return;
+  }
+  try{
+    await syncTaskToGitHub(tok, t, t.done ? 'done' : 'open');
+    toast('Note saved');
+    renderKanban();
+  }catch{
+    toast('Save failed');
+  }
+}
+
+function filtIdeas(stage, btn) {
+  ideaStageF = stage;
+  document.querySelectorAll('.stage-tab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  renderIdeas();
+}
+
+function renderIdeas() {
+  const grid = document.getElementById('idea-grid');
+  const empty = document.getElementById('idea-empty');
+  if (!grid) return;
+  const stageOrder = { raw:0, exploring:1, ready:2, archived:3 };
+  const filtered = ideas
+    .filter(i => ideaStageF === 'all' || i.stage === ideaStageF)
+    .sort((a, b) => (stageOrder[a.stage] || 0) - (stageOrder[b.stage] || 0));
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map(i => {
+    const a = AREAS[normalizeArea(i.area)] || AREAS.General;
+    const dt = i.created_at ? new Date(i.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+    return `
+      <div class="idea-card" style="border-top:2px solid ${IDEA_STAGE_COLORS[i.stage]}">
+        <div class="idea-card-top">
+          <div class="idea-card-title">${i.title || i.raw_input}</div>
+          <span class="area-chip" style="border-color:${a.c}33;color:${a.c};flex-shrink:0;margin-top:2px">${a.i}</span>
+        </div>
+        ${i.raw_input && i.raw_input !== i.title ? `<div class="idea-card-raw">${i.raw_input}</div>` : ''}
+        <div class="idea-card-foot">
+          <select class="stage-sel" onchange="updateIdeaStage('${i.id}',this.value)">
+            ${IDEA_STAGES.map(s => `<option value="${s}" ${i.stage===s?'selected':''}>${IDEA_STAGE_LABELS[s]}</option>`).join('')}
+          </select>
+          ${i.stage === 'ready' ? `<button class="promote-btn" onclick="toast('Capture this in your sheet to promote it to a task')">→ Promote</button>` : ''}
+          ${dt ? `<span style="font-size:.67rem;color:var(--t3)">${dt}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function updateIdeaStage(id, stage) {
+  const item = ideas.find(x => String(x.id) === String(id));
+  if(!item) return;
+  item.stage = stage;
+  renderIdeas();
+  const tok = localStorage.getItem('gh-tok');
+  if(!tok){
+    toast('Add GitHub token in Settings to sync across devices');
+    return;
+  }
+  await syncCollectionItem(tok, IDEAS_API, ideas, item.id, { stage }, `Update idea stage: ${item.title || 'idea'}`);
+  toast('Stage: ' + IDEA_STAGE_LABELS[stage]);
+}
+
+function renderResearch() {
+  const container = document.getElementById('res-groups');
+  if (!container) return;
+  if (!researchItems.length) {
+    container.innerHTML = '<div style="color:var(--t3);font-size:.84rem;padding:20px 0">No research items yet.</div>';
+    return;
+  }
+  container.innerHTML = RES_STATUSES.map(status => {
+    const items = researchItems.filter(r => r.status === status);
+    if (!items.length) return '';
+    return `
+      <div>
+        <div class="res-group-hdr" style="color:${RES_STATUS_COLORS[status]}">
+          ${RES_STATUS_LABELS[status]}<span style="color:var(--t3);font-weight:400;margin-left:4px">(${items.length})</span>
+        </div>
+        <div class="res-list">
+          ${items.map(r => {
+            const a = AREAS[normalizeArea(r.area)] || AREAS.General;
+            const dt = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+            return `
+              <div class="res-item">
+                <div class="res-body">
+                  <div class="res-title">${r.title || r.raw_input}</div>
+                  ${r.raw_input && r.raw_input !== r.title ? `<div class="res-raw">${r.raw_input}</div>` : ''}
+                  <div class="res-meta">
+                    <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area||'General'}</span>
+                    ${dt ? `<span style="font-size:.67rem;color:var(--t3)">${dt}</span>` : ''}
+                  </div>
+                </div>
+                <select class="res-status-sel" onchange="updateResStatus('${r.id}',this.value)">
+                  ${RES_STATUSES.map(s => `<option value="${s}" ${r.status===s?'selected':''}>${RES_STATUS_LABELS[s]}</option>`).join('')}
+                </select>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function updateResStatus(id, status) {
+  const item = researchItems.find(x => String(x.id) === String(id));
+  if(!item) return;
+  item.status = status;
+  renderResearch();
+  const tok = localStorage.getItem('gh-tok');
+  if(!tok){
+    toast('Add GitHub token in Settings to sync across devices');
+    return;
+  }
+  await syncCollectionItem(tok, RESEARCH_API, researchItems, item.id, { status }, `Update research status: ${item.title || 'research'}`);
+  toast('Status: ' + RES_STATUS_LABELS[status]);
+}
+
+function filterRefs() {
+  refSearchQ = document.getElementById('ref-search')?.value.toLowerCase() || '';
+  renderReferences();
+}
+function filtRefArea(val) {
+  refAreaF = val;
+  renderReferences();
+}
+function renderReferences() {
+  const grid = document.getElementById('ref-grid');
+  const empty = document.getElementById('ref-empty');
+  if (!grid) return;
+  if (!references.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    empty.textContent = 'No references yet.';
+    return;
+  }
+  const filtered = references.filter(r => {
+    const matchArea = refAreaF === 'all' || normalizeArea(r.area) === refAreaF;
+    const matchSearch = !refSearchQ ||
+      (r.title||'').toLowerCase().includes(refSearchQ) ||
+      (r.raw_input||'').toLowerCase().includes(refSearchQ);
+    return matchArea && matchSearch;
+  });
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    empty.textContent = 'No references match your search.';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map(r => {
+    const a = AREAS[normalizeArea(r.area)] || AREAS.General;
+    const dt = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    return `
+      <div class="ref-card">
+        <div class="ref-card-title">${r.title || r.raw_input}</div>
+        ${r.raw_input && r.raw_input !== r.title ? `<div class="ref-card-raw">${r.raw_input}</div>` : ''}
+        <div class="ref-card-foot">
+          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area||'General'}</span>
+          ${dt ? `<span class="ref-date">${dt}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function syncCollectionItem(tok, apiUrl, collection, itemId, patch, message){
+  try{
+    const fr = await fetch(apiUrl, {
+      headers: {
+        Authorization: 'token ' + tok,
+        Accept: 'application/vnd.github+json'
+      }
+    });
+    if(!fr.ok) throw new Error('Read failed');
+    const fd = await fr.json();
+    const sha = fd.sha;
+    const orig = decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
+    const arr = JSON.parse(orig);
+    const idx = arr.findIndex(x => String(x.id) === String(itemId));
+    if(idx === -1) throw new Error('Item not found');
+    arr[idx] = { ...arr[idx], ...patch };
+    const pr = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'token ' + tok,
+        Accept: 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2)))),
+        sha
+      })
+    });
+    if(!pr.ok) throw new Error('Write failed');
+  }catch(e){
+    console.error('GitHub sync error:', e);
+    toast('GitHub sync error — check Settings');
+    throw e;
+  }
+}
+
 function eIcon(e){ return e === 'High' ? '🔴 High' : e === 'Low' ? '🟢 Low' : '🟡 Med'; }
 function eClass(e){ return e === 'High' ? 'e-high' : e === 'Low' ? 'e-low' : 'e-med'; }
-function nearDL(d){
-  if(!d) return false;
-  return (new Date(d + ' 12:00') - new Date()) / 86400000 <= 7;
-}
 function dueClass(d){
   if(!d) return '';
   const days = (new Date(d + ' 12:00') - new Date()) / 86400000;
@@ -740,17 +1192,14 @@ function fmtDue(d){
   return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
 }
 
-// SETTINGS
 function openSettings(){
   document.getElementById('smodal').classList.add('open');
   const t = localStorage.getItem('gh-tok');
   if(t) document.getElementById('tok-in').value = t;
 }
-
 function closeSM(){
   document.getElementById('smodal').classList.remove('open');
 }
-
 function saveTok(){
   const t = document.getElementById('tok-in').value.trim();
   if(!t){
@@ -758,14 +1207,12 @@ function saveTok(){
     return;
   }
   try { localStorage.setItem('gh-tok', t); } catch (e) {}
-  document.getElementById('smsg').textContent = '✓ Saved — mark-done now syncs to GitHub.';
+  document.getElementById('smsg').textContent = '✓ Saved — dashboard changes now sync to GitHub.';
 }
-
 document.getElementById('smodal').addEventListener('click', e => {
   if(e.target === e.currentTarget) closeSM();
 });
 
-// TOAST
 function toast(m){
   const el = document.getElementById('toast');
   el.textContent = m;
@@ -773,7 +1220,6 @@ function toast(m){
   setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-// START
 initCL();
 load();
 </script>
