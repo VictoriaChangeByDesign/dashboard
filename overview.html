@@ -41,13 +41,35 @@
     .ci-lbl{font-size:.77rem;color:var(--t2);line-height:1.4}
     .ci-sub{font-size:.68rem;color:#f59e0b;margin-top:1px}
 
-    .nav{display:flex;gap:2px;padding:16px 28px 0;border-bottom:1px solid var(--border);overflow-x:auto;align-items:center}
+    .nav{
+  display:flex;
+  gap:2px;
+  padding:16px 28px 0;
+  border-bottom:1px solid var(--border);
+  overflow:visible;
+  flex-wrap:wrap;
+  align-items:center;
+}
     .nav::-webkit-scrollbar{display:none}
     .nt{padding:7px 16px;font-size:.8rem;font-weight:500;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;margin-bottom:-1px;transition:color .15s}
     .nt:hover{color:var(--t2)}
     .nt.active{color:var(--text);border-bottom-color:#fff}
-    .nav-dd{position:relative}
-    .dd-menu{position:absolute;top:calc(100% + 6px);left:0;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:6px;min-width:160px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+   .nav-dd{
+  position:relative;
+  z-index:60;
+}
+    .dd-menu{
+  position:absolute;
+  top:calc(100% + 6px);
+  left:0;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:6px;
+  min-width:160px;
+  z-index:100;
+  box-shadow:0 8px 24px rgba(0,0,0,.45);
+}
     .dd-item{display:block;width:100%;text-align:left;background:none;border:none;color:var(--t2);font-size:.8rem;padding:8px 12px;cursor:pointer;font-family:inherit;border-radius:6px;transition:all .15s;white-space:nowrap}
     .dd-item:hover{background:rgba(255,255,255,.06);color:var(--text)}
 
