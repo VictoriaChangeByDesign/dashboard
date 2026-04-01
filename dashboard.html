@@ -1317,1163 +1317,255 @@
     // ============================================================
     // ===== TASKS FUNCTIONALITY =====
     // ============================================================
+let taskFileHandle = null;
+let taskFileName = 'tasks.json';
+let sections = [];
+let tasks = {};
+let hasChanges = false;
+let currentView = 'board';
+let quickAddSection = null;
 
-    let taskFileHandle = null;
-    let taskFileName = '';
-    let sections = [];
-    let tasks = {};
-    let hasChanges = false;
-    let currentView = 'board';
-    let quickAddSection = null;
+const board = document.getElementById('board');
+const listView = document.getElementById('listView');
+const listViewBtn = document.getElementById('listViewBtn');
+const boardViewBtn = document.getElementById('boardViewBtn');
 
-    const board = document.getElementById('board');
-    const listView = document.getElementById('listView');
-    const listViewBtn = document.getElementById('listViewBtn');
-    const boardViewBtn = document.getElementById('boardViewBtn');
+const TASKS_URL = './tasks.json?t=' + Date.now();
 
-    function taskSectionId(name) {
-      return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+function taskSectionId(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function buildTaskSections() {
+  return [
+    { id: 'do-first', name: 'Do First' },
+    { id: 'schedule', name: 'Schedule' },
+    { id: 'minimize', name: 'Minimize' },
+    { id: 'do-later', name: 'Do Later' }
+  ];
+}
+
+function mapJsonTaskToUiTask(t, fallbackId) {
+  const eisenhowerToSection = {
+    'Do First': 'do-first',
+    'Schedule': 'schedule',
+    'Minimize': 'minimize',
+    'Do Later': 'do-later'
+  };
+
+  return {
+    id: t.id || `task_${fallbackId}`,
+    title: t.title || t.raw_input || 'Untitled task',
+    note: [
+      t.area || '',
+      t.priority || '',
+      t.energy ? `${t.energy} energy` : '',
+      t.due_date ? `due ${t.due_date}` : ''
+    ].filter(Boolean).join(' • '),
+    checked: (t.status || 'open') !== 'open',
+    subtasks: [],
+    section: eisenhowerToSection[t.eisenhower] || 'do-later',
+    raw: t
+  };
+}
+
+function groupJsonTasks(rawTasks) {
+  sections = buildTaskSections();
+  tasks = {
+    'do-first': [],
+    'schedule': [],
+    'minimize': [],
+    'do-later': []
+  };
+
+  (rawTasks || []).forEach((t, i) => {
+    const uiTask = mapJsonTaskToUiTask(t, i);
+    if (!tasks[uiTask.section]) {
+      tasks[uiTask.section] = [];
+    }
+    tasks[uiTask.section].push(uiTask);
+  });
+
+  quickAddSection = sections[0]?.id || null;
+}
+
+async function loadTasksFromJson() {
+  try {
+    const res = await fetch(TASKS_URL, { cache: 'no-store' });
+    if (!res.ok) {
+      throw new Error(`Failed to load tasks.json (${res.status})`);
     }
 
-    function parseTaskMarkdown(content) {
-      const resultSections = [];
-      const resultTasks = {};
-      let currentSection = null;
-      let currentSectionId = null;
-
-      const lines = content.split('\n');
-      let currentTask = null;
-
-      for (const line of lines) {
-        const headerMatch = line.match(/^## \*{0,2}(.+?)\*{0,2}$/);
-        if (headerMatch) {
-          if (currentTask && currentSectionId) {
-            resultTasks[currentSectionId].push(currentTask);
-            currentTask = null;
-          }
-
-          const sectionName = headerMatch[1].trim();
-          currentSectionId = taskSectionId(sectionName);
-          currentSection = sectionName;
-
-          if (!resultTasks[currentSectionId]) {
-            resultSections.push({ id: currentSectionId, name: sectionName });
-            resultTasks[currentSectionId] = [];
-          }
-        } else if (currentSectionId && line.match(/^- \[[ xX]\]/)) {
-          if (currentTask) {
-            resultTasks[currentSectionId].push(currentTask);
-          }
-          const checked = line.match(/\[[xX]\]/) !== null;
-          let text = line.replace(/^- \[[ xX]\]\s*/, '');
-          let title = text;
-          let note = '';
-
-          const boldMatch = text.match(/^\*\*(.+?)\*\*(.*)$/);
-          if (boldMatch) {
-            title = boldMatch[1];
-            note = boldMatch[2].replace(/^\s*-\s*/, '').trim();
-          }
-
-          currentTask = {
-            id: Date.now() + Math.random(),
-            title,
-            note,
-            checked,
-            subtasks: [],
-            section: currentSectionId
-          };
-        } else if (currentTask && line.match(/^\s+- \[[ xX]\]/)) {
-          const checked = line.match(/\[[xX]\]/) !== null;
-          const text = line.replace(/^\s+- \[[ xX]\]\s*/, '');
-          currentTask.subtasks.push({ text, checked });
-        }
-      }
-
-      if (currentTask && currentSectionId) {
-        resultTasks[currentSectionId].push(currentTask);
-      }
-
-      return { sections: resultSections, tasks: resultTasks };
+    const rawTasks = await res.json();
+    if (!Array.isArray(rawTasks)) {
+      throw new Error('tasks.json must contain a JSON array');
     }
 
-    function toMarkdown() {
-      let md = '# Tasks\n';
-
-      sections.forEach((section, idx) => {
-        md += `\n## ${section.name}\n`;
-        const sectionTasks = tasks[section.id] || [];
-        sectionTasks.forEach(t => {
-          const checkbox = t.checked ? '[x]' : '[ ]';
-          const note = t.note ? ` - ${t.note}` : '';
-          md += `- ${checkbox} **${t.title}**${note}\n`;
-          t.subtasks.forEach(st => {
-            const stCheckbox = st.checked ? '[x]' : '[ ]';
-            md += `  - ${stCheckbox} ${st.text}\n`;
-          });
-        });
-      });
-
-      return md.trimEnd() + '\n';
-    }
-
-    function createCard(task) {
-      const card = document.createElement('div');
-      card.className = 'task-card';
-      card.draggable = true;
-      card.dataset.id = task.id;
-
-      let html = `
-        <div style="display: flex; align-items: flex-start; gap: 12px;">
-          <button class="delete-btn" data-action="delete" title="Delete task">&times;</button>
-          <span class="checkbox ${task.checked ? 'checked' : ''}" data-action="toggle"></span>
-          <div class="card-title" data-action="edit-title">${task.title}</div>
-        </div>
-      `;
-
-      if (task.note) {
-        html += `<div class="card-note" data-action="edit-note" style="cursor: pointer; margin-left: 30px;">${task.note}</div>`;
-      } else {
-        html += `<div class="card-note add-on-hover" data-action="edit-note" style="cursor: pointer; margin-left: 30px; font-style: italic;">+ Add note</div>`;
-      }
-
-      if (task.subtasks.length > 0) {
-        html += '<div class="card-subtasks" style="margin-left: 30px;">';
-        task.subtasks.forEach((st, idx) => {
-          html += `<div class="subtask">
-            <span class="checkbox ${st.checked ? 'checked' : ''}" data-action="toggle-sub" data-idx="${idx}" style="width: 16px; height: 16px; min-width: 16px; min-height: 16px;"></span>
-            <span data-action="edit-subtask" data-idx="${idx}" style="cursor: pointer;">${st.text}</span>
-          </div>`;
-        });
-        html += `<div class="subtask add-on-hover" data-action="add-subtask" style="color: var(--text-muted); cursor: pointer; font-style: italic; padding-left: 24px;">+ Add subtask</div>`;
-        html += '</div>';
-      } else {
-        html += `<div class="card-subtasks add-on-hover" style="margin-left: 30px;">
-          <div class="subtask" data-action="add-subtask" style="color: var(--text-muted); cursor: pointer; font-style: italic;">+ Add subtask</div>
-        </div>`;
-      }
-
-      card.innerHTML = html;
-
-      card.addEventListener('dragstart', (e) => {
-        card.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', task.id);
-      });
-
-      card.addEventListener('dragend', () => {
-        card.classList.remove('dragging');
-      });
-
-      card.addEventListener('click', (e) => {
-        const action = e.target.dataset.action;
-        if (action === 'toggle') {
-          task.checked = !task.checked;
-          markChanged();
-          renderTasks();
-        } else if (action === 'toggle-sub') {
-          const idx = parseInt(e.target.dataset.idx);
-          task.subtasks[idx].checked = !task.subtasks[idx].checked;
-          markChanged();
-          renderTasks();
-        } else if (action === 'edit-title') {
-          startEditingTitle(e.target, task);
-        } else if (action === 'edit-note') {
-          startEditingNote(e.target, task);
-        } else if (action === 'edit-subtask') {
-          const idx = parseInt(e.target.dataset.idx);
-          startEditingSubtask(e.target, task, idx);
-        } else if (action === 'add-subtask') {
-          startAddingSubtask(e.target, task);
-        } else if (action === 'delete') {
-          deleteTask(task);
-        }
-      });
-
-      return card;
-    }
-
-    function startEditingTitle(titleEl, task) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.title;
-      input.style.cssText = 'width: 100%; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 6px; padding: 6px 10px; color: var(--text-primary); font-size: 14px; font-family: inherit; outline: none;';
-
-      titleEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const newTitle = input.value.trim();
-        if (newTitle && newTitle !== task.title) {
-          task.title = newTitle;
-          markChanged();
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startEditingNote(noteEl, task) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.note || '';
-      input.placeholder = 'Add a note...';
-      input.style.cssText = 'width: 100%; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 6px; padding: 4px 8px; color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
-
-      noteEl.replaceWith(input);
-      input.focus();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        task.note = input.value.trim();
-        markChanged();
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startEditingSubtask(subtaskEl, task, idx) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.subtasks[idx].text;
-      input.style.cssText = 'width: calc(100% - 30px); background: var(--bg-card); border: 2px solid var(--accent); border-radius: 4px; padding: 2px 6px; color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
-
-      subtaskEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const newText = input.value.trim();
-        if (newText) { task.subtasks[idx].text = newText; }
-        else { task.subtasks.splice(idx, 1); }
-        markChanged();
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startAddingSubtask(el, task) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'New subtask...';
-      input.style.cssText = 'width: calc(100% - 10px); background: var(--bg-card); border: 2px solid var(--accent); border-radius: 4px; padding: 2px 6px; color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
-
-      el.replaceWith(input);
-      input.focus();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const text = input.value.trim();
-        if (text) { task.subtasks.push({ text, checked: false }); markChanged(); }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startEditingColumnTitle(titleEl, colId) {
-      const section = sections.find(s => s.id === colId);
-      if (!section) return;
-
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = section.name;
-      input.style.cssText = 'width: 180px; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 6px; padding: 4px 10px; color: var(--text-primary); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit; outline: none;';
-
-      titleEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const newName = input.value.trim();
-        if (newName && newName !== section.name) {
-          const oldId = section.id;
-          section.name = newName;
-          const newId = taskSectionId(newName);
-          if (newId !== oldId) {
-            tasks[newId] = tasks[oldId] || [];
-            delete tasks[oldId];
-            tasks[newId].forEach(t => t.section = newId);
-            section.id = newId;
-          }
-          markChanged();
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function createColumn(id, title, items) {
-      const col = document.createElement('div');
-      col.className = 'column';
-      col.innerHTML = `
-        <div class="column-header">
-          <span class="column-title" data-section-id="${id}" style="cursor: pointer;">${title}</span>
-          <span class="count">${items.length}</span>
-        </div>
-        <div class="cards" data-column="${id}"></div>
-        <div class="add-card">
-          <button data-add="${id}">+ Add task</button>
-        </div>
-      `;
-
-      col.querySelector('.column-title').addEventListener('click', (e) => {
-        if (!col.dragging) { startEditingColumnTitle(e.target, id); }
-      });
-
-      const header = col.querySelector('.column-header');
-      header.draggable = true;
-
-      header.addEventListener('dragstart', (e) => {
-        e.stopPropagation();
-        col.classList.add('dragging-column');
-        e.dataTransfer.setData('text/column', id);
-        e.dataTransfer.effectAllowed = 'move';
-      });
-
-      header.addEventListener('dragend', () => {
-        col.classList.remove('dragging-column');
-        board.querySelectorAll('.column-drop-indicator').forEach(el => el.remove());
-      });
-
-      col.addEventListener('dragover', (e) => {
-        if (e.dataTransfer.types.includes('text/column')) {
-          e.preventDefault();
-          e.stopPropagation();
-          board.querySelectorAll('.column-drop-indicator').forEach(el => el.remove());
-          const indicator = document.createElement('div');
-          indicator.className = 'column-drop-indicator';
-          const rect = col.getBoundingClientRect();
-          if (e.clientX < rect.left + rect.width / 2) { col.before(indicator); }
-          else { col.after(indicator); }
-        }
-      });
-
-      col.addEventListener('drop', (e) => {
-        if (e.dataTransfer.types.includes('text/column')) {
-          e.preventDefault();
-          e.stopPropagation();
-          const fromId = e.dataTransfer.getData('text/column');
-          const toId = id;
-          if (fromId !== toId) {
-            const rect = col.getBoundingClientRect();
-            const insertBefore = e.clientX < rect.left + rect.width / 2;
-            moveSection(fromId, toId, insertBefore);
-          }
-          board.querySelectorAll('.column-drop-indicator').forEach(el => el.remove());
-        }
-      });
-
-      const cardsContainer = col.querySelector('.cards');
-      items.forEach(task => { cardsContainer.appendChild(createCard(task)); });
-
-      const getDropPosition = (e) => {
-        const allCards = [...cardsContainer.querySelectorAll('.task-card')];
-        const visibleCards = allCards.filter(c => !c.classList.contains('dragging'));
-        let insertBeforeCard = null;
-        let dropIndex = visibleCards.length;
-        for (let i = 0; i < visibleCards.length; i++) {
-          const rect = visibleCards[i].getBoundingClientRect();
-          if (e.clientY < rect.top + rect.height / 2) {
-            insertBeforeCard = visibleCards[i];
-            dropIndex = i;
-            break;
-          }
-        }
-        return { insertBeforeCard, dropIndex };
-      };
-
-      const showDropIndicator = (e) => {
-        col.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-        const { insertBeforeCard } = getDropPosition(e);
-        const indicator = document.createElement('div');
-        indicator.className = 'drop-indicator';
-        indicator.style.cssText = 'height: 3px; background: var(--accent); border-radius: 2px; margin: 5px 0;';
-        if (insertBeforeCard) { cardsContainer.insertBefore(indicator, insertBeforeCard); }
-        else { cardsContainer.appendChild(indicator); }
-      };
-
-      col.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        cardsContainer.classList.add('drag-over');
-        showDropIndicator(e);
-      });
-
-      col.addEventListener('dragleave', (e) => {
-        if (!col.contains(e.relatedTarget)) {
-          cardsContainer.classList.remove('drag-over');
-          col.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-        }
-      });
-
-      col.addEventListener('drop', (e) => {
-        e.preventDefault();
-        cardsContainer.classList.remove('drag-over');
-        col.querySelectorAll('.drop-indicator').forEach(el => el.remove());
-        const taskId = parseFloat(e.dataTransfer.getData('text/plain'));
-        const { dropIndex } = getDropPosition(e);
-        moveTask(taskId, id, dropIndex);
-      });
-
-      col.querySelector(`[data-add="${id}"]`).addEventListener('click', () => {
-        addNewTask(id, col.querySelector('.cards'));
-      });
-
-      return col;
-    }
-
-    function addNewTask(sectionId, container) {
-      const existing = container.querySelector('.new-task-input');
-      if (existing) return;
-
-      const input = document.createElement('textarea');
-      input.className = 'new-task-input';
-      input.placeholder = 'What needs to be done?';
-      input.rows = 2;
-      container.appendChild(input);
-      input.focus();
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          const title = input.value.trim();
-          if (title) {
-            if (!tasks[sectionId]) tasks[sectionId] = [];
-            tasks[sectionId].push({
-              id: Date.now() + Math.random(),
-              title,
-              note: '',
-              checked: false,
-              subtasks: [],
-              section: sectionId
-            });
-            markChanged();
-            renderTasks();
-          } else { input.remove(); }
-        } else if (e.key === 'Escape') { input.remove(); }
-      });
-
-      input.addEventListener('blur', () => { setTimeout(() => input.remove(), 100); });
-    }
-
-    function moveSection(fromId, toId, insertBefore) {
-      const fromIdx = sections.findIndex(s => s.id === fromId);
-      const toIdx = sections.findIndex(s => s.id === toId);
-      if (fromIdx === -1 || toIdx === -1) return;
-      const [section] = sections.splice(fromIdx, 1);
-      let newIdx = sections.findIndex(s => s.id === toId);
-      if (!insertBefore) newIdx++;
-      sections.splice(newIdx, 0, section);
-      markChanged();
-      renderTasks();
-    }
-
-    function moveTask(taskId, toSectionId, dropIndex = -1) {
-      let task = null;
-      for (const section of sections) {
-        const sectionTasks = tasks[section.id] || [];
-        const idx = sectionTasks.findIndex(t => t.id === taskId);
-        if (idx !== -1) {
-          task = sectionTasks.splice(idx, 1)[0];
-          break;
-        }
-      }
-      if (!task) return;
-      task.section = toSectionId;
-      if (!tasks[toSectionId]) tasks[toSectionId] = [];
-      if (dropIndex >= 0 && dropIndex <= tasks[toSectionId].length) {
-        tasks[toSectionId].splice(dropIndex, 0, task);
-      } else {
-        tasks[toSectionId].push(task);
-      }
-      markChanged();
-      renderTasks();
-    }
-
-    function deleteTask(task) {
-      if (!confirm(`Delete "${task.title}"?`)) return;
-      for (const section of sections) {
-        const sectionTasks = tasks[section.id] || [];
-        const idx = sectionTasks.findIndex(t => t.id === task.id);
-        if (idx !== -1) { sectionTasks.splice(idx, 1); break; }
-      }
-      markChanged();
-      renderTasks();
-    }
-
-    let saveTimeout = null;
-    let lastModified = 0;
-    let watchInterval = null;
-    let isSaving = false;
-
-    function markChanged() {
-      hasChanges = true;
-      saveBtn.disabled = false;
-      if (saveTimeout) clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(autoSave, 500);
-    }
-
-    async function autoSave() {
-      if (!taskFileHandle || !hasChanges || isSaving) return;
-      isSaving = true;
-      try {
-        const writable = await taskFileHandle.createWritable();
-        const content = toMarkdown();
-        await writable.write(content);
-        await writable.close();
-        const file = await taskFileHandle.getFile();
-        lastModified = file.lastModified;
-        hasChanges = false;
-        saveBtn.disabled = true;
-        showStatus('Saved');
-      } catch (e) {
-        showStatus('Save failed: ' + e.message);
-      }
-      isSaving = false;
-    }
-
-    async function checkForExternalChanges() {
-      if (!taskFileHandle || hasChanges || isSaving) return;
-      try {
-        const file = await taskFileHandle.getFile();
-        if (file.lastModified > lastModified) {
-          lastModified = file.lastModified;
-          const content = await file.text();
-          const result = parseTaskMarkdown(content);
-          sections = result.sections;
-          tasks = result.tasks;
-          renderTasks();
-          showStatus('Reloaded');
-        }
-      } catch (e) { console.log('Watch error:', e); }
-    }
-
-    function startWatching() {
-      if (watchInterval) clearInterval(watchInterval);
-      watchInterval = setInterval(checkForExternalChanges, 1000);
-    }
-
-    function stopWatching() {
-      if (watchInterval) { clearInterval(watchInterval); watchInterval = null; }
-    }
-
-    function renderTasks() {
-      if (currentView === 'board') { renderBoard(); }
-      else { renderList(); }
-    }
-
-    function renderBoard() {
-      board.innerHTML = '';
-      sections.forEach(section => {
-        const sectionTasks = tasks[section.id] || [];
-        board.appendChild(createColumn(section.id, section.name, sectionTasks));
-      });
-
-      const addSectionBtn = document.createElement('div');
-      addSectionBtn.className = 'column';
-      addSectionBtn.style.cssText = 'background: transparent; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; min-height: 120px;';
-      addSectionBtn.innerHTML = '<span style="color: var(--text-muted); font-size: 14px; font-weight: 500;">+ Add Section</span>';
-      addSectionBtn.addEventListener('click', () => startAddingSection(addSectionBtn));
-      board.appendChild(addSectionBtn);
-    }
-
-    function renderList() {
-      listView.innerHTML = '';
-
-      if (!quickAddSection && sections.length > 0) {
-        quickAddSection = sections[0].id;
-      }
-
-      // Quick add at top
-      const quickAdd = document.createElement('div');
-      quickAdd.className = 'quick-add';
-      quickAdd.style.cssText = 'border-bottom: 2px solid var(--border); margin-bottom: 24px; padding-bottom: 16px;';
-
-      const sectionName = sections.find(s => s.id === quickAddSection)?.name || 'Select section';
-      quickAdd.innerHTML = `
-        <span class="checkbox" style="opacity: 0.3;"></span>
-        <input type="text" class="quick-add-input" placeholder="Add a task..." id="quickAddInput">
-        <span class="quick-add-section" id="quickAddSectionBtn">${sectionName}</span>
-      `;
-      listView.appendChild(quickAdd);
-
-      const quickInput = document.getElementById('quickAddInput');
-      const sectionBtn = document.getElementById('quickAddSectionBtn');
-
-      quickInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && quickInput.value.trim()) {
-          const title = quickInput.value.trim();
-          if (!tasks[quickAddSection]) tasks[quickAddSection] = [];
-          tasks[quickAddSection].unshift({
-            id: Date.now() + Math.random(),
-            title,
-            note: '',
-            checked: false,
-            subtasks: [],
-            section: quickAddSection
-          });
-          quickInput.value = '';
-          markChanged();
-          renderTasks();
-          setTimeout(() => document.getElementById('quickAddInput')?.focus(), 10);
-        }
-      });
-
-      sectionBtn.addEventListener('click', (e) => { showSectionPicker(e.target); });
-
-      // Render each section
-      sections.forEach(section => {
-        const sectionTasks = tasks[section.id] || [];
-        const sectionEl = document.createElement('div');
-        sectionEl.className = 'list-section';
-        sectionEl.dataset.sectionId = section.id;
-
-        const header = document.createElement('div');
-        header.className = 'list-section-header';
-        header.innerHTML = `
-          <span class="section-title" data-section-id="${section.id}">${section.name}</span>
-          <span class="count">${sectionTasks.length}</span>
-        `;
-
-        header.querySelector('.section-title').addEventListener('click', (e) => {
-          startEditingListSectionTitle(e.target, section);
-        });
-
-        sectionEl.appendChild(header);
-
-        const tasksContainer = document.createElement('div');
-        tasksContainer.className = 'list-tasks-container';
-        tasksContainer.dataset.sectionId = section.id;
-
-        sectionTasks.forEach(task => {
-          tasksContainer.appendChild(createListItem(task, section));
-        });
-
-        sectionEl.appendChild(tasksContainer);
-
-        // Drag-and-drop handlers for section
-        const getDropPosition = (e, container) => {
-          const items = [...container.querySelectorAll('.list-item:not(.dragging)')];
-          let insertBeforeEl = null;
-          let dropIndex = items.length;
-          for (let i = 0; i < items.length; i++) {
-            const rect = items[i].getBoundingClientRect();
-            if (e.clientY < rect.top + rect.height / 2) {
-              insertBeforeEl = items[i];
-              dropIndex = i;
-              break;
-            }
-          }
-          return { insertBeforeEl, dropIndex };
-        };
-
-        const showDropIndicator = (e) => {
-          tasksContainer.querySelectorAll('.list-drop-indicator').forEach(el => el.remove());
-          const { insertBeforeEl } = getDropPosition(e, tasksContainer);
-          const indicator = document.createElement('div');
-          indicator.className = 'list-drop-indicator';
-          if (insertBeforeEl) { tasksContainer.insertBefore(indicator, insertBeforeEl); }
-          else { tasksContainer.appendChild(indicator); }
-        };
-
-        sectionEl.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          sectionEl.classList.add('drag-over');
-          showDropIndicator(e);
-        });
-
-        sectionEl.addEventListener('dragleave', (e) => {
-          if (!sectionEl.contains(e.relatedTarget)) {
-            sectionEl.classList.remove('drag-over');
-            tasksContainer.querySelectorAll('.list-drop-indicator').forEach(el => el.remove());
-          }
-        });
-
-        sectionEl.addEventListener('drop', (e) => {
-          e.preventDefault();
-          sectionEl.classList.remove('drag-over');
-          tasksContainer.querySelectorAll('.list-drop-indicator').forEach(el => el.remove());
-          const taskId = parseFloat(e.dataTransfer.getData('text/plain'));
-          if (!taskId) return;
-          const { dropIndex } = getDropPosition(e, tasksContainer);
-          moveTask(taskId, section.id, dropIndex);
-        });
-
-        listView.appendChild(sectionEl);
-      });
-
-      // Add Section button
-      const addSectionBtn = document.createElement('div');
-      addSectionBtn.className = 'list-add-section';
-      addSectionBtn.textContent = '+ Add Section';
-      addSectionBtn.addEventListener('click', () => { startAddingListSection(addSectionBtn); });
-      listView.appendChild(addSectionBtn);
-    }
-
-    function startEditingListSectionTitle(titleEl, section) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = section.name;
-      input.style.cssText = 'width: 200px; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 6px; padding: 4px 10px; color: var(--text-primary); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-family: inherit; outline: none;';
-
-      titleEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const newName = input.value.trim();
-        if (newName && newName !== section.name) {
-          const oldId = section.id;
-          section.name = newName;
-          const newId = taskSectionId(newName);
-          if (newId !== oldId) {
-            tasks[newId] = tasks[oldId] || [];
-            delete tasks[oldId];
-            tasks[newId].forEach(t => t.section = newId);
-            section.id = newId;
-          }
-          markChanged();
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startAddingListSection(btn) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'Section name...';
-      input.style.cssText = 'width: 100%; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 8px; padding: 12px 16px; color: var(--text-primary); font-size: 14px; font-family: inherit; outline: none; text-align: left;';
-
-      btn.innerHTML = '';
-      btn.style.border = '2px solid var(--accent)';
-      btn.style.cursor = 'default';
-      btn.appendChild(input);
-      input.focus();
-
-      let saved = false;
-      const saveSection = () => {
-        if (saved) return;
-        saved = true;
-        const name = input.value.trim();
-        if (name) {
-          const id = taskSectionId(name);
-          if (!tasks[id]) {
-            sections.push({ id, name });
-            tasks[id] = [];
-            markChanged();
-          }
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveSection(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveSection);
-    }
-
-    function createListItem(task, section) {
-      const item = document.createElement('div');
-      item.className = 'list-item';
-      item.draggable = true;
-      item.dataset.taskId = task.id;
-
-      item.addEventListener('dragstart', (e) => {
-        item.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', task.id);
-        e.dataTransfer.effectAllowed = 'move';
-      });
-
-      item.addEventListener('dragend', () => {
-        item.classList.remove('dragging');
-        document.querySelectorAll('.list-drop-indicator').forEach(el => el.remove());
-        document.querySelectorAll('.list-section.drag-over').forEach(el => el.classList.remove('drag-over'));
-      });
-
-      const checkbox = document.createElement('span');
-      checkbox.className = `checkbox ${task.checked ? 'checked' : ''}`;
-      checkbox.addEventListener('click', (e) => {
-        e.stopPropagation();
-        task.checked = !task.checked;
-        markChanged();
-        renderTasks();
-      });
-
-      const content = document.createElement('div');
-      content.className = 'list-item-content';
-
-      const title = document.createElement('div');
-      title.className = `list-item-title ${task.checked ? 'checked' : ''}`;
-      title.textContent = task.title;
-      title.addEventListener('click', (e) => {
-        e.stopPropagation();
-        startEditingListItem(title, task);
-      });
-      content.appendChild(title);
-
-      if (task.note) {
-        const note = document.createElement('div');
-        note.className = 'list-item-note';
-        note.textContent = task.note;
-        note.addEventListener('click', (e) => {
-          e.stopPropagation();
-          startEditingListNote(note, task);
-        });
-        content.appendChild(note);
-      } else {
-        const addNote = document.createElement('div');
-        addNote.className = 'list-item-note add-note';
-        addNote.textContent = '+ Add note';
-        addNote.addEventListener('click', (e) => {
-          e.stopPropagation();
-          startEditingListNote(addNote, task);
-        });
-        content.appendChild(addNote);
-      }
-
-      if (task.subtasks && task.subtasks.length > 0) {
-        const subtasksContainer = document.createElement('div');
-        subtasksContainer.className = 'list-item-subtasks';
-
-        task.subtasks.forEach((st, idx) => {
-          const subtaskEl = document.createElement('div');
-          subtaskEl.className = 'list-item-subtask';
-
-          const stCheckbox = document.createElement('span');
-          stCheckbox.className = `checkbox ${st.checked ? 'checked' : ''}`;
-          stCheckbox.addEventListener('click', (e) => {
-            e.stopPropagation();
-            st.checked = !st.checked;
-            markChanged();
-            renderTasks();
-          });
-
-          const stText = document.createElement('span');
-          stText.textContent = st.text;
-          if (st.checked) {
-            stText.style.textDecoration = 'line-through';
-            stText.style.color = 'var(--text-muted)';
-          }
-          stText.addEventListener('click', (e) => {
-            e.stopPropagation();
-            startEditingListSubtask(stText, task, idx);
-          });
-
-          subtaskEl.appendChild(stCheckbox);
-          subtaskEl.appendChild(stText);
-          subtasksContainer.appendChild(subtaskEl);
-        });
-
-        content.appendChild(subtasksContainer);
-      }
-
-      const addSubtask = document.createElement('div');
-      addSubtask.className = 'list-item-add-subtask';
-      addSubtask.textContent = '+ Add subtask';
-      addSubtask.addEventListener('click', (e) => {
-        e.stopPropagation();
-        startAddingListSubtask(addSubtask, task);
-      });
-      content.appendChild(addSubtask);
-
-      const actions = document.createElement('div');
-      actions.className = 'list-item-actions';
-      actions.innerHTML = '<button title="Delete task">&times;</button>';
-      actions.querySelector('button').addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteTask(task);
-      });
-
-      item.appendChild(checkbox);
-      item.appendChild(content);
-      item.appendChild(actions);
-
-      return item;
-    }
-
-    function startEditingListNote(noteEl, task) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.note || '';
-      input.placeholder = 'Add a note...';
-      input.style.cssText = 'width: 100%; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 6px; padding: 4px 8px; color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
-
-      noteEl.replaceWith(input);
-      input.focus();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        task.note = input.value.trim();
-        markChanged();
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startEditingListSubtask(subtaskEl, task, idx) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.subtasks[idx].text;
-      input.style.cssText = 'width: calc(100% - 30px); background: var(--bg-card); border: 2px solid var(--accent); border-radius: 4px; padding: 2px 6px; color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
-
-      subtaskEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const newText = input.value.trim();
-        if (newText) { task.subtasks[idx].text = newText; }
-        else { task.subtasks.splice(idx, 1); }
-        markChanged();
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startAddingListSubtask(el, task) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'New subtask...';
-      input.style.cssText = 'width: calc(100% - 10px); background: var(--bg-card); border: 2px solid var(--accent); border-radius: 4px; padding: 2px 6px; color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none;';
-
-      el.replaceWith(input);
-      input.focus();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const text = input.value.trim();
-        if (text) {
-          if (!task.subtasks) task.subtasks = [];
-          task.subtasks.push({ text, checked: false });
-          markChanged();
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function startEditingListItem(titleEl, task) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = task.title;
-      input.style.cssText = 'width: 100%; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 6px; padding: 8px 12px; color: var(--text-primary); font-size: 15px; font-family: inherit; outline: none;';
-
-      titleEl.replaceWith(input);
-      input.focus();
-      input.select();
-
-      let saved = false;
-      const saveEdit = () => {
-        if (saved) return;
-        saved = true;
-        const newTitle = input.value.trim();
-        if (newTitle && newTitle !== task.title) {
-          task.title = newTitle;
-          markChanged();
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveEdit);
-    }
-
-    function showSectionPicker(anchorEl) {
-      document.querySelectorAll('.section-picker').forEach(el => el.remove());
-      const picker = document.createElement('div');
-      picker.className = 'section-picker';
-      const rect = anchorEl.getBoundingClientRect();
-      picker.style.top = (rect.bottom + 4) + 'px';
-      picker.style.right = (window.innerWidth - rect.right) + 'px';
-
-      sections.forEach(section => {
-        const btn = document.createElement('button');
-        btn.textContent = section.name;
-        btn.addEventListener('click', () => {
-          quickAddSection = section.id;
-          picker.remove();
-          renderTasks();
-          setTimeout(() => document.getElementById('quickAddInput')?.focus(), 10);
-        });
-        picker.appendChild(btn);
-      });
-
-      document.body.appendChild(picker);
-      setTimeout(() => {
-        document.addEventListener('click', function closeHandler(e) {
-          if (!picker.contains(e.target)) {
-            picker.remove();
-            document.removeEventListener('click', closeHandler);
-          }
-        });
-      }, 10);
-    }
-
-    function switchTaskView(view) {
-      currentView = view;
-      if (view === 'list') {
-        listView.style.display = 'block';
-        board.style.display = 'none';
-        listViewBtn.classList.add('active');
-        boardViewBtn.classList.remove('active');
-      } else {
-        listView.style.display = 'none';
-        board.style.display = 'flex';
-        listViewBtn.classList.remove('active');
-        boardViewBtn.classList.add('active');
-      }
-      renderTasks();
-    }
-
-    listViewBtn.addEventListener('click', () => switchTaskView('list'));
-    boardViewBtn.addEventListener('click', () => switchTaskView('board'));
-
-    function startAddingSection(btn) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'Section name...';
-      input.style.cssText = 'width: 220px; background: var(--bg-card); border: 2px solid var(--accent); border-radius: 8px; padding: 10px 14px; color: var(--text-primary); font-size: 14px; font-family: inherit; outline: none;';
-
-      btn.innerHTML = '';
-      btn.style.cssText = 'background: var(--bg-secondary); border: 2px dashed var(--accent); display: flex; align-items: center; justify-content: center; cursor: default; min-height: 120px; min-width: 340px; border-radius: 12px;';
-      btn.appendChild(input);
-      input.focus();
-
-      let saved = false;
-      const saveSection = () => {
-        if (saved) return;
-        saved = true;
-        const name = input.value.trim();
-        if (name) {
-          const id = taskSectionId(name);
-          if (!tasks[id]) {
-            sections.push({ id, name });
-            tasks[id] = [];
-            markChanged();
-          }
-        }
-        renderTasks();
-      };
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveSection(); }
-        else if (e.key === 'Escape') { saved = true; renderTasks(); }
-      });
-      input.addEventListener('blur', saveSection);
-    }
-
-    async function openTaskFile() {
-      try {
-        [taskFileHandle] = await window.showOpenFilePicker({
-          types: [{ description: 'Markdown', accept: { 'text/markdown': ['.md'] } }]
-        });
-        const file = await taskFileHandle.getFile();
-        const content = await file.text();
-        lastModified = file.lastModified;
-        const result = parseTaskMarkdown(content);
-        sections = result.sections;
-        tasks = result.tasks;
-        switchTaskView('board');
-        startWatching();
-        taskFileName = file.name;
-        filePathEl.textContent = file.name;
-        showStatus('Loaded ' + file.name);
-      } catch (e) {
-        if (e.name !== 'AbortError') { showStatus('Error: ' + e.message); }
-      }
-    }
-
-    openTaskBtn.addEventListener('click', openTaskFile);
-    document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
-
-    saveBtn.addEventListener('click', async () => {
-      if (!taskFileHandle) return;
-      try {
-        const writable = await taskFileHandle.createWritable();
-        await writable.write(toMarkdown());
-        await writable.close();
-        hasChanges = false;
-        saveBtn.disabled = true;
-        showStatus('Saved');
-      } catch (e) { showStatus('Error: ' + e.message); }
+    groupJsonTasks(rawTasks);
+    renderTasks();
+    filePathEl.textContent = taskFileName;
+    showStatus('Loaded tasks.json');
+  } catch (e) {
+    board.innerHTML = `
+      <div class="empty-state" style="width: 100%;">
+        <p style="margin-bottom: 24px; font-size: 18px; font-weight: 600; color: var(--text-primary);">Could not load tasks.json</p>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">${e.message}</p>
+        <button id="retryLoadTasksBtn">Retry</button>
+      </div>
+    `;
+    document.getElementById('retryLoadTasksBtn')?.addEventListener('click', loadTasksFromJson);
+    showStatus('Load failed');
+  }
+}
+
+function markChanged() {
+  showStatus('Dashboard editing is not wired yet');
+}
+
+function createCard(task) {
+  const card = document.createElement('div');
+  card.className = 'task-card';
+  card.dataset.id = task.id;
+
+  let html = `
+    <div style="display: flex; align-items: flex-start; gap: 12px;">
+      <span class="checkbox ${task.checked ? 'checked' : ''}"></span>
+      <div class="card-title">${task.title}</div>
+    </div>
+  `;
+
+  if (task.note) {
+    html += `<div class="card-note" style="margin-left: 30px;">${task.note}</div>`;
+  }
+
+  card.innerHTML = html;
+  return card;
+}
+
+function createColumn(id, title, items) {
+  const col = document.createElement('div');
+  col.className = 'column';
+  col.innerHTML = `
+    <div class="column-header">
+      <span class="column-title">${title}</span>
+      <span class="count">${items.length}</span>
+    </div>
+    <div class="cards" data-column="${id}"></div>
+    <div class="add-card">
+      <button disabled>Editing not enabled</button>
+    </div>
+  `;
+
+  const cardsContainer = col.querySelector('.cards');
+  items.forEach(task => {
+    cardsContainer.appendChild(createCard(task));
+  });
+
+  return col;
+}
+
+function renderBoard() {
+  board.innerHTML = '';
+  sections.forEach(section => {
+    const sectionTasks = tasks[section.id] || [];
+    board.appendChild(createColumn(section.id, section.name, sectionTasks));
+  });
+}
+
+function createListItem(task) {
+  const item = document.createElement('div');
+  item.className = 'list-item';
+
+  const checkbox = document.createElement('span');
+  checkbox.className = `checkbox ${task.checked ? 'checked' : ''}`;
+
+  const content = document.createElement('div');
+  content.className = 'list-item-content';
+
+  const title = document.createElement('div');
+  title.className = `list-item-title ${task.checked ? 'checked' : ''}`;
+  title.textContent = task.title;
+  content.appendChild(title);
+
+  if (task.note) {
+    const note = document.createElement('div');
+    note.className = 'list-item-note';
+    note.textContent = task.note;
+    content.appendChild(note);
+  }
+
+  item.appendChild(checkbox);
+  item.appendChild(content);
+  return item;
+}
+
+function renderList() {
+  listView.innerHTML = '';
+
+  sections.forEach(section => {
+    const sectionTasks = tasks[section.id] || [];
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'list-section';
+
+    const header = document.createElement('div');
+    header.className = 'list-section-header';
+    header.innerHTML = `
+      <span class="section-title">${section.name}</span>
+      <span class="count">${sectionTasks.length}</span>
+    `;
+    sectionEl.appendChild(header);
+
+    const tasksContainer = document.createElement('div');
+    sectionTasks.forEach(task => {
+      tasksContainer.appendChild(createListItem(task));
     });
 
-    window.addEventListener('beforeunload', (e) => {
-      if (hasChanges) { e.preventDefault(); e.returnValue = ''; }
-    });
+    sectionEl.appendChild(tasksContainer);
+    listView.appendChild(sectionEl);
+  });
+}
 
+function renderTasks() {
+  if (currentView === 'board') {
+    renderBoard();
+  } else {
+    renderList();
+  }
+}
+
+function switchTaskView(view) {
+  currentView = view;
+  if (view === 'list') {
+    listView.style.display = 'block';
+    board.style.display = 'none';
+    listViewBtn.classList.add('active');
+    boardViewBtn.classList.remove('active');
+  } else {
+    listView.style.display = 'none';
+    board.style.display = 'flex';
+    listViewBtn.classList.remove('active');
+    boardViewBtn.classList.add('active');
+  }
+  renderTasks();
+}
+
+listViewBtn.addEventListener('click', () => switchTaskView('list'));
+boardViewBtn.addEventListener('click', () => switchTaskView('board'));
+
+async function openTaskFile() {
+  await loadTasksFromJson();
+}
+
+openTaskBtn.addEventListener('click', openTaskFile);
+document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
+
+saveBtn.style.display = 'none';
+saveBtn.disabled = true;
+
+window.addEventListener('beforeunload', () => {});
+
+switchTaskView('board');
+loadTasksFromJson();
     // ============================================================
     // ===== MEMORY FUNCTIONALITY =====
     // ============================================================
