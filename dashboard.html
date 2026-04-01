@@ -1225,8 +1225,9 @@
     <div class="list-view" id="listView" style="display: none;"></div>
     <div class="board" id="board">
       <div class="empty-state" id="boardEmptyState" style="width: 100%;">
-        <p style="margin-bottom: 24px; font-size: 18px; font-weight: 600; color: var(--text-primary);">Select your TASKS.md file</p>
-        <button id="openBtnLarge">Select TASKS.md</button>
+        <p style="margin-bottom: 24px; font-size: 18px; font-weight: 600; color: var(--text-primary);">Loading tasks…</p>
+<button id="openBtnLarge">Refresh Tasks</button>
+        <button id="openTaskBtn">Refresh Tasks</button>
       </div>
     </div>
   </div>
@@ -1304,7 +1305,7 @@
 
       // Update file path display
       if (tab === 'tasks') {
-        filePathEl.textContent = taskFileHandle ? taskFileName : '';
+        filePathEl.textContent = taskFileName || '';
       } else {
         filePathEl.textContent = memoryDirHandle ? memoryDirHandle.name : '';
       }
