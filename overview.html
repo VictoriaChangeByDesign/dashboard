@@ -395,7 +395,7 @@ function mapJsonTasks(rawTasks){
     energy: t.energy || 'Medium',
     due: t.due_date || null,
     sec: t.eisenhower || '',
-    done: (t.status || 'open') !== 'open',
+    done: (t.status || 'open') !== 'open' || !!doneS[t.id || String(i)],
     importance: t.importance || '',
     urgency: t.urgency || '',
     eisenhower: t.eisenhower || ''
