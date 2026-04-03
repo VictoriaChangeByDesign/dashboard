@@ -391,7 +391,17 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<iframe name="taskUpdateFrame" style="display:none;"></iframe>
 
+<form id="taskUpdateForm" method="POST" target="taskUpdateFrame" style="display:none;">
+  <input type="hidden" name="action" value="updateTask">
+  <input type="hidden" name="update_type" value="">
+  <input type="hidden" name="task_id" value="">
+  <input type="hidden" name="notes" value="">
+  <input type="hidden" name="due_date" value="">
+  <input type="hidden" name="kanban_stage" value="">
+  <input type="hidden" name="completed" value="">
+</form>
 <script>
 const RAW = './tasks.json?t=' + Date.now();
 const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/tasks.json';
