@@ -470,6 +470,46 @@ const RES_STATUSES = ['to-research','in-progress','complete'];
 const RES_STATUS_LABELS = { 'to-research':'To Research', 'in-progress':'In Progress', 'complete':'Complete' };
 const RES_STATUS_COLORS = { 'to-research':'var(--t3)', 'in-progress':'#f59e0b', 'complete':'#22c55e' };
 
+function initCL(){
+  document.getElementById('cl-body').innerHTML = CLI.map(i => `
+    <div class="ci ${clS[i.id] ? 'done' : ''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
+      <div class="ci-box">${clS[i.id] ? '✓' : ''}</div>
+      <div>
+        <div class="ci-lbl">${i.l}</div>
+        <div class="ci-sub">${i.s}</div>
+      </div>
+    </div>
+  `).join('');
+  updCL();
+}
+function togCI(id){
+  clS[id] = !clS[id];
+  const el = document.getElementById('ci-' + id);
+  if (!el) return;
+  el.classList.toggle('done', clS[id]);
+  el.querySelector('.ci-box').textContent = clS[id] ? '✓' : '';
+  try { localStorage.setItem('cl-' + today, JSON.stringify(clS)); } catch (e) {}
+  updCL();
+}
+function updCL(){
+  const d = Object.values(clS).filter(Boolean).length;
+  const t = CLI.length;
+  const el = document.getElementById('cl-prog');
+  if (!el) return;
+  el.textContent = d === t ? '✓ All done' : `${d}/${t}`;
+  el.style.color = d === t ? '#22c55e' : 'var(--t2)';
+}
+function toggleCL(){
+  clOpen = !clOpen;
+  document.getElementById('cl-body').classList.toggle('hidden', !clOpen);
+  document.getElementById('cl-arr').textContent = clOpen ? '▾' : '▸';
+}
+function resetCL(){
+  CLI.forEach(i => { clS[i.id] = false; });
+  try { localStorage.removeItem('cl-' + today); } catch (e) {}
+  initCL();
+}
+
 function normalizeArea(area){
   const map = {
     'DART & Work': 'DART',
@@ -1228,6 +1268,12 @@ function toast(m){
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 3200);
 }
+
+initCL();
+load();
+</script>
+</body>
+</html>
 
 initCL();
 load();
