@@ -631,15 +631,16 @@ async function refreshTasksAndRender(){
 }
 
 async function sendTaskUpdate(payload) {
+  const body = new URLSearchParams({
+    action: 'updateTask',
+    ...Object.fromEntries(
+      Object.entries(payload).map(([k, v]) => [k, v == null ? '' : String(v)])
+    )
+  });
+
   const response = await fetch(WEB_APP_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      action: 'updateTask',
-      ...payload
-    })
+    body
   });
 
   const data = await response.json();
