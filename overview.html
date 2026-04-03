@@ -641,25 +641,27 @@ async function refreshTasksAndRender(){
 }
 
 async function sendTaskUpdate(payload) {
-  const body = new URLSearchParams({
-    action: 'updateTask',
-    ...Object.fromEntries(
-      Object.entries(payload).map(([k, v]) => [k, v == null ? '' : String(v)])
-    )
-  });
+  const form = document.getElementById('taskUpdateForm');
+  if (!form) throw new Error('Task update form not found');
 
-  const response = await fetch(WEB_APP_URL, {
-    method: 'POST',
-    body
-  });
+  form.action = WEB_APP_URL;
 
-  const data = await response.json();
+  form.elements['action'].value = 'updateTask';
+  form.elements['update_type'].value = payload.update_type || '';
+  form.elements['task_id'].value = payload.task_id || '';
+  form.elements['notes'].value = payload.notes || '';
+  form.elements['due_date'].value = payload.due_date || '';
+  form.elements['kanban_stage'].value = payload.kanban_stage || '';
+  form.elements['completed'].value =
+    payload.completed === true ? 'true' :
+    payload.completed === false ? 'false' : '';
 
-  if (!data.success) {
-    throw new Error(data.message || 'Task update failed');
-  }
+  form.submit();
 
-  return data;
+  await new Promise(resolve => setTimeout(resolve, 1200));
+  await refreshTasksAndRender();
+
+  return { success: true };
 }
 
 async function updateTaskNotes(taskId, notes) {
