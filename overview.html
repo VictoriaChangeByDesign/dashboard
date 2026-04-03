@@ -400,6 +400,7 @@ const IDEAS_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard
 const RESEARCH_RAW = './research.json?t=' + Date.now();
 const RESEARCH_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/research.json';
 const REFS_RAW = './references.json?t=' + Date.now();
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx2A5bbLhH6STGq1llUBCUHROaECIR6IiP4rxrXLAyL_IefKsp3lMlOunEL9l_fSERTzQ/exec';
 
 const AREAS = {
   DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
@@ -455,11 +456,12 @@ const CLI = [
 
 const ALL_VIEWS = ['areas','matrix','tasks','kanban','ideas','research','references'];
 const KB_COLS = [
-  { id:'backlog',     label:'Backlog',            color:'var(--t3)' },
-  { id:'this-week',   label:'This Week',          color:'var(--work)' },
-  { id:'in-progress', label:'In Progress',        color:'#f59e0b' },
-  { id:'waiting',     label:'Waiting / Blocked',  color:'#ef4444' },
-  { id:'done',        label:'Done',               color:'#22c55e' }
+  { id:'Backlog',            label:'Backlog',            color:'var(--t3)' },
+  { id:'Ready',              label:'Ready',              color:'var(--work)' },
+  { id:'This Week',          label:'This Week',          color:'#06b6d4' },
+  { id:'In Progress',        label:'In Progress',        color:'#f59e0b' },
+  { id:'Waiting/Blocked',    label:'Waiting / Blocked',  color:'#ef4444' },
+  { id:'Done',               label:'Done',               color:'#22c55e' }
 ];
 const IDEA_STAGES = ['raw','exploring','ready','archived'];
 const IDEA_STAGE_LABELS = { raw:'Raw', exploring:'Exploring', ready:'Ready to Act', archived:'Archived' };
@@ -467,44 +469,6 @@ const IDEA_STAGE_COLORS = { raw:'var(--t3)', exploring:'var(--work)', ready:'#22
 const RES_STATUSES = ['to-research','in-progress','complete'];
 const RES_STATUS_LABELS = { 'to-research':'To Research', 'in-progress':'In Progress', 'complete':'Complete' };
 const RES_STATUS_COLORS = { 'to-research':'var(--t3)', 'in-progress':'#f59e0b', 'complete':'#22c55e' };
-
-function initCL(){
-  document.getElementById('cl-body').innerHTML = CLI.map(i => `
-    <div class="ci ${clS[i.id] ? 'done' : ''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
-      <div class="ci-box">${clS[i.id] ? '✓' : ''}</div>
-      <div>
-        <div class="ci-lbl">${i.l}</div>
-        <div class="ci-sub">${i.s}</div>
-      </div>
-    </div>
-  `).join('');
-  updCL();
-}
-function togCI(id){
-  clS[id] = !clS[id];
-  const el = document.getElementById('ci-' + id);
-  el.classList.toggle('done', clS[id]);
-  el.querySelector('.ci-box').textContent = clS[id] ? '✓' : '';
-  try { localStorage.setItem('cl-' + today, JSON.stringify(clS)); } catch (e) {}
-  updCL();
-}
-function updCL(){
-  const d = Object.values(clS).filter(Boolean).length;
-  const t = CLI.length;
-  const el = document.getElementById('cl-prog');
-  el.textContent = d === t ? '✓ All done' : `${d}/${t}`;
-  el.style.color = d === t ? '#22c55e' : 'var(--t2)';
-}
-function toggleCL(){
-  clOpen = !clOpen;
-  document.getElementById('cl-body').classList.toggle('hidden', !clOpen);
-  document.getElementById('cl-arr').textContent = clOpen ? '▾' : '▸';
-}
-function resetCL(){
-  CLI.forEach(i => { clS[i.id] = false; });
-  try { localStorage.removeItem('cl-' + today); } catch (e) {}
-  initCL();
-}
 
 function normalizeArea(area){
   const map = {
@@ -518,21 +482,41 @@ function normalizeArea(area){
 
 function mapJsonTasks(rawTasks){
   return (rawTasks || []).map((t, i) => ({
-    id: t.id || String(i),
+    id: t.task_id || t.id || String(i),
+    task_id: t.task_id || t.id || String(i),
     area: normalizeArea(t.area),
     title: t.title || t.raw_input || 'Untitled task',
-    notes: t.raw_input && t.raw_input !== t.title ? t.raw_input : '',
-    pri: t.priority || 'P3',
-    energy: t.energy || 'Medium',
+    notes: t.notes || '',
+    pri: mapPriorityForDisplay(t.priority_band || ''),
+    priority_band: t.priority_band || '',
+    energy: t.energy_required || 'Medium',
+    energy_required: t.energy_required || 'Medium',
+    effort_level: t.effort_level || '',
     due: t.due_date || null,
-    sec: t.eisenhower || '',
-    done: (t.status || 'open') !== 'open',
+    done: !!t.completed,
     importance: t.importance || '',
     urgency: t.urgency || '',
-    eisenhower: t.eisenhower || '',
-    kanban_col: t.kanban_col || 'backlog',
-    kanban_note: t.kanban_note || ''
+    kanban_stage: t.kanban_stage || 'Backlog',
+    next_action: t.next_action || '',
+    blocked_reason: t.blocked_reason || '',
+    status: t.status || 'Active',
+    completed: !!t.completed,
+    completed_at: t.completed_at || '',
+    started_at: t.started_at || '',
+    last_touched_at: t.last_touched_at || '',
+    created_at: t.created_at || '',
+    updated_at: t.updated_at || ''
   }));
+}
+
+function mapPriorityForDisplay(priorityBand){
+  const p = String(priorityBand || '').trim();
+  if (p === 'Now') return 'P1';
+  if (p === 'Next') return 'P2';
+  if (p === 'Soon') return 'P3';
+  if (p === 'Later') return 'P4';
+  if (p === 'Park') return 'P5';
+  return 'P3';
 }
 
 function mapIdea(i, idx){
@@ -592,6 +576,71 @@ async function load(){
     console.error('Load failed:', e);
     loading.textContent = 'Could not load dashboard data. Refresh and try again.';
   }
+}
+
+async function reloadTasks(){
+  const taskRes = await fetch('./tasks.json?t=' + Date.now(), { cache: 'no-store' });
+  if (!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
+  tasks = mapJsonTasks(await taskRes.json());
+}
+
+async function refreshTasksAndRender(){
+  await reloadTasks();
+  renderAll();
+  if (curView) show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
+}
+
+async function sendTaskUpdate(payload) {
+  const response = await fetch(WEB_APP_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      action: 'updateTask',
+      ...payload
+    })
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.message || 'Task update failed');
+  }
+
+  return data;
+}
+
+async function updateTaskNotes(taskId, notes) {
+  return sendTaskUpdate({
+    update_type: 'updateNotes',
+    task_id: taskId,
+    notes
+  });
+}
+
+async function updateTaskDueDate(taskId, dueDate) {
+  return sendTaskUpdate({
+    update_type: 'updateDueDate',
+    task_id: taskId,
+    due_date: dueDate
+  });
+}
+
+async function updateTaskKanbanStage(taskId, kanbanStage) {
+  return sendTaskUpdate({
+    update_type: 'updateKanbanStage',
+    task_id: taskId,
+    kanban_stage: kanbanStage
+  });
+}
+
+async function markTaskComplete(taskId) {
+  return sendTaskUpdate({
+    update_type: 'markComplete',
+    task_id: taskId,
+    completed: true
+  });
 }
 
 function populateReferenceAreaDropdown(){
@@ -678,9 +727,9 @@ function renderMatrix(){
   });
   tasks.filter(t => !t.done).forEach(t => {
     const q =
-      t.eisenhower === 'Do First' ? 'q1' :
-      t.eisenhower === 'Schedule' ? 'q2' :
-      t.eisenhower === 'Minimize' ? 'q3' :
+      t.pri === 'P1' ? 'q1' :
+      t.pri === 'P2' ? 'q2' :
+      t.pri === 'P3' ? 'q3' :
       'q4';
     document.getElementById(q).appendChild(mkQT(t));
   });
@@ -696,7 +745,7 @@ function mkQT(t){
     <div class="qt-body">
       <div class="qt-title">${t.title}</div>
       <div class="qt-meta">
-        <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+        <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
         <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
         ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">${fmtDue(t.due)}</span>` : ''}
       </div>
@@ -710,6 +759,7 @@ function renderTasks(){
   const list = document.getElementById('tlist');
   list.innerHTML = '';
   const f = tasks.filter(t =>
+    !t.done &&
     (eF === 'all' || t.energy === eF) &&
     (pF === 'all' || t.pri === pF)
   );
@@ -717,10 +767,8 @@ function renderTasks(){
     list.innerHTML = '<div style="color:var(--t3);font-size:.84rem;padding:16px 0">No tasks match this filter.</div>';
     return;
   }
-  f.sort((a,b) => {
-    if(a.done !== b.done) return a.done ? 1 : -1;
-    return (a.pri || 'P3').localeCompare(b.pri || 'P3');
-  }).forEach(t => list.appendChild(mkTItem(t)));
+  f.sort((a,b) => (a.pri || 'P3').localeCompare(b.pri || 'P3'))
+    .forEach(t => list.appendChild(mkTItem(t)));
 }
 
 function mkTItem(t){
@@ -735,7 +783,7 @@ function mkTItem(t){
       ${t.notes ? `<div class="t-note">${t.notes}</div>` : ''}
       <div class="t-tags">
         <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${t.area}</span>
-        <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+        <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
         <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
         ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
       </div>
@@ -748,61 +796,14 @@ async function markDone(id,ev){
   ev.stopPropagation();
   const t = tasks.find(x => String(x.id) === String(id));
   if(!t) return;
-  t.done = !t.done;
-  t.kanban_col = t.done ? 'done' : (t.kanban_col === 'done' ? 'backlog' : t.kanban_col);
-  updUrgent();
-  renderTasks();
-  renderMatrix();
-  renderAreas();
-  renderKanban();
-  const tok = localStorage.getItem('gh-tok');
-  if(tok){
-    toast('Syncing to GitHub…');
-    await syncTaskToGitHub(tok, t, t.done ? 'done' : 'open');
-  }else{
-    toast('Add GitHub token in Settings to sync across devices');
-  }
-}
 
-async function syncTaskToGitHub(tok, task, newStatus){
-  try{
-    const fr = await fetch(API, {
-      headers: {
-        Authorization: 'token ' + tok,
-        Accept: 'application/vnd.github+json'
-      }
-    });
-    if(!fr.ok) throw new Error('Read failed');
-    const fd = await fr.json();
-    const sha = fd.sha;
-    const orig = decodeURIComponent(escape(atob(fd.content.replace(/\n/g,''))));
-    const arr = JSON.parse(orig);
-    const idx = arr.findIndex(x => String(x.id) === String(task.id));
-    if(idx === -1) throw new Error('Task not found in tasks.json');
-
-    arr[idx].status = newStatus;
-    arr[idx].kanban_col = task.kanban_col || 'backlog';
-    arr[idx].kanban_note = task.kanban_note || '';
-
-    const pr = await fetch(API, {
-      method: 'PUT',
-      headers: {
-        Authorization: 'token ' + tok,
-        Accept: 'application/vnd.github+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: (newStatus === 'done' ? '✓ ' : '↩ ') + (task.title || 'task'),
-        content: btoa(unescape(encodeURIComponent(JSON.stringify(arr, null, 2)))),
-        sha
-      })
-    });
-
-    if(!pr.ok) throw new Error('Write failed');
-    toast(newStatus === 'done' ? '✓ Synced to GitHub' : '↩ Restored on GitHub');
-  }catch(e){
-    console.error('GitHub sync error:', e);
-    toast('GitHub sync error — check Settings');
+  try {
+    await markTaskComplete(t.task_id || t.id);
+    await refreshTasksAndRender();
+    toast('✓ Task marked complete');
+  } catch (e) {
+    console.error(e);
+    toast('Task update failed');
   }
 }
 
@@ -836,7 +837,7 @@ function openDetail(k){
           <div class="qt-body">
             <div class="qt-title">${t.title}</div>
             <div class="qt-meta">
-              <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+              <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
               <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
               ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
             </div>
@@ -913,8 +914,8 @@ function renderKanban() {
   if (!wrap) return;
   const grouped = {};
   KB_COLS.forEach(c => grouped[c.id] = []);
-  tasks.forEach(t => {
-    const col = t.done ? 'done' : (t.kanban_col || 'backlog');
+  tasks.filter(t => !t.done).forEach(t => {
+    const col = t.kanban_stage || 'Backlog';
     if (grouped[col]) grouped[col].push(t);
   });
   wrap.innerHTML = KB_COLS.map(col => `
@@ -932,14 +933,14 @@ function renderKanban() {
 
 function mkKbCard(t, curCol) {
   const a = AREAS[t.area] || AREAS.General;
-  const note = t.kanban_note || '';
+  const note = t.notes || '';
   const otherCols = KB_COLS.filter(c => c.id !== curCol);
   return `
-    <div class="kb-card ${curCol === 'done' ? 'kb-done' : ''}">
+    <div class="kb-card ${curCol === 'Done' ? 'kb-done' : ''}">
       <div class="kb-card-title">${t.title}</div>
       <div class="kb-card-meta">
         <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${t.area}</span>
-        <span class="badge b-${t.pri.toLowerCase()}">${t.pri}</span>
+        <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
         ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">${fmtDue(t.due)}</span>` : ''}
       </div>
       ${note ? `<div class="kb-card-note">${note}</div>` : ''}
@@ -957,21 +958,12 @@ function mkKbCard(t, curCol) {
 async function moveKb(id, col) {
   const t = tasks.find(x => String(x.id) === String(id));
   if(!t) return;
-  t.kanban_col = col;
-  if(col === 'done') t.done = true;
-  const tok = localStorage.getItem('gh-tok');
-  renderKanban();
-  renderTasks();
-  renderMatrix();
-  renderAreas();
-  if(!tok){
-    toast('Add GitHub token in Settings to sync across devices');
-    return;
-  }
-  try{
-    await syncTaskToGitHub(tok, t, col === 'done' ? 'done' : (t.done ? 'done' : 'open'));
+  try {
+    await updateTaskKanbanStage(t.task_id || t.id, col);
+    await refreshTasksAndRender();
     toast('Moved to ' + (KB_COLS.find(c => c.id === col)?.label || col));
-  }catch{
+  } catch (e) {
+    console.error(e);
     toast('Move failed');
   }
 }
@@ -980,17 +972,12 @@ async function saveKbNote(id) {
   const t = tasks.find(x => String(x.id) === String(id));
   const inp = document.getElementById('kn-' + id);
   if(!t || !inp) return;
-  t.kanban_note = inp.value.trim();
-  const tok = localStorage.getItem('gh-tok');
-  if(!tok){
-    toast('Add GitHub token in Settings to sync across devices');
-    return;
-  }
-  try{
-    await syncTaskToGitHub(tok, t, t.done ? 'done' : 'open');
+  try {
+    await updateTaskNotes(t.task_id || t.id, inp.value.trim());
+    await refreshTasksAndRender();
     toast('Note saved');
-    renderKanban();
-  }catch{
+  } catch (e) {
+    console.error(e);
     toast('Save failed');
   }
 }
