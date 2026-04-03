@@ -206,5 +206,33 @@
     "source": "google_sheet_inbox",
     "project_id": "",
     "project_name": ""
+  },
+  {
+    "task_id": "tsk_20260403_144057_0115",
+    "title": "Audit Branch Obligations",
+    "raw_input": "Audit current state of branch obligations",
+    "type": "Task",
+    "area": "NAACP",
+    "due_date": "2026-04-17",
+    "energy_required": "Medium",
+    "effort_level": "Medium",
+    "importance": "Medium",
+    "urgency": "Next 2 Weeks",
+    "priority_band": "Soon",
+    "kanban_stage": "Backlog",
+    "next_action": "",
+    "notes": "",
+    "started_at": "",
+    "last_touched_at": "",
+    "blocked_reason": "",
+    "status": "Active",
+    "review_date": "",
+    "completed": false,
+    "completed_at": "",
+    "created_at": "2026-04-03T19:30:16.281Z",
+    "updated_at": "2026-04-03T19:30:16.281Z",
+    "source": "google_sheet_inbox",
+    "project_id": "",
+    "project_name": ""
   }
 ]
