@@ -82,5 +82,33 @@
     "source": "google_sheet_inbox",
     "project_id": "",
     "project_name": ""
+  },
+  {
+    "task_id": "tsk_20260403_150027_4404",
+    "title": "Audit Colonel Young Gun Club Obligations",
+    "raw_input": "Audit current state of Colonel Young Gun Club obligations",
+    "type": "Task",
+    "area": "Gun Club",
+    "due_date": "2026-04-17",
+    "energy_required": "Medium",
+    "effort_level": "Quick",
+    "importance": "Medium",
+    "urgency": "Next 2 Weeks",
+    "priority_band": "Soon",
+    "kanban_stage": "Backlog",
+    "next_action": "",
+    "notes": "",
+    "started_at": "",
+    "last_touched_at": "",
+    "blocked_reason": "",
+    "status": "Active",
+    "review_date": "",
+    "completed": false,
+    "completed_at": "",
+    "created_at": "2026-04-03T20:00:13.894Z",
+    "updated_at": "2026-04-03T20:00:13.894Z",
+    "source": "google_sheet_inbox",
+    "project_id": "",
+    "project_name": ""
   }
 ]
