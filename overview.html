@@ -268,9 +268,9 @@
 </div>
 
 <div class="nav">
-  <button class="nt" data-view="today" onclick="show('today',this)">Today</button>
-  <button class="nt active" data-view="today" onclick="show('areas',this)">Life Areas</button>
- <button class="nt" data-view="matrix" onclick="show('matrix',this)">Priority Map</button>
+  <button class="nt active" data-view="today" onclick="show('today',this)">Today</button>
+  <button class="nt" data-view="areas" onclick="show('areas',this)">Life Areas</button>
+  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Priority Map</button>
   <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
   <button class="nt" data-view="kanban" onclick="show('kanban',this)">Kanban</button>
   <div class="nav-dd">
@@ -284,17 +284,19 @@
 </div>
 
 <div class="content">
-  <div id="loading" class="loading">Loading your tasks from GitHub…</div>
+  <div id="loading" class="loading">Loading your planner…</div>
+
 <div id="v-today" style="display:none">
 
-  <div style="margin-bottom:20px">
-    <h2 id="greeting-line" style="margin:0 0 6px 0"></h2>
-    <div style="color:var(--t2);font-size:.9rem" id="today-date"></div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px 18px;margin-bottom:16px;">
+    <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px" id="today-greeting"></div>
+    <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px" id="today-subline"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="today-summary"></div>
   </div>
 
-  <div class="card" style="margin-bottom:20px;padding:16px">
-    <div style="font-weight:600;margin-bottom:6px">Start Your Day</div>
-    <div style="color:var(--t2);font-size:.85rem">Check your energy, then commit to what actually matters.</div>
+  <div style="margin-bottom:16px">
+    <div class="slabel">Start Your Day</div>
+    <div id="today-routine-host"></div>
   </div>
 
   <div style="margin-bottom:24px">
@@ -309,10 +311,11 @@
 
   <div>
     <div class="slabel">Coming Up</div>
-    <div class="tlist" id="today-p3"></div>
+    <div class="tlist" id="today-upcoming"></div>
   </div>
 
 </div>
+  
   <div id="v-areas" style="display:none">
   <div class="slabel">Needs Attention — active pressure or consequence</div><div class="agrid" id="ag-urgent"></div>
   <div class="slabel">In Motion — active work across areas</div><div class="agrid" id="ag-active"></div>
