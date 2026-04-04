@@ -420,8 +420,10 @@
 </form>
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzA71wxqc_D83Vz1oNFGDZg3xZY03vbqCR0dM-jK24Ha7H1UsqfabmKRs-lhC4uQEnRYw/exec';
+
 const RAW = WEB_APP_URL + '?action=getTasks&t=' + Date.now();
 
+const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/tasks.json';
 const IDEAS_RAW = './ideas.json?t=' + Date.now();
 const IDEAS_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/ideas.json';
 const RESEARCH_RAW = './research.json?t=' + Date.now();
@@ -435,7 +437,7 @@ const AREAS = {
   Friends: {i:'🧑🏾‍🤝‍🧑🏾',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Relationship-centered work, support, and follow-up tied to important people in your orbit.'},
   Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Change in Plain Sight',p:'active',b:'active',ctx:'Recording, editing, publishing, and future direction for your podcast presence.'},
   Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brand positioning, business structure, visibility, and public-facing strategy.'},
-  Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Development',p:'goal',b:'goal',ctx:'Long-arc personal development, education, visibility, health, and self-presentation work.'},
+  Glow Up: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Development',p:'goal',b:'goal',ctx:'Long-arc personal development, education, visibility, health, and self-presentation work.'},
   Family: {i:'💛',n:'Family',c:'var(--family)',r:'Mom · Langston & Zora',p:'active',b:'active',ctx:'Family responsibilities, planning, and care across two children with different needs.'},
   Finances: {i:'💰',n:'Finances',c:'var(--finances)',r:'Personal Finance',p:'goal',b:'goal',ctx:'Financial audit, budgeting, savings, and long-term stabilization.'},
   Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Home systems, organization, and environment improvements that reduce friction.'},
@@ -479,25 +481,21 @@ const CLI = [
 ].filter(x => x.show);
 
 const ALL_VIEWS = ['today','areas','matrix','tasks','kanban','ideas','research','references'];
-
 const KB_COLS = [
-  { id:'Backlog',         label:'Backlog',           color:'var(--t3)' },
-  { id:'Ready',           label:'Ready',             color:'var(--work)' },
-  { id:'This Week',       label:'This Week',         color:'#06b6d4' },
-  { id:'In Progress',     label:'In Progress',       color:'#f59e0b' },
-  { id:'Waiting/Blocked', label:'Waiting / Blocked', color:'#ef4444' },
-  { id:'Done',            label:'Done',              color:'#22c55e' }
+  { id:'Backlog',            label:'Backlog',            color:'var(--t3)' },
+  { id:'Ready',              label:'Ready',              color:'var(--work)' },
+  { id:'This Week',          label:'This Week',          color:'#06b6d4' },
+  { id:'In Progress',        label:'In Progress',        color:'#f59e0b' },
+  { id:'Waiting/Blocked',    label:'Waiting / Blocked',  color:'#ef4444' },
+  { id:'Done',               label:'Done',               color:'#22c55e' }
 ];
-
 const IDEA_STAGES = ['raw','exploring','ready','archived'];
 const IDEA_STAGE_LABELS = { raw:'Raw', exploring:'Exploring', ready:'Ready to Act', archived:'Archived' };
 const IDEA_STAGE_COLORS = { raw:'var(--t3)', exploring:'var(--work)', ready:'#22c55e', archived:'#5c5c70' };
-
 const RES_STATUSES = ['to-research','in-progress','complete'];
 const RES_STATUS_LABELS = { 'to-research':'To Research', 'in-progress':'In Progress', 'complete':'Complete' };
 const RES_STATUS_COLORS = { 'to-research':'var(--t3)', 'in-progress':'#f59e0b', 'complete':'#22c55e' };
 
-/* ---------- checklist ---------- */
 function initCL(){
   document.getElementById('cl-body').innerHTML = CLI.map(i => `
     <div class="ci ${clS[i.id] ? 'done' : ''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
@@ -538,7 +536,6 @@ function resetCL(){
   initCL();
 }
 
-/* ---------- mapping ---------- */
 function normalizeArea(area){
   const map = {
     'DART & Work': 'DART',
@@ -601,6 +598,7 @@ function mapIdea(i, idx){
     created_at: i.created_at || ''
   };
 }
+
 function mapResearch(r, idx){
   return {
     id: r.id || `research_${idx}`,
@@ -611,6 +609,7 @@ function mapResearch(r, idx){
     created_at: r.created_at || ''
   };
 }
+
 function mapReference(r, idx){
   return {
     id: r.id || `ref_${idx}`,
@@ -621,7 +620,6 @@ function mapReference(r, idx){
   };
 }
 
-/* ---------- load / refresh ---------- */
 async function load(){
   const loading = document.getElementById('loading');
   try{
@@ -634,6 +632,8 @@ async function load(){
 
     if(!taskRes.ok) throw new Error(`getTasks HTTP ${taskRes.status}`);
 
+    if(!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
+
     tasks = mapJsonTasks(await taskRes.json());
     ideas = ideaRes.ok ? (await ideaRes.json()).map(mapIdea) : [];
     researchItems = researchRes.ok ? (await researchRes.json()).map(mapResearch) : [];
@@ -645,7 +645,7 @@ async function load(){
     document.getElementById('v-today').style.display = 'block';
   }catch(e){
     console.error('Load failed:', e);
-    loading.textContent = 'Could not load planner data. Refresh and try again.';
+    loading.textContent = 'Could not load dashboard data. Refresh and try again.';
   }
 }
 
@@ -658,46 +658,98 @@ async function reloadTasks(){
 async function refreshTasksAndRender(){
   await reloadTasks();
   renderAll();
-  if (curView) {
-    show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
-  }
+  if (curView) show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
 }
 
-/* ---------- task updates ---------- */
 async function sendTaskUpdate(payload) {
-  const body = new URLSearchParams({
-    action: 'updateTask',
-    ...Object.fromEntries(
-      Object.entries(payload).map(([k, v]) => [k, v == null ? '' : String(v)])
-    )
-  });
+  const form = document.getElementById('taskUpdateForm');
+  if (!form) throw new Error('Task update form not found');
 
-  await fetch(WEB_APP_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body
-  });
+  form.action = WEB_APP_URL;
 
-  await new Promise(resolve => setTimeout(resolve, 1600));
+  form.elements['action'].value = 'updateTask';
+  form.elements['update_type'].value = payload.update_type || '';
+  form.elements['task_id'].value = payload.task_id || '';
+  form.elements['notes'].value = payload.notes || '';
+  form.elements['due_date'].value = payload.due_date || '';
+  form.elements['kanban_stage'].value = payload.kanban_stage || '';
+  form.elements['completed'].value =
+    payload.completed === true ? 'true' :
+    payload.completed === false ? 'false' : '';
+
+  form.submit();
+
+  await new Promise(resolve => setTimeout(resolve, 2500));
   await refreshTasksAndRender();
 
   return { success: true };
 }
+async function waitForTaskUpdate(taskId, payload) {
+  const maxAttempts = 8;
+  const delayMs = 800;
 
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+    await reloadTasks();
+
+    const task = tasks.find(t => String(t.task_id || t.id) === String(taskId));
+    if (!task) continue;
+
+    let matched = false;
+
+    if (payload.update_type === 'markComplete') {
+      matched = task.done === true || task.completed === true;
+    } else if (payload.update_type === 'updateKanbanStage') {
+      matched = String(task.kanban_stage || '') === String(payload.kanban_stage || '');
+    } else if (payload.update_type === 'updateNotes') {
+      matched = String(task.notes || '') === String(payload.notes || '');
+    } else if (payload.update_type === 'updateDueDate') {
+      matched = String(task.due || '') === String(payload.due_date || '');
+    }
+
+    if (matched) {
+      renderAll();
+      if (curView) {
+        show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
+      }
+      return;
+    }
+  }
+
+  await refreshTasksAndRender();
+}
 async function updateTaskNotes(taskId, notes) {
-  return sendTaskUpdate({ update_type: 'updateNotes', task_id: taskId, notes });
-}
-async function updateTaskDueDate(taskId, dueDate) {
-  return sendTaskUpdate({ update_type: 'updateDueDate', task_id: taskId, due_date: dueDate });
-}
-async function updateTaskKanbanStage(taskId, kanbanStage) {
-  return sendTaskUpdate({ update_type: 'updateKanbanStage', task_id: taskId, kanban_stage: kanbanStage });
-}
-async function markTaskComplete(taskId) {
-  return sendTaskUpdate({ update_type: 'markComplete', task_id: taskId, completed: true });
+  return sendTaskUpdate({
+    update_type: 'updateNotes',
+    task_id: taskId,
+    notes
+  });
 }
 
-/* ---------- dropdown population ---------- */
+async function updateTaskDueDate(taskId, dueDate) {
+  return sendTaskUpdate({
+    update_type: 'updateDueDate',
+    task_id: taskId,
+    due_date: dueDate
+  });
+}
+
+async function updateTaskKanbanStage(taskId, kanbanStage) {
+  return sendTaskUpdate({
+    update_type: 'updateKanbanStage',
+    task_id: taskId,
+    kanban_stage: kanbanStage
+  });
+}
+
+async function markTaskComplete(taskId) {
+  return sendTaskUpdate({
+    update_type: 'markComplete',
+    task_id: taskId,
+    completed: true
+  });
+}
+
 function populateReferenceAreaDropdown(){
   const sel = document.getElementById('ref-area-sel');
   if(!sel) return;
@@ -712,7 +764,6 @@ function populateReferenceAreaDropdown(){
   });
 }
 
-/* ---------- render orchestrator ---------- */
 function renderAll(){
   updUrgent();
   renderToday();
@@ -731,8 +782,6 @@ function updUrgent(){
   el.textContent = u ? `⚡ ${u} urgent item${u > 1 ? 's' : ''}` : '✓ No urgent items';
   el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
-
-/* ---------- today view ---------- */
 function getGreeting(){
   const h = new Date().getHours();
   if(h < 12) return 'Good morning';
@@ -766,13 +815,13 @@ function renderToday(){
   const p1El = document.getElementById('today-p1');
   const p2El = document.getElementById('today-p2');
   const upcomingEl = document.getElementById('today-upcoming');
-  const routineHost = document.getElementById('today-routine-host');
-  if(!greetEl || !p1El || !p2El || !upcomingEl || !sumEl || !routineHost) return;
+  if(!greetEl || !p1El || !p2El || !upcomingEl || !sumEl) return;
 
   const now = new Date();
   const dateText = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
 
   const openTasks = tasks.filter(t => !t.done);
+
   const p1 = openTasks
     .filter(t => t.pri === 'P1')
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'));
@@ -796,15 +845,6 @@ function renderToday(){
     <span class="tag-sm">${openTasks.length} open total</span>
   `;
 
-  routineHost.innerHTML = `
-    <div class="titem">
-      <div class="t-body">
-        <div class="t-title">Daily routine checklist</div>
-        <div class="t-note">Use the checklist above to orient your day before moving into task work.</div>
-      </div>
-    </div>
-  `;
-
   p1El.innerHTML = p1.length
     ? p1.map(renderPlannerTaskItem).join('')
     : '<div class="kb-empty">No P1 items. Either you are clear, or something needs to be promoted.</div>';
@@ -817,8 +857,6 @@ function renderToday(){
     ? upcoming.map(renderPlannerTaskItem).join('')
     : '<div class="kb-empty">Nothing pressing beyond today.</div>';
 }
-
-/* ---------- areas ---------- */
 function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
     document.getElementById('ag-' + p).innerHTML = '';
@@ -865,7 +903,6 @@ function mkCard(k,d,ts){
   return el;
 }
 
-/* ---------- matrix ---------- */
 function renderMatrix(){
   ['q1','q2','q3','q4'].forEach(q => {
     document.getElementById(q).innerHTML = '';
@@ -900,7 +937,6 @@ function mkQT(t){
   return el;
 }
 
-/* ---------- all tasks ---------- */
 function renderTasks(){
   const list = document.getElementById('tlist');
   list.innerHTML = '';
@@ -945,6 +981,7 @@ async function markDone(id,ev){
 
   try {
     await markTaskComplete(t.task_id || t.id);
+    await refreshTasksAndRender();
     toast('✓ Task marked complete');
   } catch (e) {
     console.error(e);
@@ -952,13 +989,12 @@ async function markDone(id,ev){
   }
 }
 
-/* ---------- detail ---------- */
 function openDetail(k){
   const d = AREAS[k];
   if(!d) return;
   const open = tasks.filter(t => t.area === k && !t.done);
   const done = tasks.filter(t => t.area === k && t.done);
-  ['v-today','v-areas','v-matrix','v-tasks','v-kanban','v-ideas','v-research','v-references'].forEach(v => {
+  ['v-areas','v-matrix','v-tasks','v-kanban','v-ideas','v-research','v-references'].forEach(v => {
     const el = document.getElementById(v);
     if(el) el.style.display = 'none';
   });
@@ -1001,14 +1037,12 @@ function openDetail(k){
     ` : ''}
   `;
 }
-
 function closeDetail() {
   document.getElementById('detail').classList.remove('open');
   const activeBtn = document.querySelector('.nt.active');
-  show(curView, activeBtn);
+  show(curView, curView === 'areas' ? activeBtn : null);
 }
 
-/* ---------- nav ---------- */
 function show(v, btn) {
   curView = v;
   const isIdeation = ['ideas','research','references'].includes(v);
@@ -1016,36 +1050,29 @@ function show(v, btn) {
   if (btn) btn.classList.add('active');
   if (isIdeation) document.getElementById('nt-ideation').classList.add('active');
   document.getElementById('detail').classList.remove('open');
-
   ALL_VIEWS.forEach(x => {
     const el = document.getElementById('v-' + x);
     if (el) el.style.display = 'none';
   });
-
   const target = document.getElementById('v-' + v);
   if (target) target.style.display = 'block';
-
-  if (v === 'today') renderToday();
   if (v === 'kanban') renderKanban();
   if (v === 'ideas') renderIdeas();
   if (v === 'research') renderResearch();
   if (v === 'references') renderReferences();
 }
-
 function showSub(v) {
   ideationOpen = false;
   document.getElementById('ideation-menu').style.display = 'none';
   document.getElementById('nt-ideation').textContent = 'Ideation ▾';
   show(v, null);
 }
-
 function toggleIdeation(e) {
   e.stopPropagation();
   ideationOpen = !ideationOpen;
   document.getElementById('ideation-menu').style.display = ideationOpen ? 'block' : 'none';
   document.getElementById('nt-ideation').textContent = 'Ideation ' + (ideationOpen ? '▴' : '▾');
 }
-
 document.addEventListener('click', () => {
   if (ideationOpen) {
     ideationOpen = false;
@@ -1064,7 +1091,6 @@ function filt(type,val,btn){
   renderTasks();
 }
 
-/* ---------- kanban ---------- */
 function renderKanban() {
   const wrap = document.getElementById('kb-wrap');
   if (!wrap) return;
@@ -1116,6 +1142,7 @@ async function moveKb(id, col) {
   if(!t) return;
   try {
     await updateTaskKanbanStage(t.task_id || t.id, col);
+    await refreshTasksAndRender();
     toast('Moved to ' + (KB_COLS.find(c => c.id === col)?.label || col));
   } catch (e) {
     console.error(e);
@@ -1129,6 +1156,7 @@ async function saveKbNote(id) {
   if(!t || !inp) return;
   try {
     await updateTaskNotes(t.task_id || t.id, inp.value.trim());
+    await refreshTasksAndRender();
     toast('Note saved');
   } catch (e) {
     console.error(e);
@@ -1136,7 +1164,6 @@ async function saveKbNote(id) {
   }
 }
 
-/* ---------- ideas ---------- */
 function filtIdeas(stage, btn) {
   ideaStageF = stage;
   document.querySelectorAll('.stage-tab').forEach(b => b.classList.remove('on'));
@@ -1152,13 +1179,11 @@ function renderIdeas() {
   const filtered = ideas
     .filter(i => ideaStageF === 'all' || i.stage === ideaStageF)
     .sort((a, b) => (stageOrder[a.stage] || 0) - (stageOrder[b.stage] || 0));
-
   if (!filtered.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
     return;
   }
-
   empty.style.display = 'none';
   grid.innerHTML = filtered.map(i => {
     const a = AREAS[normalizeArea(i.area)] || AREAS.General;
@@ -1187,18 +1212,15 @@ async function updateIdeaStage(id, stage) {
   if(!item) return;
   item.stage = stage;
   renderIdeas();
-
   const tok = localStorage.getItem('gh-tok');
   if(!tok){
     toast('Add GitHub token in Settings to sync across devices');
     return;
   }
-
   await syncCollectionItem(tok, IDEAS_API, ideas, item.id, { stage }, `Update idea stage: ${item.title || 'idea'}`);
   toast('Stage: ' + IDEA_STAGE_LABELS[stage]);
 }
 
-/* ---------- research ---------- */
 function renderResearch() {
   const container = document.getElementById('res-groups');
   if (!container) return;
@@ -1206,7 +1228,6 @@ function renderResearch() {
     container.innerHTML = '<div style="color:var(--t3);font-size:.84rem;padding:20px 0">No research items yet.</div>';
     return;
   }
-
   container.innerHTML = RES_STATUSES.map(status => {
     const items = researchItems.filter(r => r.status === status);
     if (!items.length) return '';
@@ -1225,7 +1246,7 @@ function renderResearch() {
                   <div class="res-title">${r.title || r.raw_input}</div>
                   ${r.raw_input && r.raw_input !== r.title ? `<div class="res-raw">${r.raw_input}</div>` : ''}
                   <div class="res-meta">
-                    <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area || 'General'}</span>
+                    <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area||'General'}</span>
                     ${dt ? `<span style="font-size:.67rem;color:var(--t3)">${dt}</span>` : ''}
                   </div>
                 </div>
@@ -1246,18 +1267,15 @@ async function updateResStatus(id, status) {
   if(!item) return;
   item.status = status;
   renderResearch();
-
   const tok = localStorage.getItem('gh-tok');
   if(!tok){
     toast('Add GitHub token in Settings to sync across devices');
     return;
   }
-
   await syncCollectionItem(tok, RESEARCH_API, researchItems, item.id, { status }, `Update research status: ${item.title || 'research'}`);
   toast('Status: ' + RES_STATUS_LABELS[status]);
 }
 
-/* ---------- references ---------- */
 function filterRefs() {
   refSearchQ = document.getElementById('ref-search')?.value.toLowerCase() || '';
   renderReferences();
@@ -1270,14 +1288,12 @@ function renderReferences() {
   const grid = document.getElementById('ref-grid');
   const empty = document.getElementById('ref-empty');
   if (!grid) return;
-
   if (!references.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
     empty.textContent = 'No references yet.';
     return;
   }
-
   const filtered = references.filter(r => {
     const matchArea = refAreaF === 'all' || normalizeArea(r.area) === refAreaF;
     const matchSearch = !refSearchQ ||
@@ -1285,14 +1301,12 @@ function renderReferences() {
       (r.raw_input||'').toLowerCase().includes(refSearchQ);
     return matchArea && matchSearch;
   });
-
   if (!filtered.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
     empty.textContent = 'No references match your search.';
     return;
   }
-
   empty.style.display = 'none';
   grid.innerHTML = filtered.map(r => {
     const a = AREAS[normalizeArea(r.area)] || AREAS.General;
@@ -1302,7 +1316,7 @@ function renderReferences() {
         <div class="ref-card-title">${r.title || r.raw_input}</div>
         ${r.raw_input && r.raw_input !== r.title ? `<div class="ref-card-raw">${r.raw_input}</div>` : ''}
         <div class="ref-card-foot">
-          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area || 'General'}</span>
+          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area||'General'}</span>
           ${dt ? `<span class="ref-date">${dt}</span>` : ''}
         </div>
       </div>
@@ -1310,7 +1324,6 @@ function renderReferences() {
   }).join('');
 }
 
-/* ---------- github sync for non-task collections ---------- */
 async function syncCollectionItem(tok, apiUrl, collection, itemId, patch, message){
   try{
     const fr = await fetch(apiUrl, {
@@ -1348,7 +1361,6 @@ async function syncCollectionItem(tok, apiUrl, collection, itemId, patch, messag
   }
 }
 
-/* ---------- utility ---------- */
 function eIcon(e){ return e === 'High' ? '🔴 High' : e === 'Low' ? '🟢 Low' : '🟡 Med'; }
 function eClass(e){ return e === 'High' ? 'e-high' : e === 'Low' ? 'e-low' : 'e-med'; }
 function dueClass(d){
@@ -1371,7 +1383,6 @@ function fmtDue(d){
   return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
 }
 
-/* ---------- settings / toast ---------- */
 function openSettings(){
   document.getElementById('smodal').classList.add('open');
   const t = localStorage.getItem('gh-tok');
