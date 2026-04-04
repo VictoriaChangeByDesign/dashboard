@@ -403,14 +403,14 @@
   <input type="hidden" name="completed" value="">
 </form>
 <script>
-const RAW = './tasks.json?t=' + Date.now();
+const RAW = WEB_APP_URL + '?action=getTasks&t=' + Date.now();
 const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/tasks.json';
 const IDEAS_RAW = './ideas.json?t=' + Date.now();
 const IDEAS_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/ideas.json';
 const RESEARCH_RAW = './research.json?t=' + Date.now();
 const RESEARCH_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/research.json';
 const REFS_RAW = './references.json?t=' + Date.now();
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzLE6521ttz3MLkX-R41tpMM-nuG68kXxUHtOwzAL27OFfaXcXE6VbO93iKOTHgqLM3/exec';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzA71wxqc_D83Vz1oNFGDZg3xZY03vbqCR0dM-jK24Ha7H1UsqfabmKRs-lhC4uQEnRYw/exec';
 
 const AREAS = {
   DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
@@ -604,12 +604,12 @@ function mapReference(r, idx){
 async function load(){
   const loading = document.getElementById('loading');
   try{
-    const [taskRes, ideaRes, researchRes, refRes] = await Promise.all([
-      fetch(RAW, { cache: 'no-store' }),
-      fetch(IDEAS_RAW, { cache: 'no-store' }),
-      fetch(RESEARCH_RAW, { cache: 'no-store' }),
-      fetch(REFS_RAW, { cache: 'no-store' })
-    ]);
+const [taskRes, ideaRes, researchRes, refRes] = await Promise.all([
+  fetch(WEB_APP_URL + '?action=getTasks&t=' + Date.now(), { cache: 'no-store' }),
+  fetch(IDEAS_RAW, { cache: 'no-store' }),
+  fetch(RESEARCH_RAW, { cache: 'no-store' }),
+  fetch(REFS_RAW, { cache: 'no-store' })
+]);
 
     if(!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
 
@@ -629,8 +629,8 @@ async function load(){
 }
 
 async function reloadTasks(){
-  const taskRes = await fetch('./tasks.json?t=' + Date.now(), { cache: 'no-store' });
-  if (!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
+  const taskRes = await fetch(WEB_APP_URL + '?action=getTasks&t=' + Date.now(), { cache: 'no-store' });
+  if (!taskRes.ok) throw new Error(`getTasks HTTP ${taskRes.status}`);
   tasks = mapJsonTasks(await taskRes.json());
 }
 
