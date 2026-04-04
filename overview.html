@@ -658,7 +658,8 @@ async function sendTaskUpdate(payload) {
 
   form.submit();
 
-  await waitForTaskUpdate(payload.task_id, payload);
+  await new Promise(resolve => setTimeout(resolve, 2500));
+  await refreshTasksAndRender();
 
   return { success: true };
 }
