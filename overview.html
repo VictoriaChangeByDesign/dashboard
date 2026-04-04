@@ -7,14 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0f1117;--bg2:#14161f;--card:#1a1d27;--card2:#1f2235;
-  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
-  --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
-  --work:#8b5cf6;--mihf:#8b5cf6;--naacp:#1e3a8a;--guns:#d4af37;
-  --friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
-  --glow:#22c55e;--family:#06b6d4;--finances:#14b8a6;--home:#a78bfa;
-}
+    :root{
+      --bg:#0f1117;--bg2:#14161f;--card:#1a1d27;--card2:#1f2235;
+      --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
+      --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
+      --work:#3b82f6;--mihf:#10b981;--naacp:#ef4444;--guns:#8b5cf6;
+      --friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
+      --glow:#eab308;--family:#06b6d4;--finances:#22c55e;--home:#a78bfa;
+    }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
     .hdr{padding:20px 28px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px}
@@ -268,8 +268,8 @@
 </div>
 
 <div class="nav">
-  <button class="nt active" data-view="areas" onclick="show('areas',this)">Today</button>
-  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Priority Map</button>
+  <button class="nt active" data-view="areas" onclick="show('areas',this)">Life Areas</button>
+  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Eisenhower Matrix</button>
   <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
   <button class="nt" data-view="kanban" onclick="show('kanban',this)">Kanban</button>
   <div class="nav-dd">
@@ -285,60 +285,124 @@
 <div class="content">
   <div id="loading" class="loading">Loading your tasks from GitHub…</div>
 
- <div id="v-areas" style="display:none">
-  <div class="slabel">Needs Attention — active pressure or consequence</div><div class="agrid" id="ag-urgent"></div>
-  <div class="slabel">In Motion — active work across areas</div><div class="agrid" id="ag-active"></div>
-  <div class="slabel">Longer Horizon — not active, but matters</div><div class="agrid" id="ag-goal"></div>
+  <div id="v-areas" style="display:none">
+    <div class="slabel">🔴 Urgent — needs action now</div><div class="agrid" id="ag-urgent"></div>
+    <div class="slabel">🟡 Active — in motion</div><div class="agrid" id="ag-active"></div>
+    <div class="slabel">🔵 Goals & Someday</div><div class="agrid" id="ag-goal"></div>
+  </div>
+
+  <div id="v-matrix" style="display:none">
+    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> Urgent = deadline within 7 days or has active external consequence. Important = moves you toward your goals, with real stakes. Do Q1 first. Protect time for Q2. Minimize Q3. Drop Q4.</p>
+    <div class="matrix">
+      <div class="quad" style="border-top:2px solid #ef4444">
+        <span class="qlabel ql1">Q1 — Do First</span>
+        <h3>Urgent + Important</h3>
+        <p class="quad-desc">Active deadlines, external accountability, real consequences now</p>
+        <div id="q1"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #3b82f6">
+        <span class="qlabel ql2">Q2 — Schedule</span>
+        <h3>Important, Not Urgent</h3>
+        <p class="quad-desc">Your highest-value work — protect and schedule this time</p>
+        <div id="q2"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #f59e0b">
+        <span class="qlabel ql3">Q3 — Minimize</span>
+        <h3>Urgent, Not Important</h3>
+        <p class="quad-desc">Delegate, defer, or do fast — someone else's deadline</p>
+        <div id="q3"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #5c5c70">
+        <span class="qlabel ql4">Q4 — Later</span>
+        <h3>Not Urgent, Not Important</h3>
+        <p class="quad-desc">Someday / Maybe — revisit quarterly</p>
+        <div id="q4"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-tasks" style="display:none">
+    <div class="filters">
+      <span class="fl">Energy:</span>
+      <button class="fbtn on" onclick="filt('e','all',this)">All</button>
+      <button class="fbtn" onclick="filt('e','High',this)">🔴 High</button>
+      <button class="fbtn" onclick="filt('e','Medium',this)">🟡 Medium</button>
+      <button class="fbtn" onclick="filt('e','Low',this)">🟢 Low</button>
+      <div class="sep"></div>
+      <span class="fl">Priority:</span>
+      <button class="fbtn on" onclick="filt('p','all',this)">All</button>
+      <button class="fbtn" onclick="filt('p','P1',this)">P1</button>
+      <button class="fbtn" onclick="filt('p','P2',this)">P2</button>
+      <button class="fbtn" onclick="filt('p','P3',this)">P3</button>
+    </div>
+    <div class="tlist" id="tlist"></div>
+  </div>
+
+  <div id="v-kanban" style="display:none">
+    <div class="kb-wrap" id="kb-wrap"></div>
+  </div>
+
+  <div id="v-ideas" style="display:none">
+    <div class="idea-stages">
+      <span style="font-size:.73rem;color:var(--t3);margin-right:4px">Stage:</span>
+      <button class="stage-tab on" onclick="filtIdeas('all',this)">All</button>
+      <button class="stage-tab" onclick="filtIdeas('raw',this)">Raw</button>
+      <button class="stage-tab" onclick="filtIdeas('exploring',this)">Exploring</button>
+      <button class="stage-tab" onclick="filtIdeas('ready',this)">Ready to Act</button>
+      <button class="stage-tab" onclick="filtIdeas('archived',this)">Archived</button>
+    </div>
+    <div class="idea-grid" id="idea-grid"></div>
+    <div id="idea-empty" style="display:none;color:var(--t3);font-size:.84rem;padding:20px 0">No ideas in this stage yet.</div>
+  </div>
+
+  <div id="v-research" style="display:none">
+    <div class="res-groups" id="res-groups"></div>
+  </div>
+
+  <div id="v-references" style="display:none">
+    <div class="ref-top-row">
+      <input class="ref-search" id="ref-search" placeholder="🔍  Search references…" oninput="filterRefs()">
+      <select class="ref-area-sel" id="ref-area-sel" onchange="filtRefArea(this.value)">
+        <option value="all">All Areas</option>
+      </select>
+    </div>
+    <div class="ref-grid" id="ref-grid"></div>
+    <div id="ref-empty" style="display:none;color:var(--t3);font-size:.84rem;padding:20px 0">No references found.</div>
+  </div>
+
+  <div class="detail" id="detail">
+    <button class="back" onclick="closeDetail()">← All Areas</button>
+    <div id="detail-body"></div>
+  </div>
 </div>
 
-<div id="v-matrix" style="display:none">
-  <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> This view reflects your priority bands. Now = must move first. Next = should move soon. Soon = keep visible. Later = can wait. Park = remove from active load.</p>
-  <div class="matrix">
-    <div class="quad" style="border-top:2px solid #ef4444">
-      <span class="qlabel ql1">Now — Do First</span>
-      <h3>P1 — Now</h3>
-      <p class="quad-desc">High importance, real consequence, or blocks other work</p>
-      <div id="q1"></div>
-    </div>
-    <div class="quad" style="border-top:2px solid #3b82f6">
-      <span class="qlabel ql2">Next — Queue</span>
-      <h3>P2 — Next</h3>
-      <p class="quad-desc">Important work that should move soon</p>
-      <div id="q2"></div>
-    </div>
-    <div class="quad" style="border-top:2px solid #f59e0b">
-      <span class="qlabel ql3">Soon — Maintain</span>
-      <h3>P3 — Soon</h3>
-      <p class="quad-desc">Matters, but not immediate. Keep it moving.</p>
-      <div id="q3"></div>
-    </div>
-    <div class="quad" style="border-top:2px solid #5c5c70">
-      <span class="qlabel ql4">Later / Park</span>
-      <h3>P4 / P5 — Later or Park</h3>
-      <p class="quad-desc">Low urgency or low consequence. Do not crowd active work.</p>
-      <div id="q4"></div>
+<div class="modal-bg" id="smodal">
+  <div class="modal">
+    <h3>Settings — GitHub Sync</h3>
+    <p>Add a GitHub Personal Access Token with <code>repo</code> scope to sync task completions and ideation updates from any device.<br><br>
+    <a href="https://github.com/settings/tokens/new?scopes=repo&description=Victoria+Dashboard" target="_blank">Create token on GitHub →</a></p>
+    <div class="smsg" id="smsg"></div>
+    <input type="password" id="tok-in" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <div class="modal-btns">
+      <button class="mbtn" onclick="closeSM()">Cancel</button>
+      <button class="mbtn mbtn-p" onclick="saveTok()">Save</button>
     </div>
   </div>
 </div>
 
-<div id="v-tasks" style="display:none">
-  <div class="filters">
-    <span class="fl">Energy Required:</span>
-    <button class="fbtn on" onclick="filt('e','all',this)">All</button>
-    <button class="fbtn" onclick="filt('e','High',this)">🔴 High</button>
-    <button class="fbtn" onclick="filt('e','Medium',this)">🟡 Medium</button>
-    <button class="fbtn" onclick="filt('e','Low',this)">🟢 Low</button>
-    <div class="sep"></div>
-    <span class="fl">Priority Band:</span>
-    <button class="fbtn on" onclick="filt('p','all',this)">All</button>
-    <button class="fbtn" onclick="filt('p','P1',this)">P1</button>
-    <button class="fbtn" onclick="filt('p','P2',this)">P2</button>
-    <button class="fbtn" onclick="filt('p','P3',this)">P3</button>
-    <button class="fbtn" onclick="filt('p','P4',this)">P4</button>
-    <button class="fbtn" onclick="filt('p','P5',this)">P5</button>
-  </div>
-  <div class="tlist" id="tlist"></div>
-</div>
+<div class="toast" id="toast"></div>
+<iframe name="taskUpdateFrame" style="display:none;"></iframe>
+
+<form id="taskUpdateForm" method="POST" target="taskUpdateFrame" style="display:none;">
+  <input type="hidden" name="action" value="updateTask">
+  <input type="hidden" name="update_type" value="">
+  <input type="hidden" name="task_id" value="">
+  <input type="hidden" name="notes" value="">
+  <input type="hidden" name="due_date" value="">
+  <input type="hidden" name="kanban_stage" value="">
+  <input type="hidden" name="completed" value="">
+</form>
+<script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzA71wxqc_D83Vz1oNFGDZg3xZY03vbqCR0dM-jK24Ha7H1UsqfabmKRs-lhC4uQEnRYw/exec';
 
 const RAW = WEB_APP_URL + '?action=getTasks&t=' + Date.now();
