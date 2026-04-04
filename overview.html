@@ -797,37 +797,96 @@ function updUrgent(){
   el.textContent = u ? `⚡ ${u} urgent item${u > 1 ? 's' : ''}` : '✓ No urgent items';
   el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
-function renderToday() {
-  const p1 = tasks.filter(t => !t.done && t.pri === 'P1');
-  const p2 = tasks.filter(t => !t.done && t.pri === 'P2');
-  const p3 = tasks.filter(t => !t.done && t.pri === 'P3');
+function renderToday(){
+  const greetEl = document.getElementById('today-greeting');
+  const subEl = document.getElementById('today-subline');
+  const sumEl = document.getElementById('today-summary');
+  const p1El = document.getElementById('today-p1');
+  const p2El = document.getElementById('today-p2');
+  const upcomingEl = document.getElementById('today-upcoming');
+  const routineHost = document.getElementById('today-routine-host');
 
-  const el1 = document.getElementById('today-p1');
-  const el2 = document.getElementById('today-p2');
-  const el3 = document.getElementById('today-p3');
-
-  if (el1) el1.innerHTML = p1.length ? p1.map(mkTItem).map(e => e.outerHTML).join('') : '<div style="color:var(--t3)">No commitments set.</div>';
-  if (el2) el2.innerHTML = p2.length ? p2.map(mkTItem).map(e => e.outerHTML).join('') : '<div style="color:var(--t3)">Nothing queued.</div>';
-  if (el3) el3.innerHTML = p3.length ? p3.map(mkTItem).map(e => e.outerHTML).join('') : '<div style="color:var(--t3)">No upcoming tasks.</div>';
+  if(!greetEl || !p1El || !p2El || !upcomingEl || !sumEl || !routineHost) return;
 
   const now = new Date();
-  const hour = now.getHours();
-
-  let greeting = 'Good morning';
-  if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
-  if (hour >= 18) greeting = 'Good evening';
-
-  const dateStr = now.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric'
+  const dateText = now.toLocaleDateString('en-US', {
+    weekday:'long',
+    month:'long',
+    day:'numeric',
+    year:'numeric'
   });
 
-  const g = document.getElementById('greeting-line');
-  const d = document.getElementById('today-date');
+  const openTasks = tasks.filter(t => !t.done);
 
-  if (g) g.textContent = `${greeting}, Victoria.`;
-  if (d) d.textContent = dateStr;
+  const allP1 = openTasks
+    .filter(t => t.pri === 'P1')
+    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'));
+
+  const topP1 = allP1.slice(0, 3);
+  const extraP1 = allP1.slice(3);
+
+  const p2 = openTasks
+    .filter(t => t.pri === 'P2')
+    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
+    .slice(0, 5);
+
+  const upcoming = openTasks
+    .filter(t => t.pri === 'P3')
+    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
+    .slice(0, 5);
+
+  const hour = now.getHours();
+  let greeting = 'Good morning';
+  if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+  if (hour >= 17) greeting = 'Good evening';
+
+  greetEl.textContent = `${greeting}, Victoria.`;
+  subEl.textContent = `Today is ${dateText}. Start with your routine, then move the highest-value work.`;
+
+  sumEl.innerHTML = `
+    <span class="tag-sm ${allP1.length ? 'due-late' : 'due-ok'}">${allP1.length} P1 item${allP1.length !== 1 ? 's' : ''}</span>
+    <span class="tag-sm due-soon">${p2.length} P2 item${p2.length !== 1 ? 's' : ''}</span>
+    <span class="tag-sm">${openTasks.length} open total</span>
+  `;
+
+  routineHost.innerHTML = `
+    <div class="titem">
+      <div class="t-body">
+        <div class="t-title">Start Your Day</div>
+        <div class="t-note">Use the checklist above to orient your day before moving into task work.</div>
+      </div>
+    </div>
+  `;
+
+  p1El.innerHTML = topP1.length
+    ? `
+      <div style="color:var(--t2);font-size:.8rem;margin-bottom:6px">
+        If everything else slips, these still get done.
+      </div>
+      ${topP1.map(renderPlannerTaskItem).join('')}
+      ${extraP1.length ? `
+        <details style="margin-top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
+          <summary style="cursor:pointer;color:var(--t2);font-size:.8rem;font-weight:600">
+            Additional P1 Items (${extraP1.length})
+          </summary>
+          <div style="color:var(--t2);font-size:.76rem;margin:8px 0 10px">
+            Still urgent, but not your first focus block.
+          </div>
+          <div class="tlist">
+            ${extraP1.map(renderPlannerTaskItem).join('')}
+          </div>
+        </details>
+      ` : ''}
+    `
+    : '<div class="kb-empty">No P1 items. Either you are clear, or something needs to be promoted.</div>';
+
+  p2El.innerHTML = p2.length
+    ? p2.map(renderPlannerTaskItem).join('')
+    : '<div class="kb-empty">Nothing queued here yet.</div>';
+
+  upcomingEl.innerHTML = upcoming.length
+    ? upcoming.map(renderPlannerTaskItem).join('')
+    : '<div class="kb-empty">Nothing pressing beyond today.</div>';
 }
 function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
@@ -846,7 +905,24 @@ function renderAreas(){
     if(bucket) bucket.appendChild(card);
   });
 }
-
+function renderPlannerTaskItem(t){
+  const a = AREAS[t.area] || AREAS.General;
+  return `
+    <div class="titem">
+      <div class="tcheck" onclick="markDone('${t.id}',event)"></div>
+      <div class="t-body">
+        <div class="t-title">${t.title}</div>
+        ${t.notes ? `<div class="t-note">${t.notes}</div>` : ''}
+        <div class="t-tags">
+          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${a.n}</span>
+          <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
+          <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
+          ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
 function mkCard(k,d,ts){
   const el = document.createElement('div');
   el.className = 'ac';
