@@ -268,6 +268,7 @@
 </div>
 
 <div class="nav">
+  <button class="nt" data-view="today" onclick="show('today',this)">Today</button>
   <button class="nt active" data-view="areas" onclick="show('areas',this)">Life Areas</button>
  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Priority Map</button>
   <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
@@ -284,7 +285,35 @@
 
 <div class="content">
   <div id="loading" class="loading">Loading your tasks from GitHub…</div>
-<div id="v-areas" style="display:none">
+<div id="v-today" style="display:none">
+
+  <div style="margin-bottom:20px">
+    <h2 id="greeting-line" style="margin:0 0 6px 0"></h2>
+    <div style="color:var(--t2);font-size:.9rem" id="today-date"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;padding:16px">
+    <div style="font-weight:600;margin-bottom:6px">Start Your Day</div>
+    <div style="color:var(--t2);font-size:.85rem">Check your energy, then commit to what actually matters.</div>
+  </div>
+
+  <div style="margin-bottom:24px">
+    <div class="slabel">Today's Commitments</div>
+    <div class="tlist" id="today-p1"></div>
+  </div>
+
+  <div style="margin-bottom:24px">
+    <div class="slabel">If You Have Capacity</div>
+    <div class="tlist" id="today-p2"></div>
+  </div>
+
+  <div>
+    <div class="slabel">Coming Up</div>
+    <div class="tlist" id="today-p3"></div>
+  </div>
+
+</div>
+  <div id="v-areas" style="display:none">
   <div class="slabel">Needs Attention — active pressure or consequence</div><div class="agrid" id="ag-urgent"></div>
   <div class="slabel">In Motion — active work across areas</div><div class="agrid" id="ag-active"></div>
   <div class="slabel">Longer Horizon — not active, but matters</div><div class="agrid" id="ag-goal"></div>
@@ -438,7 +467,7 @@ let tasks = [];
 let ideas = [];
 let researchItems = [];
 let references = [];
-let curView = 'areas';
+let curView = 'today';
 let eF = 'all';
 let pF = 'all';
 let clOpen = true;
@@ -469,7 +498,7 @@ const CLI = [
   {id:'fri',l:'<strong>Friday Weekly Review.</strong>',s:'Open Cowork → "weekly review". Full triage of all life areas.',show:isFri},
 ].filter(x => x.show);
 
-const ALL_VIEWS = ['areas','matrix','tasks','kanban','ideas','research','references'];
+const ALL_VIEWS = ['today','areas','matrix','tasks','kanban','ideas','research','references'];
 const KB_COLS = [
   { id:'Backlog',            label:'Backlog',            color:'var(--t3)' },
   { id:'Ready',              label:'Ready',              color:'var(--work)' },
@@ -752,6 +781,7 @@ function populateReferenceAreaDropdown(){
 
 function renderAll(){
   updUrgent();
+  renderToday();
   renderAreas();
   renderMatrix();
   renderTasks();
@@ -767,7 +797,38 @@ function updUrgent(){
   el.textContent = u ? `⚡ ${u} urgent item${u > 1 ? 's' : ''}` : '✓ No urgent items';
   el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
+function renderToday() {
+  const p1 = tasks.filter(t => !t.done && t.pri === 'P1');
+  const p2 = tasks.filter(t => !t.done && t.pri === 'P2');
+  const p3 = tasks.filter(t => !t.done && t.pri === 'P3');
 
+  const el1 = document.getElementById('today-p1');
+  const el2 = document.getElementById('today-p2');
+  const el3 = document.getElementById('today-p3');
+
+  if (el1) el1.innerHTML = p1.length ? p1.map(mkTItem).map(e => e.outerHTML).join('') : '<div style="color:var(--t3)">No commitments set.</div>';
+  if (el2) el2.innerHTML = p2.length ? p2.map(mkTItem).map(e => e.outerHTML).join('') : '<div style="color:var(--t3)">Nothing queued.</div>';
+  if (el3) el3.innerHTML = p3.length ? p3.map(mkTItem).map(e => e.outerHTML).join('') : '<div style="color:var(--t3)">No upcoming tasks.</div>';
+
+  const now = new Date();
+  const hour = now.getHours();
+
+  let greeting = 'Good morning';
+  if (hour >= 12 && hour < 18) greeting = 'Good afternoon';
+  if (hour >= 18) greeting = 'Good evening';
+
+  const dateStr = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const g = document.getElementById('greeting-line');
+  const d = document.getElementById('today-date');
+
+  if (g) g.textContent = `${greeting}, Victoria.`;
+  if (d) d.textContent = dateStr;
+}
 function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
     document.getElementById('ag-' + p).innerHTML = '';
