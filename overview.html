@@ -657,7 +657,7 @@ async function load(){
     populateReferenceAreaDropdown();
     renderAll();
     loading.style.display = 'none';
-    document.getElementById('v-areas').style.display = 'block';
+    document.getElementById('v-today').style.display = 'block';
   }catch(e){
     console.error('Load failed:', e);
     loading.textContent = 'Could not load dashboard data. Refresh and try again.';
@@ -806,7 +806,7 @@ function renderToday(){
   const upcomingEl = document.getElementById('today-upcoming');
   const routineHost = document.getElementById('today-routine-host');
 
-  if(!greetEl || !p1El || !p2El || !upcomingEl || !sumEl || !routineHost) return;
+  if(!greetEl || !subEl || !sumEl || !p1El || !p2El || !upcomingEl || !routineHost) return;
 
   const now = new Date();
   const dateText = now.toLocaleDateString('en-US', {
@@ -816,29 +816,28 @@ function renderToday(){
     year:'numeric'
   });
 
+  let greeting = 'Good morning';
+  if (now.getHours() >= 12 && now.getHours() < 17) greeting = 'Good afternoon';
+  if (now.getHours() >= 17) greeting = 'Good evening';
+
   const openTasks = tasks.filter(t => !t.done);
 
   const allP1 = openTasks
     .filter(t => t.pri === 'P1')
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'));
 
-  const topP1 = allP1.slice(0, 3);
+  const topP1 = allP1.slice(0,3);
   const extraP1 = allP1.slice(3);
 
   const p2 = openTasks
     .filter(t => t.pri === 'P2')
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
-    .slice(0, 5);
+    .slice(0,5);
 
   const upcoming = openTasks
     .filter(t => t.pri === 'P3')
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
-    .slice(0, 5);
-
-  const hour = now.getHours();
-  let greeting = 'Good morning';
-  if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
-  if (hour >= 17) greeting = 'Good evening';
+    .slice(0,5);
 
   greetEl.textContent = `${greeting}, Victoria.`;
   subEl.textContent = `Today is ${dateText}. Start with your routine, then move the highest-value work.`;
