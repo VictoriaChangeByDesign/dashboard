@@ -11,9 +11,9 @@
       --bg:#0f1117;--bg2:#14161f;--card:#1a1d27;--card2:#1f2235;
       --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
       --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
---work:#8b5cf6;--mihf:#8b5cf6;--naacp:#1e3a8a;--guns:#d4af37;
---friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
---glow:#22c55e;--family:#06b6d4;--finances:#14b8a6;--home:#a78bfa;
+      --work:#3b82f6;--mihf:#10b981;--naacp:#ef4444;--guns:#8b5cf6;
+      --friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
+      --glow:#eab308;--family:#06b6d4;--finances:#22c55e;--home:#a78bfa;
     }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
@@ -268,8 +268,7 @@
 </div>
 
 <div class="nav">
-  <button class="nt active" data-view="today" onclick="show('today',this)">Today</button>
-  <button class="nt" data-view="areas" onclick="show('areas',this)">Life Areas</button>
+  <button class="nt active" data-view="areas" onclick="show('areas',this)">Life Areas</button>
   <button class="nt" data-view="matrix" onclick="show('matrix',this)">Eisenhower Matrix</button>
   <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
   <button class="nt" data-view="kanban" onclick="show('kanban',this)">Kanban</button>
@@ -285,22 +284,7 @@
 
 <div class="content">
   <div id="loading" class="loading">Loading your tasks from GitHub…</div>
-<div id="v-today" style="display:none">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px 18px;margin-bottom:16px;">
-    <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px" id="today-greeting"></div>
-    <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px" id="today-subline"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap" id="today-summary"></div>
-  </div>
 
-  <div class="slabel">Today's Commitments</div>
-  <div class="tlist" id="today-p1"></div>
-
-  <div class="slabel">If You Have Capacity</div>
-  <div class="tlist" id="today-p2"></div>
-
-  <div class="slabel">Coming Up</div>
-  <div class="tlist" id="today-upcoming"></div>
-</div>
   <div id="v-areas" style="display:none">
     <div class="slabel">🔴 Urgent — needs action now</div><div class="agrid" id="ag-urgent"></div>
     <div class="slabel">🟡 Active — in motion</div><div class="agrid" id="ag-active"></div>
@@ -431,25 +415,27 @@ const RESEARCH_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashbo
 const REFS_RAW = './references.json?t=' + Date.now();
   
 const AREAS = {
-  DART: {i:'🚌',n:'DART',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing DART work, workforce transportation strategy, MIHF fellowship-related work, and related transportation leadership items under one work umbrella.'},
-  NAACP: {i:'✊🏽',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work requiring active stewardship, accountability, and periodic audit of what is due, overdue, or drifting.'},
-  'Gun Club': {i:'🔫',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Gun club leadership work with its own obligations, follow-up needs, and community-facing responsibilities.'},
-  Friends: {i:'🧑🏾‍🤝‍🧑🏾',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Relationship-centered work, support, and follow-up tied to important people in your orbit.'},
-  Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Change in Plain Sight',p:'active',b:'active',ctx:'Recording, editing, publishing, and future direction for your podcast presence.'},
-  Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brand positioning, business structure, visibility, and public-facing strategy.'},
-  Glow Up: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Development',p:'goal',b:'goal',ctx:'Long-arc personal development, education, visibility, health, and self-presentation work.'},
-  Family: {i:'💛',n:'Family',c:'var(--family)',r:'Mom · Langston & Zora',p:'active',b:'active',ctx:'Family responsibilities, planning, and care across two children with different needs.'},
-  Finances: {i:'💰',n:'Finances',c:'var(--finances)',r:'Personal Finance',p:'goal',b:'goal',ctx:'Financial audit, budgeting, savings, and long-term stabilization.'},
-  Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Home systems, organization, and environment improvements that reduce friction.'},
-  Setup: {i:'⚙️',n:'Setup',c:'var(--t2)',r:'System Setup',p:'active',b:'active',ctx:'One-time setup and systems work.'},
-  General: {i:'📋',n:'General',c:'var(--t2)',r:'General',p:'active',b:'active',ctx:'General tasks.'}
+  DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
+  MIHF: {i:'🏥',n:'MIHF Fellowship',c:'var(--mihf)',r:'Health Connect Fellow · MIHF',p:'active',b:'active',ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
+  NAACP: {i:'✊',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
+  'Gun Club': {i:'🛡️',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
+  Friends: {i:'🗳️',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Long-arc relationships including Heather. Support spans campaign work, podcast collaboration, and personal connection. Tasks here are relationship-driven, not tied to a single initiative.'},
+  Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Co-host → Solo Pivot · Change in Plain Sight',p:'active',b:'active',ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
+  Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Owner · Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
+  Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Dev → Dr. Victoria Henderson Weber',p:'goal',b:'goal',ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
+  Family: {i:'💛',n:'Family',c:'var(--family)',r:'Mom · Langston (10) & Zora (3)',p:'active',b:'active',ctx:'Two kids with very different needs. Langston is 10. Zora is 3. Both are a priority.'},
+  Finances: {i:'💰',n:'Finances',c:'var(--finances)',r:'Personal Finance',p:'goal',b:'goal',ctx:'Full audit first, then a working budget and savings system.'},
+  Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
+  Setup: {i:'⚙️',n:'Setup',c:'var(--t2)',r:'System Setup',p:'active',b:'active',ctx:'One-time system setup tasks.'},
+  General: {i:'📋',n:'General',c:'var(--t2)',r:'General',p:'active',b:'active',ctx:'General tasks.'},
+  'Eno Center': {i:'🎓',n:'Eno Center',c:'var(--work)',r:'Mid-Manager Program · July, Seattle',p:'active',b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
 };
 
 let tasks = [];
 let ideas = [];
 let researchItems = [];
 let references = [];
-let curView = 'today';
+let curView = 'areas';
 let eF = 'all';
 let pF = 'all';
 let clOpen = true;
@@ -480,7 +466,7 @@ const CLI = [
   {id:'fri',l:'<strong>Friday Weekly Review.</strong>',s:'Open Cowork → "weekly review". Full triage of all life areas.',show:isFri},
 ].filter(x => x.show);
 
-const ALL_VIEWS = ['today','areas','matrix','tasks','kanban','ideas','research','references'];
+const ALL_VIEWS = ['areas','matrix','tasks','kanban','ideas','research','references'];
 const KB_COLS = [
   { id:'Backlog',            label:'Backlog',            color:'var(--t3)' },
   { id:'Ready',              label:'Ready',              color:'var(--work)' },
@@ -541,10 +527,7 @@ function normalizeArea(area){
     'DART & Work': 'DART',
     'Brand & Business': 'Brand',
     'Glow Up': 'Glow',
-    'Friends': 'Friends',
-    'MIHF Fellowship': 'DART',
-    'MIHF': 'DART',
-    'Eno Center': 'DART'
+    'Friends': 'Friends'
   };
   return map[area] || area || 'General';
 }
@@ -642,7 +625,7 @@ async function load(){
     populateReferenceAreaDropdown();
     renderAll();
     loading.style.display = 'none';
-    document.getElementById('v-today').style.display = 'block';
+    document.getElementById('v-areas').style.display = 'block';
   }catch(e){
     console.error('Load failed:', e);
     loading.textContent = 'Could not load dashboard data. Refresh and try again.';
@@ -766,7 +749,6 @@ function populateReferenceAreaDropdown(){
 
 function renderAll(){
   updUrgent();
-  renderToday();
   renderAreas();
   renderMatrix();
   renderTasks();
@@ -782,81 +764,7 @@ function updUrgent(){
   el.textContent = u ? `⚡ ${u} urgent item${u > 1 ? 's' : ''}` : '✓ No urgent items';
   el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
-function getGreeting(){
-  const h = new Date().getHours();
-  if(h < 12) return 'Good morning';
-  if(h < 17) return 'Good afternoon';
-  return 'Good evening';
-}
 
-function renderPlannerTaskItem(t){
-  const a = AREAS[t.area] || AREAS.General;
-  return `
-    <div class="titem">
-      <div class="tcheck" onclick="markDone('${t.id}',event)"></div>
-      <div class="t-body">
-        <div class="t-title">${t.title}</div>
-        ${t.notes ? `<div class="t-note">${t.notes}</div>` : ''}
-        <div class="t-tags">
-          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${a.n}</span>
-          <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
-          <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
-          ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderToday(){
-  const greetEl = document.getElementById('today-greeting');
-  const subEl = document.getElementById('today-subline');
-  const sumEl = document.getElementById('today-summary');
-  const p1El = document.getElementById('today-p1');
-  const p2El = document.getElementById('today-p2');
-  const upcomingEl = document.getElementById('today-upcoming');
-  if(!greetEl || !p1El || !p2El || !upcomingEl || !sumEl) return;
-
-  const now = new Date();
-  const dateText = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-
-  const openTasks = tasks.filter(t => !t.done);
-
-  const p1 = openTasks
-    .filter(t => t.pri === 'P1')
-    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'));
-
-  const p2 = openTasks
-    .filter(t => t.pri === 'P2')
-    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
-    .slice(0,3);
-
-  const upcoming = openTasks
-    .filter(t => ['P2','P3'].includes(t.pri))
-    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
-    .slice(0,4);
-
-  greetEl.textContent = `${getGreeting()}, Victoria.`;
-  subEl.textContent = `Today is ${dateText}. Start with your routine, then move the highest-value work.`;
-
-  sumEl.innerHTML = `
-    <span class="tag-sm ${p1.length ? 'due-late' : 'due-ok'}">${p1.length} must-do item${p1.length !== 1 ? 's' : ''}</span>
-    <span class="tag-sm due-soon">${p2.length} if-capacity item${p2.length !== 1 ? 's' : ''}</span>
-    <span class="tag-sm">${openTasks.length} open total</span>
-  `;
-
-  p1El.innerHTML = p1.length
-    ? p1.map(renderPlannerTaskItem).join('')
-    : '<div class="kb-empty">No P1 items. Either you are clear, or something needs to be promoted.</div>';
-
-  p2El.innerHTML = p2.length
-    ? p2.map(renderPlannerTaskItem).join('')
-    : '<div class="kb-empty">Nothing queued here yet.</div>';
-
-  upcomingEl.innerHTML = upcoming.length
-    ? upcoming.map(renderPlannerTaskItem).join('')
-    : '<div class="kb-empty">Nothing pressing beyond today.</div>';
-}
 function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
     document.getElementById('ag-' + p).innerHTML = '';
