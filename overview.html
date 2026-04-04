@@ -11,9 +11,9 @@
       --bg:#0f1117;--bg2:#14161f;--card:#1a1d27;--card2:#1f2235;
       --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
       --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
-      --work:#8b5cf6;--mihf:#8b5cf6;--naacp:#1e3a8a;--guns:#d4af37;
-      --friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
-      --glow:#22c55e;--family:#06b6d4;--finances:#14b8a6;--home:#a78bfa;
+--work:#8b5cf6;--mihf:#8b5cf6;--naacp:#1e3a8a;--guns:#d4af37;
+--friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
+--glow:#22c55e;--family:#06b6d4;--finances:#14b8a6;--home:#a78bfa;
     }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
@@ -270,7 +270,7 @@
 <div class="nav">
   <button class="nt active" data-view="today" onclick="show('today',this)">Today</button>
   <button class="nt" data-view="areas" onclick="show('areas',this)">Life Areas</button>
-  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Priority Map</button>
+  <button class="nt" data-view="matrix" onclick="show('matrix',this)">Eisenhower Matrix</button>
   <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
   <button class="nt" data-view="kanban" onclick="show('kanban',this)">Kanban</button>
   <div class="nav-dd">
@@ -284,61 +284,54 @@
 </div>
 
 <div class="content">
-  <div id="loading" class="loading">Loading your planner…</div>
-
-  <div id="v-today" style="display:none">
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px 18px;margin-bottom:16px;">
-      <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px" id="today-greeting"></div>
-      <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px" id="today-subline"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="today-summary"></div>
-    </div>
-
-    <div style="margin-bottom:16px">
-      <div class="slabel">Start Your Day</div>
-      <div id="today-routine-host"></div>
-    </div>
-
-    <div class="slabel">Today's Commitments</div>
-    <div class="tlist" id="today-p1"></div>
-
-    <div class="slabel">If You Have Capacity</div>
-    <div class="tlist" id="today-p2"></div>
-
-    <div class="slabel">Coming Up</div>
-    <div class="tlist" id="today-upcoming"></div>
+  <div id="loading" class="loading">Loading your tasks from GitHub…</div>
+<div id="v-today" style="display:none">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px 18px;margin-bottom:16px;">
+    <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px" id="today-greeting"></div>
+    <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px" id="today-subline"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="today-summary"></div>
   </div>
 
+  <div class="slabel">Today's Commitments</div>
+  <div class="tlist" id="today-p1"></div>
+
+  <div class="slabel">If You Have Capacity</div>
+  <div class="tlist" id="today-p2"></div>
+
+  <div class="slabel">Coming Up</div>
+  <div class="tlist" id="today-upcoming"></div>
+</div>
   <div id="v-areas" style="display:none">
-    <div class="slabel">Needs Attention — active pressure or consequence</div><div class="agrid" id="ag-urgent"></div>
-    <div class="slabel">In Motion — active work across areas</div><div class="agrid" id="ag-active"></div>
-    <div class="slabel">Longer Horizon — not active, but matters</div><div class="agrid" id="ag-goal"></div>
+    <div class="slabel">🔴 Urgent — needs action now</div><div class="agrid" id="ag-urgent"></div>
+    <div class="slabel">🟡 Active — in motion</div><div class="agrid" id="ag-active"></div>
+    <div class="slabel">🔵 Goals & Someday</div><div class="agrid" id="ag-goal"></div>
   </div>
 
   <div id="v-matrix" style="display:none">
-    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> This view reflects your priority bands. Now = must move first. Next = should move soon. Soon = keep visible. Later = can wait. Park = remove from active load.</p>
+    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> Urgent = deadline within 7 days or has active external consequence. Important = moves you toward your goals, with real stakes. Do Q1 first. Protect time for Q2. Minimize Q3. Drop Q4.</p>
     <div class="matrix">
       <div class="quad" style="border-top:2px solid #ef4444">
-        <span class="qlabel ql1">Now — Do First</span>
-        <h3>P1 — Now</h3>
-        <p class="quad-desc">High importance, real consequence, or blocks other work</p>
+        <span class="qlabel ql1">Q1 — Do First</span>
+        <h3>Urgent + Important</h3>
+        <p class="quad-desc">Active deadlines, external accountability, real consequences now</p>
         <div id="q1"></div>
       </div>
       <div class="quad" style="border-top:2px solid #3b82f6">
-        <span class="qlabel ql2">Next — Queue</span>
-        <h3>P2 — Next</h3>
-        <p class="quad-desc">Important work that should move soon</p>
+        <span class="qlabel ql2">Q2 — Schedule</span>
+        <h3>Important, Not Urgent</h3>
+        <p class="quad-desc">Your highest-value work — protect and schedule this time</p>
         <div id="q2"></div>
       </div>
       <div class="quad" style="border-top:2px solid #f59e0b">
-        <span class="qlabel ql3">Soon — Maintain</span>
-        <h3>P3 — Soon</h3>
-        <p class="quad-desc">Matters, but not immediate. Keep it moving.</p>
+        <span class="qlabel ql3">Q3 — Minimize</span>
+        <h3>Urgent, Not Important</h3>
+        <p class="quad-desc">Delegate, defer, or do fast — someone else's deadline</p>
         <div id="q3"></div>
       </div>
       <div class="quad" style="border-top:2px solid #5c5c70">
-        <span class="qlabel ql4">Later / Park</span>
-        <h3>P4 / P5 — Later or Park</h3>
-        <p class="quad-desc">Low urgency or low consequence. Do not crowd active work.</p>
+        <span class="qlabel ql4">Q4 — Later</span>
+        <h3>Not Urgent, Not Important</h3>
+        <p class="quad-desc">Someday / Maybe — revisit quarterly</p>
         <div id="q4"></div>
       </div>
     </div>
@@ -346,19 +339,17 @@
 
   <div id="v-tasks" style="display:none">
     <div class="filters">
-      <span class="fl">Energy Required:</span>
+      <span class="fl">Energy:</span>
       <button class="fbtn on" onclick="filt('e','all',this)">All</button>
       <button class="fbtn" onclick="filt('e','High',this)">🔴 High</button>
       <button class="fbtn" onclick="filt('e','Medium',this)">🟡 Medium</button>
       <button class="fbtn" onclick="filt('e','Low',this)">🟢 Low</button>
       <div class="sep"></div>
-      <span class="fl">Priority Band:</span>
+      <span class="fl">Priority:</span>
       <button class="fbtn on" onclick="filt('p','all',this)">All</button>
       <button class="fbtn" onclick="filt('p','P1',this)">P1</button>
       <button class="fbtn" onclick="filt('p','P2',this)">P2</button>
       <button class="fbtn" onclick="filt('p','P3',this)">P3</button>
-      <button class="fbtn" onclick="filt('p','P4',this)">P4</button>
-      <button class="fbtn" onclick="filt('p','P5',this)">P5</button>
     </div>
     <div class="tlist" id="tlist"></div>
   </div>
@@ -416,22 +407,32 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<iframe name="taskUpdateFrame" style="display:none;"></iframe>
 
+<form id="taskUpdateForm" method="POST" target="taskUpdateFrame" style="display:none;">
+  <input type="hidden" name="action" value="updateTask">
+  <input type="hidden" name="update_type" value="">
+  <input type="hidden" name="task_id" value="">
+  <input type="hidden" name="notes" value="">
+  <input type="hidden" name="due_date" value="">
+  <input type="hidden" name="kanban_stage" value="">
+  <input type="hidden" name="completed" value="">
+</form>
 <script>
-const RAW = './tasks.json?t=' + Date.now();
-const API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/tasks.json';
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzA71wxqc_D83Vz1oNFGDZg3xZY03vbqCR0dM-jK24Ha7H1UsqfabmKRs-lhC4uQEnRYw/exec';
+const RAW = WEB_APP_URL + '?action=getTasks&t=' + Date.now();
+
 const IDEAS_RAW = './ideas.json?t=' + Date.now();
 const IDEAS_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/ideas.json';
 const RESEARCH_RAW = './research.json?t=' + Date.now();
 const RESEARCH_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashboard/contents/research.json';
 const REFS_RAW = './references.json?t=' + Date.now();
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx2A5bbLhH6STGq1llUBCUHROaECIR6IiP4rxrXLAyL_IefKsp3lMlOunEL9l_fSERTzQ/exec';
-
+  
 const AREAS = {
-  DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the vanpool program, workforce transportation strategy, and related fellowship/program work under one work umbrella.'},
-  NAACP: {i:'✊',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work requiring active stewardship, accountability, and periodic audit of what is due, overdue, or drifting.'},
-  'Gun Club': {i:'🛡️',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Gun club leadership work with its own obligations, follow-up needs, and community-facing responsibilities.'},
-  Friends: {i:'🗳️',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Relationship-centered work, support, and follow-up tied to important people in your orbit.'},
+  DART: {i:'🚌',n:'DART',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing DART work, workforce transportation strategy, MIHF fellowship-related work, and related transportation leadership items under one work umbrella.'},
+  NAACP: {i:'✊🏽',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work requiring active stewardship, accountability, and periodic audit of what is due, overdue, or drifting.'},
+  'Gun Club': {i:'🔫',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Gun club leadership work with its own obligations, follow-up needs, and community-facing responsibilities.'},
+  Friends: {i:'🧑🏾‍🤝‍🧑🏾',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Relationship-centered work, support, and follow-up tied to important people in your orbit.'},
   Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Change in Plain Sight',p:'active',b:'active',ctx:'Recording, editing, publishing, and future direction for your podcast presence.'},
   Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brand positioning, business structure, visibility, and public-facing strategy.'},
   Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Development',p:'goal',b:'goal',ctx:'Long-arc personal development, education, visibility, health, and self-presentation work.'},
@@ -478,21 +479,25 @@ const CLI = [
 ].filter(x => x.show);
 
 const ALL_VIEWS = ['today','areas','matrix','tasks','kanban','ideas','research','references'];
+
 const KB_COLS = [
-  { id:'Backlog',            label:'Backlog',            color:'var(--t3)' },
-  { id:'Ready',              label:'Ready',              color:'var(--work)' },
-  { id:'This Week',          label:'This Week',          color:'#06b6d4' },
-  { id:'In Progress',        label:'In Progress',        color:'#f59e0b' },
-  { id:'Waiting/Blocked',    label:'Waiting / Blocked',  color:'#ef4444' },
-  { id:'Done',               label:'Done',               color:'#22c55e' }
+  { id:'Backlog',         label:'Backlog',           color:'var(--t3)' },
+  { id:'Ready',           label:'Ready',             color:'var(--work)' },
+  { id:'This Week',       label:'This Week',         color:'#06b6d4' },
+  { id:'In Progress',     label:'In Progress',       color:'#f59e0b' },
+  { id:'Waiting/Blocked', label:'Waiting / Blocked', color:'#ef4444' },
+  { id:'Done',            label:'Done',              color:'#22c55e' }
 ];
+
 const IDEA_STAGES = ['raw','exploring','ready','archived'];
 const IDEA_STAGE_LABELS = { raw:'Raw', exploring:'Exploring', ready:'Ready to Act', archived:'Archived' };
 const IDEA_STAGE_COLORS = { raw:'var(--t3)', exploring:'var(--work)', ready:'#22c55e', archived:'#5c5c70' };
+
 const RES_STATUSES = ['to-research','in-progress','complete'];
 const RES_STATUS_LABELS = { 'to-research':'To Research', 'in-progress':'In Progress', 'complete':'Complete' };
 const RES_STATUS_COLORS = { 'to-research':'var(--t3)', 'in-progress':'#f59e0b', 'complete':'#22c55e' };
 
+/* ---------- checklist ---------- */
 function initCL(){
   document.getElementById('cl-body').innerHTML = CLI.map(i => `
     <div class="ci ${clS[i.id] ? 'done' : ''}" id="ci-${i.id}" onclick="togCI('${i.id}')">
@@ -533,6 +538,7 @@ function resetCL(){
   initCL();
 }
 
+/* ---------- mapping ---------- */
 function normalizeArea(area){
   const map = {
     'DART & Work': 'DART',
@@ -595,7 +601,6 @@ function mapIdea(i, idx){
     created_at: i.created_at || ''
   };
 }
-
 function mapResearch(r, idx){
   return {
     id: r.id || `research_${idx}`,
@@ -606,7 +611,6 @@ function mapResearch(r, idx){
     created_at: r.created_at || ''
   };
 }
-
 function mapReference(r, idx){
   return {
     id: r.id || `ref_${idx}`,
@@ -617,17 +621,18 @@ function mapReference(r, idx){
   };
 }
 
+/* ---------- load / refresh ---------- */
 async function load(){
   const loading = document.getElementById('loading');
   try{
     const [taskRes, ideaRes, researchRes, refRes] = await Promise.all([
-      fetch(RAW, { cache: 'no-store' }),
+      fetch(WEB_APP_URL + '?action=getTasks&t=' + Date.now(), { cache: 'no-store' }),
       fetch(IDEAS_RAW, { cache: 'no-store' }),
       fetch(RESEARCH_RAW, { cache: 'no-store' }),
       fetch(REFS_RAW, { cache: 'no-store' })
     ]);
 
-    if(!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
+    if(!taskRes.ok) throw new Error(`getTasks HTTP ${taskRes.status}`);
 
     tasks = mapJsonTasks(await taskRes.json());
     ideas = ideaRes.ok ? (await ideaRes.json()).map(mapIdea) : [];
@@ -640,22 +645,25 @@ async function load(){
     document.getElementById('v-today').style.display = 'block';
   }catch(e){
     console.error('Load failed:', e);
-    loading.textContent = 'Could not load dashboard data. Refresh and try again.';
+    loading.textContent = 'Could not load planner data. Refresh and try again.';
   }
 }
 
 async function reloadTasks(){
-  const taskRes = await fetch('./tasks.json?t=' + Date.now(), { cache: 'no-store' });
-  if (!taskRes.ok) throw new Error(`tasks.json HTTP ${taskRes.status}`);
+  const taskRes = await fetch(WEB_APP_URL + '?action=getTasks&t=' + Date.now(), { cache: 'no-store' });
+  if (!taskRes.ok) throw new Error(`getTasks HTTP ${taskRes.status}`);
   tasks = mapJsonTasks(await taskRes.json());
 }
 
 async function refreshTasksAndRender(){
   await reloadTasks();
   renderAll();
-  if (curView) show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
+  if (curView) {
+    show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
+  }
 }
 
+/* ---------- task updates ---------- */
 async function sendTaskUpdate(payload) {
   const body = new URLSearchParams({
     action: 'updateTask',
@@ -664,52 +672,32 @@ async function sendTaskUpdate(payload) {
     )
   });
 
-  const response = await fetch(WEB_APP_URL, {
+  await fetch(WEB_APP_URL, {
     method: 'POST',
+    mode: 'no-cors',
     body
   });
 
-  const data = await response.json();
+  await new Promise(resolve => setTimeout(resolve, 1600));
+  await refreshTasksAndRender();
 
-  if (!data.success) {
-    throw new Error(data.message || 'Task update failed');
-  }
-
-  return data;
+  return { success: true };
 }
 
 async function updateTaskNotes(taskId, notes) {
-  return sendTaskUpdate({
-    update_type: 'updateNotes',
-    task_id: taskId,
-    notes
-  });
+  return sendTaskUpdate({ update_type: 'updateNotes', task_id: taskId, notes });
 }
-
 async function updateTaskDueDate(taskId, dueDate) {
-  return sendTaskUpdate({
-    update_type: 'updateDueDate',
-    task_id: taskId,
-    due_date: dueDate
-  });
+  return sendTaskUpdate({ update_type: 'updateDueDate', task_id: taskId, due_date: dueDate });
 }
-
 async function updateTaskKanbanStage(taskId, kanbanStage) {
-  return sendTaskUpdate({
-    update_type: 'updateKanbanStage',
-    task_id: taskId,
-    kanban_stage: kanbanStage
-  });
+  return sendTaskUpdate({ update_type: 'updateKanbanStage', task_id: taskId, kanban_stage: kanbanStage });
 }
-
 async function markTaskComplete(taskId) {
-  return sendTaskUpdate({
-    update_type: 'markComplete',
-    task_id: taskId,
-    completed: true
-  });
+  return sendTaskUpdate({ update_type: 'markComplete', task_id: taskId, completed: true });
 }
 
+/* ---------- dropdown population ---------- */
 function populateReferenceAreaDropdown(){
   const sel = document.getElementById('ref-area-sel');
   if(!sel) return;
@@ -724,6 +712,7 @@ function populateReferenceAreaDropdown(){
   });
 }
 
+/* ---------- render orchestrator ---------- */
 function renderAll(){
   updUrgent();
   renderToday();
@@ -743,6 +732,7 @@ function updUrgent(){
   el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
 }
 
+/* ---------- today view ---------- */
 function getGreeting(){
   const h = new Date().getHours();
   if(h < 12) return 'Good morning';
@@ -781,14 +771,17 @@ function renderToday(){
 
   const now = new Date();
   const dateText = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+
   const openTasks = tasks.filter(t => !t.done);
   const p1 = openTasks
     .filter(t => t.pri === 'P1')
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'));
+
   const p2 = openTasks
     .filter(t => t.pri === 'P2')
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
     .slice(0,3);
+
   const upcoming = openTasks
     .filter(t => ['P2','P3'].includes(t.pri))
     .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))
@@ -796,25 +789,36 @@ function renderToday(){
 
   greetEl.textContent = `${getGreeting()}, Victoria.`;
   subEl.textContent = `Today is ${dateText}. Start with your routine, then move the highest-value work.`;
+
   sumEl.innerHTML = `
     <span class="tag-sm ${p1.length ? 'due-late' : 'due-ok'}">${p1.length} must-do item${p1.length !== 1 ? 's' : ''}</span>
     <span class="tag-sm due-soon">${p2.length} if-capacity item${p2.length !== 1 ? 's' : ''}</span>
     <span class="tag-sm">${openTasks.length} open total</span>
   `;
 
-  routineHost.innerHTML = document.querySelector('.cl-wrap') ? document.querySelector('.cl-wrap').outerHTML : '';
-  const nested = routineHost.querySelector('.cl-wrap');
-  if(nested){
-    nested.style.margin = '0';
-  }
+  routineHost.innerHTML = `
+    <div class="titem">
+      <div class="t-body">
+        <div class="t-title">Daily routine checklist</div>
+        <div class="t-note">Use the checklist above to orient your day before moving into task work.</div>
+      </div>
+    </div>
+  `;
 
-  p1El.innerHTML = p1.length ? p1.map(renderPlannerTaskItem).join('') : '<div class="kb-empty">No P1 items. Either you are clear, or something needs to be promoted.</div>';
-  p2El.innerHTML = p2.length ? p2.map(renderPlannerTaskItem).join('') : '<div class="kb-empty">Nothing queued here yet.</div>';
-  upcomingEl.innerHTML = upcoming.length ? upcoming.map(renderPlannerTaskItem).join('') : '<div class="kb-empty">Nothing pressing beyond today.</div>';
-} urgent item${u > 1 ? 's' : ''}` : '✓ No urgent items';
-  el.className = 'pill ' + (u ? 'pill-red' : 'pill-btn');
+  p1El.innerHTML = p1.length
+    ? p1.map(renderPlannerTaskItem).join('')
+    : '<div class="kb-empty">No P1 items. Either you are clear, or something needs to be promoted.</div>';
+
+  p2El.innerHTML = p2.length
+    ? p2.map(renderPlannerTaskItem).join('')
+    : '<div class="kb-empty">Nothing queued here yet.</div>';
+
+  upcomingEl.innerHTML = upcoming.length
+    ? upcoming.map(renderPlannerTaskItem).join('')
+    : '<div class="kb-empty">Nothing pressing beyond today.</div>';
 }
 
+/* ---------- areas ---------- */
 function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
     document.getElementById('ag-' + p).innerHTML = '';
@@ -841,27 +845,6 @@ function mkCard(k,d,ts){
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
     <div class="ac-top">
       <span style="font-size:1.3rem">${d.i}</span>
-    </div>
-    <h3>${d.n}</h3>
-    <div class="ac-role">${d.r}</div>
-    <ul class="ac-tasks">
-      ${ts.slice(0,3).map(t=>`<li class="ac-task"><span class="ac-dot" style="background:${d.c}"></span>${t.title}</li>`).join('') || '<li class="ac-task">No open tasks</li>'}
-    </ul>
-    <div class="ac-foot">
-      <span>${ts.length} open task${ts.length!==1?'s':''}</span>
-    </div>
-  `;
-  return el;
-}
-
-// --- SAFETY CLOSE (file was truncated) ---
-function noop(){}
-
-initCL();
-load();
-</script>
-</body>
-</html>/span>
       <span class="badge b-${d.b}">${bLabel}</span>
     </div>
     <h3>${d.n}</h3>
@@ -882,6 +865,7 @@ load();
   return el;
 }
 
+/* ---------- matrix ---------- */
 function renderMatrix(){
   ['q1','q2','q3','q4'].forEach(q => {
     document.getElementById(q).innerHTML = '';
@@ -916,6 +900,7 @@ function mkQT(t){
   return el;
 }
 
+/* ---------- all tasks ---------- */
 function renderTasks(){
   const list = document.getElementById('tlist');
   list.innerHTML = '';
@@ -960,7 +945,6 @@ async function markDone(id,ev){
 
   try {
     await markTaskComplete(t.task_id || t.id);
-    await refreshTasksAndRender();
     toast('✓ Task marked complete');
   } catch (e) {
     console.error(e);
@@ -968,12 +952,13 @@ async function markDone(id,ev){
   }
 }
 
+/* ---------- detail ---------- */
 function openDetail(k){
   const d = AREAS[k];
   if(!d) return;
   const open = tasks.filter(t => t.area === k && !t.done);
   const done = tasks.filter(t => t.area === k && t.done);
-  ['v-areas','v-matrix','v-tasks','v-kanban','v-ideas','v-research','v-references'].forEach(v => {
+  ['v-today','v-areas','v-matrix','v-tasks','v-kanban','v-ideas','v-research','v-references'].forEach(v => {
     const el = document.getElementById(v);
     if(el) el.style.display = 'none';
   });
@@ -1016,12 +1001,14 @@ function openDetail(k){
     ` : ''}
   `;
 }
+
 function closeDetail() {
   document.getElementById('detail').classList.remove('open');
   const activeBtn = document.querySelector('.nt.active');
-  show(curView, curView === 'areas' ? activeBtn : null);
+  show(curView, activeBtn);
 }
 
+/* ---------- nav ---------- */
 function show(v, btn) {
   curView = v;
   const isIdeation = ['ideas','research','references'].includes(v);
@@ -1029,29 +1016,36 @@ function show(v, btn) {
   if (btn) btn.classList.add('active');
   if (isIdeation) document.getElementById('nt-ideation').classList.add('active');
   document.getElementById('detail').classList.remove('open');
+
   ALL_VIEWS.forEach(x => {
     const el = document.getElementById('v-' + x);
     if (el) el.style.display = 'none';
   });
+
   const target = document.getElementById('v-' + v);
   if (target) target.style.display = 'block';
+
+  if (v === 'today') renderToday();
   if (v === 'kanban') renderKanban();
   if (v === 'ideas') renderIdeas();
   if (v === 'research') renderResearch();
   if (v === 'references') renderReferences();
 }
+
 function showSub(v) {
   ideationOpen = false;
   document.getElementById('ideation-menu').style.display = 'none';
   document.getElementById('nt-ideation').textContent = 'Ideation ▾';
   show(v, null);
 }
+
 function toggleIdeation(e) {
   e.stopPropagation();
   ideationOpen = !ideationOpen;
   document.getElementById('ideation-menu').style.display = ideationOpen ? 'block' : 'none';
   document.getElementById('nt-ideation').textContent = 'Ideation ' + (ideationOpen ? '▴' : '▾');
 }
+
 document.addEventListener('click', () => {
   if (ideationOpen) {
     ideationOpen = false;
@@ -1070,6 +1064,7 @@ function filt(type,val,btn){
   renderTasks();
 }
 
+/* ---------- kanban ---------- */
 function renderKanban() {
   const wrap = document.getElementById('kb-wrap');
   if (!wrap) return;
@@ -1121,7 +1116,6 @@ async function moveKb(id, col) {
   if(!t) return;
   try {
     await updateTaskKanbanStage(t.task_id || t.id, col);
-    await refreshTasksAndRender();
     toast('Moved to ' + (KB_COLS.find(c => c.id === col)?.label || col));
   } catch (e) {
     console.error(e);
@@ -1135,7 +1129,6 @@ async function saveKbNote(id) {
   if(!t || !inp) return;
   try {
     await updateTaskNotes(t.task_id || t.id, inp.value.trim());
-    await refreshTasksAndRender();
     toast('Note saved');
   } catch (e) {
     console.error(e);
@@ -1143,6 +1136,7 @@ async function saveKbNote(id) {
   }
 }
 
+/* ---------- ideas ---------- */
 function filtIdeas(stage, btn) {
   ideaStageF = stage;
   document.querySelectorAll('.stage-tab').forEach(b => b.classList.remove('on'));
@@ -1158,11 +1152,13 @@ function renderIdeas() {
   const filtered = ideas
     .filter(i => ideaStageF === 'all' || i.stage === ideaStageF)
     .sort((a, b) => (stageOrder[a.stage] || 0) - (stageOrder[b.stage] || 0));
+
   if (!filtered.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
     return;
   }
+
   empty.style.display = 'none';
   grid.innerHTML = filtered.map(i => {
     const a = AREAS[normalizeArea(i.area)] || AREAS.General;
@@ -1191,15 +1187,18 @@ async function updateIdeaStage(id, stage) {
   if(!item) return;
   item.stage = stage;
   renderIdeas();
+
   const tok = localStorage.getItem('gh-tok');
   if(!tok){
     toast('Add GitHub token in Settings to sync across devices');
     return;
   }
+
   await syncCollectionItem(tok, IDEAS_API, ideas, item.id, { stage }, `Update idea stage: ${item.title || 'idea'}`);
   toast('Stage: ' + IDEA_STAGE_LABELS[stage]);
 }
 
+/* ---------- research ---------- */
 function renderResearch() {
   const container = document.getElementById('res-groups');
   if (!container) return;
@@ -1207,6 +1206,7 @@ function renderResearch() {
     container.innerHTML = '<div style="color:var(--t3);font-size:.84rem;padding:20px 0">No research items yet.</div>';
     return;
   }
+
   container.innerHTML = RES_STATUSES.map(status => {
     const items = researchItems.filter(r => r.status === status);
     if (!items.length) return '';
@@ -1225,7 +1225,7 @@ function renderResearch() {
                   <div class="res-title">${r.title || r.raw_input}</div>
                   ${r.raw_input && r.raw_input !== r.title ? `<div class="res-raw">${r.raw_input}</div>` : ''}
                   <div class="res-meta">
-                    <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area||'General'}</span>
+                    <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area || 'General'}</span>
                     ${dt ? `<span style="font-size:.67rem;color:var(--t3)">${dt}</span>` : ''}
                   </div>
                 </div>
@@ -1246,15 +1246,18 @@ async function updateResStatus(id, status) {
   if(!item) return;
   item.status = status;
   renderResearch();
+
   const tok = localStorage.getItem('gh-tok');
   if(!tok){
     toast('Add GitHub token in Settings to sync across devices');
     return;
   }
+
   await syncCollectionItem(tok, RESEARCH_API, researchItems, item.id, { status }, `Update research status: ${item.title || 'research'}`);
   toast('Status: ' + RES_STATUS_LABELS[status]);
 }
 
+/* ---------- references ---------- */
 function filterRefs() {
   refSearchQ = document.getElementById('ref-search')?.value.toLowerCase() || '';
   renderReferences();
@@ -1267,12 +1270,14 @@ function renderReferences() {
   const grid = document.getElementById('ref-grid');
   const empty = document.getElementById('ref-empty');
   if (!grid) return;
+
   if (!references.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
     empty.textContent = 'No references yet.';
     return;
   }
+
   const filtered = references.filter(r => {
     const matchArea = refAreaF === 'all' || normalizeArea(r.area) === refAreaF;
     const matchSearch = !refSearchQ ||
@@ -1280,12 +1285,14 @@ function renderReferences() {
       (r.raw_input||'').toLowerCase().includes(refSearchQ);
     return matchArea && matchSearch;
   });
+
   if (!filtered.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
     empty.textContent = 'No references match your search.';
     return;
   }
+
   empty.style.display = 'none';
   grid.innerHTML = filtered.map(r => {
     const a = AREAS[normalizeArea(r.area)] || AREAS.General;
@@ -1295,7 +1302,7 @@ function renderReferences() {
         <div class="ref-card-title">${r.title || r.raw_input}</div>
         ${r.raw_input && r.raw_input !== r.title ? `<div class="ref-card-raw">${r.raw_input}</div>` : ''}
         <div class="ref-card-foot">
-          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area||'General'}</span>
+          <span class="area-chip" style="border-color:${a.c}33;color:${a.c}">${a.i} ${r.area || 'General'}</span>
           ${dt ? `<span class="ref-date">${dt}</span>` : ''}
         </div>
       </div>
@@ -1303,6 +1310,7 @@ function renderReferences() {
   }).join('');
 }
 
+/* ---------- github sync for non-task collections ---------- */
 async function syncCollectionItem(tok, apiUrl, collection, itemId, patch, message){
   try{
     const fr = await fetch(apiUrl, {
@@ -1340,6 +1348,7 @@ async function syncCollectionItem(tok, apiUrl, collection, itemId, patch, messag
   }
 }
 
+/* ---------- utility ---------- */
 function eIcon(e){ return e === 'High' ? '🔴 High' : e === 'Low' ? '🟢 Low' : '🟡 Med'; }
 function eClass(e){ return e === 'High' ? 'e-high' : e === 'Low' ? 'e-low' : 'e-med'; }
 function dueClass(d){
@@ -1362,6 +1371,7 @@ function fmtDue(d){
   return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
 }
 
+/* ---------- settings / toast ---------- */
 function openSettings(){
   document.getElementById('smodal').classList.add('open');
   const t = localStorage.getItem('gh-tok');
