@@ -166,5 +166,33 @@
     "source": "google_sheet_inbox",
     "project_id": "",
     "project_name": ""
+  },
+  {
+    "task_id": "tsk_20260404_114619_5908",
+    "title": "Review Dashboard with Mike Tatone",
+    "raw_input": "Review updated dashboard with Mike Tatone",
+    "type": "Task",
+    "area": "DART & Work",
+    "due_date": "2026-04-08",
+    "energy_required": "Low",
+    "effort_level": "Deep",
+    "importance": "High",
+    "urgency": "Next 7 Days",
+    "priority_band": "Next",
+    "kanban_stage": "Backlog",
+    "next_action": "",
+    "notes": "",
+    "started_at": "",
+    "last_touched_at": "",
+    "blocked_reason": "",
+    "status": "Active",
+    "review_date": "",
+    "completed": false,
+    "completed_at": "",
+    "created_at": "2026-04-02T01:00:00.000Z",
+    "updated_at": "2026-04-02T01:00:00.000Z",
+    "source": "google_sheet_inbox",
+    "project_id": "",
+    "project_name": ""
   }
 ]
