@@ -285,7 +285,57 @@
 <div class="content">
   <div id="loading" class="loading">Loading your tasks from GitHub…</div>
 
-v
+  <div id="v-areas" style="display:none">
+    <div class="slabel">🔴 Urgent — needs action now</div><div class="agrid" id="ag-urgent"></div>
+    <div class="slabel">🟡 Active — in motion</div><div class="agrid" id="ag-active"></div>
+    <div class="slabel">🔵 Goals & Someday</div><div class="agrid" id="ag-goal"></div>
+  </div>
+
+  <div id="v-matrix" style="display:none">
+    <p style="font-size:.77rem;color:var(--t3);margin-bottom:16px"><strong style="color:var(--t2)">How to read this:</strong> Urgent = deadline within 7 days or has active external consequence. Important = moves you toward your goals, with real stakes. Do Q1 first. Protect time for Q2. Minimize Q3. Drop Q4.</p>
+    <div class="matrix">
+      <div class="quad" style="border-top:2px solid #ef4444">
+        <span class="qlabel ql1">Q1 — Do First</span>
+        <h3>Urgent + Important</h3>
+        <p class="quad-desc">Active deadlines, external accountability, real consequences now</p>
+        <div id="q1"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #3b82f6">
+        <span class="qlabel ql2">Q2 — Schedule</span>
+        <h3>Important, Not Urgent</h3>
+        <p class="quad-desc">Your highest-value work — protect and schedule this time</p>
+        <div id="q2"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #f59e0b">
+        <span class="qlabel ql3">Q3 — Minimize</span>
+        <h3>Urgent, Not Important</h3>
+        <p class="quad-desc">Delegate, defer, or do fast — someone else's deadline</p>
+        <div id="q3"></div>
+      </div>
+      <div class="quad" style="border-top:2px solid #5c5c70">
+        <span class="qlabel ql4">Q4 — Later</span>
+        <h3>Not Urgent, Not Important</h3>
+        <p class="quad-desc">Someday / Maybe — revisit quarterly</p>
+        <div id="q4"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="v-tasks" style="display:none">
+    <div class="filters">
+      <span class="fl">Energy:</span>
+      <button class="fbtn on" onclick="filt('e','all',this)">All</button>
+      <button class="fbtn" onclick="filt('e','High',this)">🔴 High</button>
+      <button class="fbtn" onclick="filt('e','Medium',this)">🟡 Medium</button>
+      <button class="fbtn" onclick="filt('e','Low',this)">🟢 Low</button>
+      <div class="sep"></div>
+      <span class="fl">Priority:</span>
+      <button class="fbtn on" onclick="filt('p','all',this)">All</button>
+      <button class="fbtn" onclick="filt('p','P1',this)">P1</button>
+      <button class="fbtn" onclick="filt('p','P2',this)">P2</button>
+      <button class="fbtn" onclick="filt('p','P3',this)">P3</button>
+    </div>
+    <div class="tlist" id="tlist"></div>
   </div>
 
   <div id="v-kanban" style="display:none">
