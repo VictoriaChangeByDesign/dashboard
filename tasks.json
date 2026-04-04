@@ -138,5 +138,33 @@
     "source": "google_sheet_inbox",
     "project_id": "",
     "project_name": ""
+  },
+  {
+    "task_id": "tsk_20260404_073139_5679",
+    "title": "Test dash sync",
+    "raw_input": "Test dash sync",
+    "type": "Task",
+    "area": "NAACP",
+    "due_date": "2026-04-05",
+    "energy_required": "Medium",
+    "effort_level": "Medium",
+    "importance": "High",
+    "urgency": "Next 3 Days",
+    "priority_band": "Next",
+    "kanban_stage": "Backlog",
+    "next_action": "",
+    "notes": "",
+    "started_at": "",
+    "last_touched_at": "",
+    "blocked_reason": "",
+    "status": "Active",
+    "review_date": "",
+    "completed": false,
+    "completed_at": "",
+    "created_at": "2026-04-04T01:28:19.871Z",
+    "updated_at": "2026-04-04T01:28:19.871Z",
+    "source": "google_sheet_inbox",
+    "project_id": "",
+    "project_name": ""
   }
 ]
