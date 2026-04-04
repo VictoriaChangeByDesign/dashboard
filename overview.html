@@ -658,12 +658,44 @@ async function sendTaskUpdate(payload) {
 
   form.submit();
 
-  await new Promise(resolve => setTimeout(resolve, 1200));
-  await refreshTasksAndRender();
+  await waitForTaskUpdate(payload.task_id, payload);
 
   return { success: true };
 }
+async function waitForTaskUpdate(taskId, payload) {
+  const maxAttempts = 8;
+  const delayMs = 800;
 
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+    await reloadTasks();
+
+    const task = tasks.find(t => String(t.task_id || t.id) === String(taskId));
+    if (!task) continue;
+
+    let matched = false;
+
+    if (payload.update_type === 'markComplete') {
+      matched = task.done === true || task.completed === true;
+    } else if (payload.update_type === 'updateKanbanStage') {
+      matched = String(task.kanban_stage || '') === String(payload.kanban_stage || '');
+    } else if (payload.update_type === 'updateNotes') {
+      matched = String(task.notes || '') === String(payload.notes || '');
+    } else if (payload.update_type === 'updateDueDate') {
+      matched = String(task.due || '') === String(payload.due_date || '');
+    }
+
+    if (matched) {
+      renderAll();
+      if (curView) {
+        show(curView, document.querySelector(`.nt[data-view="${curView}"]`) || null);
+      }
+      return;
+    }
+  }
+
+  await refreshTasksAndRender();
+}
 async function updateTaskNotes(taskId, notes) {
   return sendTaskUpdate({
     update_type: 'updateNotes',
