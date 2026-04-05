@@ -271,8 +271,9 @@
   <button class="nt active" data-view="today" onclick="show('today',this)">Today</button>
   <button class="nt" data-view="areas" onclick="show('areas',this)">Life Areas</button>
   <button class="nt" data-view="matrix" onclick="show('matrix',this)">Priority Map</button>
-  <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
   <button class="nt" data-view="kanban" onclick="show('kanban',this)">Kanban</button>
+  <button class="nt" data-view="tasks" onclick="show('tasks',this)">All Tasks</button>
+  <button class="nt" data-view="capture" onclick="show('capture',this)">Capture</button>
   <div class="nav-dd">
     <button class="nt" id="nt-ideation" onclick="toggleIdeation(event)">Ideation ▾</button>
     <div class="dd-menu" id="ideation-menu" style="display:none">
@@ -315,7 +316,79 @@
   </div>
 
 </div>
-  
+  <div id="v-capture" style="display:none">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px;">
+    <div style="font-size:1.2rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px">Capture</div>
+    <div style="font-size:.84rem;color:var(--t2)">Send a new item to your Inbox. It will route through your normal system.</div>
+  </div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:760px">
+    <div id="cap-msg" style="font-size:.8rem;color:#86efac;min-height:18px;margin-bottom:12px"></div>
+
+    <div style="display:grid;gap:14px">
+      <div>
+        <label for="cap-raw" style="display:block;font-size:.75rem;color:var(--t2);margin-bottom:6px">Raw Input</label>
+        <textarea id="cap-raw" rows="4" style="width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:.85rem;padding:12px 14px;border-radius:10px;font-family:inherit;outline:none;resize:vertical" placeholder="What do you need to capture?"></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+        <div>
+          <label for="cap-type" style="display:block;font-size:.75rem;color:var(--t2);margin-bottom:6px">Type Hint</label>
+          <select id="cap-type" style="width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:.84rem;padding:10px 12px;border-radius:10px;font-family:inherit;outline:none">
+            <option value="">Select type…</option>
+            <option value="Task">Task</option>
+            <option value="Idea">Idea</option>
+            <option value="Research">Research</option>
+            <option value="Reference">Reference</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="cap-area" style="display:block;font-size:.75rem;color:var(--t2);margin-bottom:6px">Area</label>
+          <select id="cap-area" style="width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:.84rem;padding:10px 12px;border-radius:10px;font-family:inherit;outline:none">
+            <option value="">Select area…</option>
+            <option value="DART">🚌 DART & Work</option>
+            <option value="NAACP">✊🏾 NAACP</option>
+            <option value="Gun Club">🐎 Gun Club</option>
+            <option value="Friends">🤜🏾🤛🏾 Friends</option>
+            <option value="Podcast">🎙️ Podcast</option>
+            <option value="Brand">✨ Brand & Business</option>
+            <option value="Glow">🌟 Glow Up</option>
+            <option value="School">🎓 School</option>
+            <option value="Family">💛 Family</option>
+            <option value="Finances">💰 Finances</option>
+            <option value="Home">🏠 Home</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+        <div>
+          <label for="cap-due" style="display:block;font-size:.75rem;color:var(--t2);margin-bottom:6px">Due Date</label>
+          <input id="cap-due" type="date" style="width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:.84rem;padding:10px 12px;border-radius:10px;font-family:inherit;outline:none">
+        </div>
+
+        <div>
+          <label for="cap-bucket" style="display:block;font-size:.75rem;color:var(--t2);margin-bottom:6px">Timing Bucket (optional if no due date)</label>
+          <select id="cap-bucket" style="width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);font-size:.84rem;padding:10px 12px;border-radius:10px;font-family:inherit;outline:none">
+            <option value="">Select timing…</option>
+            <option value="Today">Today</option>
+            <option value="Tomorrow">Tomorrow</option>
+            <option value="Next 7 Days">Next 7 Days</option>
+            <option value="Next 2 Weeks">Next 2 Weeks</option>
+            <option value="Next 30 Days">Next 30 Days</option>
+            <option value="Later">Later</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px">
+        <button type="button" onclick="resetCaptureForm()" style="background:var(--card2);border:1px solid var(--border2);color:var(--text);font-size:.84rem;padding:10px 16px;border-radius:10px;cursor:pointer;font-family:inherit">Reset</button>
+        <button type="button" onclick="submitCapture()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);color:var(--text);font-size:.84rem;padding:10px 16px;border-radius:10px;cursor:pointer;font-family:inherit">Send to Inbox</button>
+      </div>
+    </div>
+  </div>
+</div>
   <div id="v-areas" style="display:none">
   <div class="slabel">Needs Attention — active pressure or consequence</div><div class="agrid" id="ag-urgent"></div>
   <div class="slabel">In Motion — active work across areas</div><div class="agrid" id="ag-active"></div>
@@ -436,6 +509,15 @@
   <input type="hidden" name="due_date" value="">
   <input type="hidden" name="kanban_stage" value="">
   <input type="hidden" name="completed" value="">
+</form>
+  <iframe name="captureFrame" style="display:none;"></iframe>
+
+<form id="captureForm" method="POST" target="captureFrame" style="display:none;">
+  <input type="hidden" name="rawInput" value="">
+  <input type="hidden" name="typeHint" value="">
+  <input type="hidden" name="area" value="">
+  <input type="hidden" name="dueDate" value="">
+  <input type="hidden" name="timingBucket" value="">
 </form>
 <script>
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzA71wxqc_D83Vz1oNFGDZg3xZY03vbqCR0dM-jK24Ha7H1UsqfabmKRs-lhC4uQEnRYw/exec';
@@ -604,7 +686,7 @@ const CLI = [
   {id:'fri',l:'<strong>Friday Weekly Review.</strong>',s:'Open Cowork → "weekly review". Full triage of all life areas.',show:isFri},
 ].filter(x => x.show);
 
-const ALL_VIEWS = ['today','areas','matrix','tasks','kanban','ideas','research','references'];
+const ALL_VIEWS = ['today','areas','matrix','tasks','kanban','capture','ideas','research','references'];
 const KB_COLS = [
   { id:'Backlog',            label:'Backlog',            color:'var(--t3)' },
   { id:'Ready',              label:'Ready',              color:'var(--work)' },
@@ -1584,6 +1666,56 @@ function fmtDue(d){
   if(diff === 1) return 'Tomorrow';
 
   return due.toLocaleDateString('en-US',{month:'short', day:'numeric'});
+}
+  function resetCaptureForm(){
+  document.getElementById('cap-raw').value = '';
+  document.getElementById('cap-type').value = '';
+  document.getElementById('cap-area').value = '';
+  document.getElementById('cap-due').value = '';
+  document.getElementById('cap-bucket').value = '';
+  document.getElementById('cap-msg').textContent = '';
+}
+
+function submitCapture(){
+  const rawInput = document.getElementById('cap-raw').value.trim();
+  const typeHint = document.getElementById('cap-type').value;
+  const area = document.getElementById('cap-area').value;
+  const dueDate = document.getElementById('cap-due').value;
+  const timingBucket = document.getElementById('cap-bucket').value;
+  const msg = document.getElementById('cap-msg');
+
+  if(!rawInput){
+    msg.style.color = '#fca5a5';
+    msg.textContent = 'Raw Input is required.';
+    return;
+  }
+
+  if(!typeHint){
+    msg.style.color = '#fca5a5';
+    msg.textContent = 'Type Hint is required.';
+    return;
+  }
+
+  if(!area){
+    msg.style.color = '#fca5a5';
+    msg.textContent = 'Area is required.';
+    return;
+  }
+
+  const form = document.getElementById('captureForm');
+  form.action = WEB_APP_URL;
+  form.elements['rawInput'].value = rawInput;
+  form.elements['typeHint'].value = typeHint;
+  form.elements['area'].value = area;
+  form.elements['dueDate'].value = dueDate;
+  form.elements['timingBucket'].value = timingBucket;
+
+  form.submit();
+
+  msg.style.color = '#86efac';
+  msg.textContent = 'Captured. It has been sent to your Inbox.';
+  resetCaptureForm();
+  msg.textContent = 'Captured. It has been sent to your Inbox.';
 }
 function openSettings(){
   document.getElementById('smodal').classList.add('open');
