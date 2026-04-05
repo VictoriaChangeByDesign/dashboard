@@ -999,20 +999,39 @@ function renderToday(){
     ? upcoming.map(renderPlannerTaskItem).join('')
     : '<div class="kb-empty">Nothing pressing beyond today.</div>';
 }
-function renderAreas(){
+function getAreaBucket(ts){
+  if(!ts || !ts.length) return 'goal';
+
+  const hasP1 = ts.some(t => t.pri === 'P1');
+  const hasOverdue = ts.some(t => {
+    if(!t.due) return false;
+    const due = new Date(t.due + ' 12:00');
+    const today = new Date();
+    return due < today && fmtDue(t.due).startsWith('Overdue');
+  });
+
+  if(hasP1 || hasOverdue) return 'urgent';
+  return 'active';
+}
+  function renderAreas(){
   ['urgent','active','goal'].forEach(p => {
     document.getElementById('ag-' + p).innerHTML = '';
   });
+
   const byArea = {};
   tasks.forEach(t => {
-    if(!byArea[t.area]) byArea[t.area] = [];
-    byArea[t.area].push(t);
+    const area = t.area || 'General';
+    if(!byArea[area]) byArea[area] = [];
+    byArea[area].push(t);
   });
+
   Object.entries(AREAS).forEach(([k,d]) => {
     if(k === 'Setup' || k === 'General') return;
+
     const ts = (byArea[k] || []).filter(t => !t.done);
-    const card = mkCard(k, d, ts);
-    const bucket = document.getElementById('ag-' + d.p);
+    const bucketKey = getAreaBucket(ts);
+    const card = mkCard(k, d, ts, bucketKey);
+    const bucket = document.getElementById('ag-' + bucketKey);
     if(bucket) bucket.appendChild(card);
   });
 }
@@ -1034,15 +1053,31 @@ function renderPlannerTaskItem(t){
     </div>
   `;
 }
-function mkCard(k,d,ts){
+function mkCard(k,d,ts,bucketKey){
   const el = document.createElement('div');
   el.className = 'ac';
-  const bLabel = d.b === 'urgent' ? '⚡ Urgent' : d.b === 'active' ? 'Active' : d.b === 'upcoming' ? 'Upcoming' : 'Goal';
+
+  const badgeMap = {
+    urgent: 'Needs Attention',
+    active: 'In Motion',
+    goal: 'Longer Horizon'
+  };
+
+  const badgeClassMap = {
+    urgent: 'urgent',
+    active: 'active',
+    goal: 'goal'
+  };
+
+  const nextDueTask = ts
+    .filter(t => t.due)
+    .sort((a,b) => new Date(a.due || '9999-12-31') - new Date(b.due || '9999-12-31'))[0];
+
   el.innerHTML = `
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${d.c};border-radius:12px 12px 0 0"></div>
     <div class="ac-top">
       <span style="font-size:1.3rem">${d.i}</span>
-      <span class="badge b-${d.b}">${bLabel}</span>
+      <span class="badge b-${badgeClassMap[bucketKey]}">${badgeMap[bucketKey]}</span>
     </div>
     <h3>${d.n}</h3>
     <div class="ac-role">${d.r}</div>
@@ -1056,8 +1091,12 @@ function mkCard(k,d,ts){
       ${ts.length === 0 ? `<li style="font-size:.74rem;color:var(--t3);padding:4px 0">No open tasks</li>` : ''}
     </ul>
     ${ts.length > 3 ? `<div style="font-size:.7rem;color:var(--t3);margin-top:5px">+${ts.length - 3} more</div>` : ''}
-    <div class="ac-foot"><span>${ts.length} open task${ts.length !== 1 ? 's' : ''}</span><span>→</span></div>
+    <div class="ac-foot">
+      <span>${ts.length} open task${ts.length !== 1 ? 's' : ''}</span>
+      <span>${nextDueTask ? fmtDue(nextDueTask.due) : ''}</span>
+    </div>
   `;
+
   el.onclick = () => openDetail(k);
   return el;
 }
