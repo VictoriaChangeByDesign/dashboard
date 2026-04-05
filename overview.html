@@ -450,20 +450,123 @@ const RESEARCH_API = 'https://api.github.com/repos/VictoriaChangeByDesign/dashbo
 const REFS_RAW = './references.json?t=' + Date.now();
   
 const AREAS = {
-  DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
-  MIHF: {i:'🏥',n:'MIHF Fellowship',c:'var(--mihf)',r:'Health Connect Fellow · MIHF',p:'active',b:'active',ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
-  NAACP: {i:'✊🏾',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
-  'Gun Club': {i:'🐎',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
-  Friends: {i:'🤜🏾🤛🏾',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Long-arc relationships including Heather. Support spans campaign work, podcast collaboration, and personal connection. Tasks here are relationship-driven, not tied to a single initiative.'},
-  Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Co-host → Solo Pivot · Change in Plain Sight',p:'active',b:'active',ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
-  Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Owner · Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
-  Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Dev → Dr. Victoria Henderson Weber',p:'goal',b:'goal',ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
-  Family: {i:'💛',n:'Family',c:'var(--family)',r:'Mom · Langston (10) & Zora (3)',p:'active',b:'active',ctx:'Two kids with very different needs. Langston is 10. Zora is 3. Both are a priority.'},
-  Finances: {i:'💰',n:'Finances',c:'var(--finances)',r:'Personal Finance',p:'goal',b:'goal',ctx:'Full audit first, then a working budget and savings system.'},
-  Home: {i:'🏠',n:'Home',c:'var(--home)',r:'Home Design & Organization',p:'goal',b:'goal',ctx:'Redesign and organize the home to make Victoria happy. Quick wins first.'},
-  Setup: {i:'⚙️',n:'Setup',c:'var(--t2)',r:'System Setup',p:'active',b:'active',ctx:'One-time system setup tasks.'},
-  General: {i:'📋',n:'General',c:'var(--t2)',r:'General',p:'active',b:'active',ctx:'General tasks.'},
-  'Eno Center': {i:'🎓',n:'Eno Center',c:'var(--work)',r:'Mid-Manager Program · July, Seattle',p:'active',b:'upcoming',ctx:'Eno Center for Transportation Mid-Manager Program. July in Seattle. Part of the Glow Up arc.'},
+  DART: {
+    i:'🚌',
+    n:'DART & Work',
+    c:'var(--work)',
+    r:'Caravan Manager · DART',
+    p:'active',
+    b:'active',
+    ctx:'Managing DART work, workforce transportation strategy, fellowship-related work, and related transportation leadership items under one work umbrella.'
+  },
+  NAACP: {
+    i:'✊🏾',
+    n:'NAACP',
+    c:'var(--naacp)',
+    r:'Branch President · NAACP Des Moines',
+    p:'active',
+    b:'active',
+    ctx:'Branch leadership, advocacy, program stewardship, communications, and organizational accountability.'
+  },
+  'Gun Club': {
+    i:'🐎',
+    n:'Gun Club',
+    c:'var(--guns)',
+    r:'Vice President · Colonel Young Gun Club',
+    p:'active',
+    b:'active',
+    ctx:'Gun club leadership work, planning, communications, and follow-through tied to community-building and responsible culture.'
+  },
+  Friends: {
+    i:'🤜🏾🤛🏾',
+    n:'Friends',
+    c:'var(--friends)',
+    r:'Strategic Relationships',
+    p:'active',
+    b:'active',
+    ctx:'Relationship-centered follow-up, support, reciprocity, and connection with important people in your orbit.'
+  },
+  Podcast: {
+    i:'🎙️',
+    n:'Podcast',
+    c:'var(--podcast)',
+    r:'Change in Plain Sight',
+    p:'active',
+    b:'active',
+    ctx:'Recording, editing, publishing, and shaping the direction of your podcast presence.'
+  },
+  Brand: {
+    i:'✨',
+    n:'Brand & Business',
+    c:'var(--brand)',
+    r:'Brilliance Collective → Change by Design',
+    p:'active',
+    b:'active',
+    ctx:'Brand positioning, business structure, public-facing strategy, and long-term visibility work.'
+  },
+  Glow: {
+    i:'🌟',
+    n:'Glow Up',
+    c:'var(--glow)',
+    r:'Personal Development',
+    p:'goal',
+    b:'goal',
+    ctx:'Long-arc personal development, confidence, image, health, and self-presentation work.'
+  },
+  School: {
+    i:'🎓',
+    n:'School',
+    c:'var(--family)',
+    r:'Graduate School & Coursework',
+    p:'active',
+    b:'active',
+    ctx:'Coursework, assignments, academic planning, deadlines, and graduate school preparation.'
+  },
+  Family: {
+    i:'💛',
+    n:'Family',
+    c:'var(--family)',
+    r:'Mom · Langston & Zora',
+    p:'active',
+    b:'active',
+    ctx:'Family responsibilities, planning, care, routines, and support across both children.'
+  },
+  Finances: {
+    i:'💰',
+    n:'Finances',
+    c:'var(--finances)',
+    r:'Personal Finance',
+    p:'goal',
+    b:'goal',
+    ctx:'Budgeting, financial cleanup, stabilization, and longer-term savings work.'
+  },
+  Home: {
+    i:'🏠',
+    n:'Home',
+    c:'var(--home)',
+    r:'Home Design & Organization',
+    p:'goal',
+    b:'goal',
+    ctx:'Home systems, organization, design, and environment improvements that reduce friction.'
+  },
+  Setup: {
+    i:'⚙️',
+    n:'Setup',
+    c:'var(--t2)',
+    r:'System Setup',
+    p:'active',
+    b:'active',
+    ctx:'One-time system setup and infrastructure work.'
+  },
+  General: {
+    i:'📋',
+    n:'General',
+    c:'var(--t2)',
+    r:'General',
+    p:'active',
+    b:'active',
+    ctx:'General tasks that do not clearly belong somewhere else.'
+  }
 };
 
 let tasks = [];
@@ -560,9 +663,15 @@ function resetCL(){
 function normalizeArea(area){
   const map = {
     'DART & Work': 'DART',
+    'MIHF Fellowship': 'DART',
+    'MIHF': 'DART',
+    'Eno Center': 'DART',
     'Brand & Business': 'Brand',
     'Glow Up': 'Glow',
-    'Friends': 'Friends'
+    'Friends': 'Friends',
+    'School': 'School',
+    'Graduate School': 'School',
+    'Coursework': 'School'
   };
   return map[area] || area || 'General';
 }
@@ -1427,19 +1536,16 @@ function fmtDue(d){
 
   const today = new Date();
   const due = new Date(d + ' 12:00');
-
   const diff = Math.round((due - today) / 86400000);
 
   if(diff < 0){
     return `Overdue (${due.toLocaleDateString('en-US',{month:'short',day:'numeric'})})`;
   }
-
   if(diff === 0) return 'Today';
   if(diff === 1) return 'Tomorrow';
 
   return due.toLocaleDateString('en-US',{month:'short', day:'numeric'});
 }
-
 function openSettings(){
   document.getElementById('smodal').classList.add('open');
   const t = localStorage.getItem('gh-tok');
