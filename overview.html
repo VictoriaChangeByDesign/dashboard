@@ -452,9 +452,9 @@ const REFS_RAW = './references.json?t=' + Date.now();
 const AREAS = {
   DART: {i:'🚌',n:'DART & Work',c:'var(--work)',r:'Caravan Manager · DART',p:'active',b:'active',ctx:'Managing the 30-year vanpool program across 20 counties. Eno Center Mid-Manager Program is July in Seattle.'},
   MIHF: {i:'🏥',n:'MIHF Fellowship',c:'var(--mihf)',r:'Health Connect Fellow · MIHF',p:'active',b:'active',ctx:'Three-part series on workforce transportation barriers. Parts 2 & 3 in progress. Shuttle program development ongoing.'},
-  NAACP: {i:'✊',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
-  'Gun Club': {i:'🛡️',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
-  Friends: {i:'🗳️',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Long-arc relationships including Heather. Support spans campaign work, podcast collaboration, and personal connection. Tasks here are relationship-driven, not tied to a single initiative.'},
+  NAACP: {i:'✊🏾',n:'NAACP',c:'var(--naacp)',r:'Branch President · NAACP Des Moines',p:'urgent',b:'urgent',ctx:'Branch president work — behind and needs urgent catch-up. First step: honest audit of what has lapsed.'},
+  'Gun Club': {i:'🐎',n:'Gun Club',c:'var(--guns)',r:'Vice President · Colonel Young Gun Club (NAAGA)',p:'urgent',b:'urgent',ctx:'Iowa chapter of NAAGA — also behind. Same audit-first approach as NAACP.'},
+  Friends: {i:'🤜🏾🤛🏾',n:'Friends',c:'var(--friends)',r:'Strategic relationships · Community leadership circle',p:'active',b:'active',ctx:'Long-arc relationships including Heather. Support spans campaign work, podcast collaboration, and personal connection. Tasks here are relationship-driven, not tied to a single initiative.'},
   Podcast: {i:'🎙️',n:'Podcast',c:'var(--podcast)',r:'Co-host → Solo Pivot · Change in Plain Sight',p:'active',b:'active',ctx:"Ep 1 done. Finish eps 2 & 3. Draft solo pivot strategy — Heather's campaign is the bridge narrative."},
   Brand: {i:'✨',n:'Brand & Business',c:'var(--brand)',r:'Owner · Brilliance Collective → Change by Design',p:'active',b:'active',ctx:'Brilliance Collective is the existing business. Change by Design is the new umbrella brand. Define vision + merge plan.'},
   Glow: {i:'🌟',n:'Glow Up',c:'var(--glow)',r:'Personal Dev → Dr. Victoria Henderson Weber',p:'goal',b:'goal',ctx:'Long arc toward Dr. VHW. Masters in Transportation Mgmt (Minetta/San Jose State). Eno Center is part of this path.'},
@@ -1424,13 +1424,20 @@ function dueColor(d){
 }
 function fmtDue(d){
   if(!d) return '';
-  const days = Math.round((new Date(d + ' 12:00') - new Date()) / 86400000);
-  if(days < 0) return `${Math.abs(days)}d overdue`;
-  if(days === 0) return 'Today';
-  if(days === 1) return 'Tomorrow';
-  if(days <= 7) return `${days}d`;
-  const dt = new Date(d + ' 12:00');
-  return dt.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+  const today = new Date();
+  const due = new Date(d + ' 12:00');
+
+  const diff = Math.round((due - today) / 86400000);
+
+  if(diff < 0){
+    return `Overdue (${due.toLocaleDateString('en-US',{month:'short',day:'numeric'})})`;
+  }
+
+  if(diff === 0) return 'Today';
+  if(diff === 1) return 'Tomorrow';
+
+  return due.toLocaleDateString('en-US',{month:'short', day:'numeric'});
 }
 
 function openSettings(){
