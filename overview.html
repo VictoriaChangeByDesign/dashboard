@@ -256,6 +256,7 @@
   border:1px solid var(--border);
   border-radius:14px;
   padding:16px;
+  margin-bottom:16px;
 }
 
 .today-subtle{
@@ -272,7 +273,74 @@
   margin-bottom:8px;
 }
 
-.today-stack{display:flex;flex-direction:column;gap:14px}
+.today-stack{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+
+.t-edit-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-top:8px;
+  flex-wrap:wrap;
+}
+
+.t-date-in{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-size:.72rem;
+  padding:5px 8px;
+  border-radius:8px;
+  font-family:inherit;
+  outline:none;
+}
+
+.t-date-in:focus{
+  border-color:var(--border2);
+}
+
+.t-date-save{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border2);
+  color:var(--t2);
+  font-size:.7rem;
+  padding:5px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.t-date-save:hover{
+  color:var(--text);
+}
+
+.weather-wrap{
+  min-width:220px;
+  max-width:340px;
+}
+
+body.light-mode{
+  --bg:#f5f7fb;
+  --bg2:#ffffff;
+  --card:#ffffff;
+  --card2:#f3f4f6;
+  --border:rgba(15,23,42,.08);
+  --border2:rgba(15,23,42,.16);
+  --text:#111827;
+  --t2:#4b5563;
+  --t3:#6b7280;
+}
+
+body.light-mode .pill-btn{
+  background:rgba(15,23,42,.04);
+}
+
+body.light-mode .today-hero{
+  background:linear-gradient(180deg, rgba(15,23,42,.02), rgba(15,23,42,.01));
+}
   </style>
   
 </head>
@@ -284,10 +352,17 @@
     <div class="hdr-sub" id="date-line"></div>
   </div>
   <div class="hdr-r">
+    <div class="weather-wrap">
+      <div id="ww_a103b2b110caa" v="1.3" loc="id" a='{"t":"responsive","lang":"en","sl_lpl":1,"ids":["wl3162"],"font":"Arial","sl_ics":"one_a","sl_sot":"fahrenheit","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
+        More forecasts: <a href="https://oneweather.org/new_york_city/30_days/" id="ww_a103b2b110caa_u" target="_blank">NYC weather 30 day</a>
+      </div>
+    </div>
     <span class="pill pill-red" id="urgent-pill">⚡ Loading…</span>
+    <button class="pill pill-btn" id="theme-toggle" onclick="toggleTheme()">☀️ Day</button>
     <button class="pill pill-btn" onclick="openSettings()">⚙ Settings</button>
   </div>
 </div>
+<script async src="https://app3.weatherwidget.org/js/?id=ww_a103b2b110caa"></script>
 
 <div class="cl-wrap">
   <div class="cl-hdr" onclick="toggleCL()">
@@ -329,28 +404,41 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap" id="today-summary"></div>
   </div>
 
-  <div class="today-grid">
-    <div class="today-stack">
+  <div class="today-stack">
 
-      <div class="today-panel">
-        <div class="today-mini">Start Your Day</div>
-        <div id="today-routine-host"></div>
-      </div>
-
-      <div class="today-panel">
-        <div class="slabel" style="margin-top:0">Today's Commitments</div>
-        <div class="today-subtle" style="margin:-2px 0 10px 0">
-          If everything else slips, these still get done.
-        </div>
-        <div class="tlist" id="today-p1"></div>
-      </div>
-
-      <div class="today-panel">
-        <div class="slabel" style="margin-top:0">If You Have Capacity</div>
-        <div class="tlist" id="today-p2"></div>
-      </div>
-
+    <div class="today-panel">
+      <div class="today-mini">Start Your Day</div>
+      <div id="today-routine-host"></div>
     </div>
+
+    <div class="today-panel">
+      <div class="slabel" style="margin-top:0">Today's Commitments</div>
+      <div class="today-subtle" style="margin:-2px 0 10px 0">
+        If everything else slips, these still get done.
+      </div>
+      <div class="tlist" id="today-p1"></div>
+    </div>
+
+    <div class="today-panel">
+      <div class="slabel" style="margin-top:0">If You Have Capacity</div>
+      <div class="tlist" id="today-p2"></div>
+    </div>
+
+    <div class="today-panel">
+      <div class="slabel" style="margin-top:0">Coming Up</div>
+      <div class="tlist" id="today-upcoming"></div>
+    </div>
+
+    <div class="today-panel">
+      <div class="today-mini">Planner Notes</div>
+      <div class="today-subtle">
+        This page is for deciding, not browsing. Start with commitments, then move to capacity work only if those are handled or consciously deferred.
+      </div>
+    </div>
+
+  </div>
+
+</div>
 
     <div class="today-stack">
 
@@ -1184,6 +1272,10 @@ function renderPlannerTaskItem(t){
           <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
           ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
         </div>
+        <div class="t-edit-row">
+          <input class="t-date-in" id="td-${t.id}" type="date" value="${t.due || ''}">
+          <button class="t-date-save" onclick="saveTaskDueDate('${t.id}')">Save date</button>
+        </div>
       </div>
     </div>
   `;
@@ -1302,11 +1394,28 @@ function mkTItem(t){
         <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
         ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
       </div>
+      <div class="t-edit-row">
+        <input class="t-date-in" id="td-${t.id}" type="date" value="${t.due || ''}">
+        <button class="t-date-save" onclick="saveTaskDueDate('${t.id}')">Save date</button>
+      </div>
     </div>
   `;
   return el;
 }
+async function saveTaskDueDate(id){
+  const t = tasks.find(x => String(x.id) === String(id));
+  const inp = document.getElementById('td-' + id);
+  if(!t || !inp) return;
 
+  try {
+    await updateTaskDueDate(t.task_id || t.id, inp.value || '');
+    await refreshTasksAndRender();
+    toast('Due date updated');
+  } catch (e) {
+    console.error(e);
+    toast('Date update failed');
+  }
+}
 async function markDone(id,ev){
   ev.stopPropagation();
   const t = tasks.find(x => String(x.id) === String(id));
@@ -1770,7 +1879,28 @@ function submitCapture(){
   resetCaptureForm();
   msg.textContent = 'Captured. It has been sent to your Inbox.';
 }
-function openSettings(){
+function applyTheme(theme){
+  const body = document.body;
+  const btn = document.getElementById('theme-toggle');
+  if(!body || !btn) return;
+
+  const light = theme === 'light';
+  body.classList.toggle('light-mode', light);
+  btn.textContent = light ? '🌙 Night' : '☀️ Day';
+}
+
+function toggleTheme(){
+  const current = localStorage.getItem('vhw-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('vhw-theme', next);
+  applyTheme(next);
+}
+
+function initTheme(){
+  const saved = localStorage.getItem('vhw-theme') || 'dark';
+  applyTheme(saved);
+}
+  function openSettings(){
   document.getElementById('smodal').classList.add('open');
   const t = localStorage.getItem('gh-tok');
   if(t) document.getElementById('tok-in').value = t;
@@ -1798,6 +1928,7 @@ function toast(m){
   setTimeout(() => el.classList.remove('show'), 3200);
 }
 
+initTheme();
 initCL();
 load();
 </script>
