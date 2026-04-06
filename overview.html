@@ -240,8 +240,7 @@
     .ref-card-raw{font-size:.73rem;color:var(--t2);margin-bottom:8px;line-height:1.45}
     .ref-card-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px}
     .ref-date{font-size:.67rem;color:var(--t3)}
-  </style>
-  .today-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
+    .today-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
 @media(max-width:900px){.today-grid{grid-template-columns:1fr}}
 
 .today-hero{
@@ -274,6 +273,8 @@
 }
 
 .today-stack{display:flex;flex-direction:column;gap:14px}
+  </style>
+  
 </head>
 <body>
 
@@ -1108,12 +1109,9 @@ function renderToday(){
 
   p1El.innerHTML = topP1.length
     ? `
-      <div style="color:var(--t2);font-size:.8rem;margin-bottom:6px">
-        If everything else slips, these still get done.
-      </div>
       ${topP1.map(renderPlannerTaskItem).join('')}
       ${extraP1.length ? `
-        <details style="margin-top:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
+        <details style="margin-top:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
           <summary style="cursor:pointer;color:var(--t2);font-size:.8rem;font-weight:600">
             Additional P1 Items (${extraP1.length})
           </summary>
