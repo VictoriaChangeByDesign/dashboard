@@ -240,8 +240,7 @@
     .ref-card-raw{font-size:.73rem;color:var(--t2);margin-bottom:8px;line-height:1.45}
     .ref-card-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px}
     .ref-date{font-size:.67rem;color:var(--t3)}
-    .today-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
-@media(max-width:900px){.today-grid{grid-template-columns:1fr}}
+
 
 .today-hero{
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
@@ -731,7 +730,7 @@ const AREAS = {
   School: {
     i:'🎓',
     n:'School',
-    c:'var(--school',
+    c:'var(--school)',
     r:'Graduate School & Coursework',
     p:'active',
     b:'active',
@@ -1131,9 +1130,8 @@ function renderToday(){
   const p1El = document.getElementById('today-p1');
   const p2El = document.getElementById('today-p2');
   const upcomingEl = document.getElementById('today-upcoming');
-  const routineHost = document.getElementById('today-routine-host');
 
-  if(!greetEl || !subEl || !sumEl || !p1El || !p2El || !upcomingEl || !routineHost) return;
+  if(!greetEl || !subEl || !sumEl || !p1El || !p2El || !upcomingEl) return;
 
   const now = new Date();
   const dateText = now.toLocaleDateString('en-US', {
@@ -1174,8 +1172,6 @@ function renderToday(){
     <span class="tag-sm due-soon">${p2.length} P2 item${p2.length !== 1 ? 's' : ''}</span>
     <span class="tag-sm">${openTasks.length} open total</span>
   `;
-
-if (routineHost) routineHost.innerHTML = '';
 
   p1El.innerHTML = topP1.length
     ? `
