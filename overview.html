@@ -317,9 +317,15 @@
   color:var(--text);
 }
 
-.weather-wrap{
-  min-width:220px;
-  max-width:340px;
+.weather-bar{
+  padding:12px 28px 0;
+}
+
+.weather-bar > div{
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+  border-radius:14px;
 }
 
 body.light-mode{
@@ -352,18 +358,18 @@ body.light-mode .today-hero{
     <div class="hdr-sub" id="date-line"></div>
   </div>
   <div class="hdr-r">
-    <div class="weather-wrap">
-      <div id="ww_38d240c187924" v="1.3" loc="auto" a='{"t":"responsive","lang":"en","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"fahrenheit","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
-        Weather Data Source: <a href="https://wetterlang.de" id="ww_38d240c187924_u" target="_blank">Wettervorschau 30 tage</a>
-      </div>
-      <script async src="https://app3.weatherwidget.org/js/?id=ww_38d240c187924"></script>
-    </div>
-
     <span class="pill pill-red" id="urgent-pill">⚡ Loading…</span>
     <button class="pill pill-btn" id="theme-toggle" onclick="toggleTheme()">☀️ Day</button>
     <button class="pill pill-btn" onclick="openSettings()">⚙ Settings</button>
   </div>
 </div>
+
+<div class="weather-bar">
+  <div id="ww_38d240c187924" v="1.3" loc="auto" a='{"t":"responsive","lang":"en","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"fahrenheit","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
+    Weather Data Source: <a href="https://wetterlang.de" id="ww_38d240c187924_u" target="_blank">Wettervorschau 30 tage</a>
+  </div>
+</div>
+<script async src="https://app3.weatherwidget.org/js/?id=ww_38d240c187924"></script>
 
 <div class="cl-wrap">
   <div class="cl-hdr" onclick="toggleCL()">
