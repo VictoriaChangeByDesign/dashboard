@@ -7,13 +7,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    :root{
+:root{
   --bg:#0f1117;--bg2:#14161f;--card:#1a1d27;--card2:#1f2235;
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
   --text:#f0f0f0;--t2:#9a9aaa;--t3:#5c5c70;
   --work:#8b5cf6;--mihf:#8b5cf6;--naacp:#1e3a8a;--guns:#d4af37;
   --friends:#f59e0b;--podcast:#ec4899;--brand:#f97316;
-  --glow:#22c55e;--family:#06b6d4;--finances:#14b8a6;--home:#a78bfa;
+  --glow:#22c55e;--school:#38bdf8;--family:#06b6d4;--finances:#14b8a6;--home:#a78bfa;
 }
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
@@ -289,31 +289,53 @@
 
 <div id="v-today" style="display:none">
 
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px 18px;margin-bottom:16px;">
+  <div class="today-hero">
     <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.03em;margin-bottom:4px" id="today-greeting"></div>
     <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px" id="today-subline"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap" id="today-summary"></div>
   </div>
 
-  <div style="margin-bottom:16px">
-    <div class="slabel">Start Your Day</div>
-    <div id="today-routine-host"></div>
+  <div class="today-grid">
+    <div class="today-stack">
+
+      <div class="today-panel">
+        <div class="today-mini">Start Your Day</div>
+        <div id="today-routine-host"></div>
+      </div>
+
+      <div class="today-panel">
+        <div class="slabel" style="margin-top:0">Today's Commitments</div>
+        <div class="today-subtle" style="margin:-2px 0 10px 0">
+          If everything else slips, these still get done.
+        </div>
+        <div class="tlist" id="today-p1"></div>
+      </div>
+
+      <div class="today-panel">
+        <div class="slabel" style="margin-top:0">If You Have Capacity</div>
+        <div class="tlist" id="today-p2"></div>
+      </div>
+
+    </div>
+
+    <div class="today-stack">
+
+      <div class="today-panel">
+        <div class="slabel" style="margin-top:0">Coming Up</div>
+        <div class="tlist" id="today-upcoming"></div>
+      </div>
+
+      <div class="today-panel">
+        <div class="today-mini">Planner Notes</div>
+        <div class="today-subtle">
+          This page is for deciding, not browsing. Start with commitments, then move to capacity work only if those are handled or consciously deferred.
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <div style="margin-bottom:24px">
-    <div class="slabel">Today's Commitments</div>
-    <div class="tlist" id="today-p1"></div>
-  </div>
-
-  <div style="margin-bottom:24px">
-    <div class="slabel">If You Have Capacity</div>
-    <div class="tlist" id="today-p2"></div>
-  </div>
-
-  <div>
-    <div class="slabel">Coming Up</div>
-    <div class="tlist" id="today-upcoming"></div>
-  </div>
+</div>
 
 </div>
   <div id="v-capture" style="display:none">
@@ -598,7 +620,7 @@ const AREAS = {
   School: {
     i:'🎓',
     n:'School',
-    c:'var(--family)',
+    c:'var(--school',
     r:'Graduate School & Coursework',
     p:'active',
     b:'active',
