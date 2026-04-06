@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">f
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -371,17 +371,6 @@ body.light-mode .today-hero{
 </div>
 <script async src="https://app3.weatherwidget.org/js/?id=ww_38d240c187924"></script>
 
-<div class="cl-wrap">
-  <div class="cl-hdr" onclick="toggleCL()">
-    <span class="cl-hdr-l">Daily Routine</span>
-    <div class="cl-hdr-r">
-      <span id="cl-prog"></span>
-      <button class="cl-reset" onclick="event.stopPropagation();resetCL()">Reset</button>
-      <span id="cl-arr">▾</span>
-    </div>
-  </div>
-  <div class="cl-body" id="cl-body"></div>
-</div>
 
 <div class="nav">
   <button class="nt active" data-view="today" onclick="show('today',this)">Today</button>
@@ -413,10 +402,21 @@ body.light-mode .today-hero{
 
   <div class="today-stack">
 
-    <div class="today-panel">
-      <div class="today-mini">Start Your Day</div>
-      <div id="today-routine-host"></div>
+<div class="today-panel">
+  <div class="today-mini">Start Your Day</div>
+
+  <div class="cl-wrap" style="margin:0;background:transparent;border:none;border-radius:0">
+    <div class="cl-hdr" onclick="toggleCL()" style="padding:0 0 12px 0">
+      <span class="cl-hdr-l">Daily Routine</span>
+      <div class="cl-hdr-r">
+        <span id="cl-prog"></span>
+        <button class="cl-reset" onclick="event.stopPropagation();resetCL()">Reset</button>
+        <span id="cl-arr">▾</span>
+      </div>
     </div>
+    <div class="cl-body" id="cl-body" style="padding:0"></div>
+  </div>
+</div>
 
     <div class="today-panel">
       <div class="slabel" style="margin-top:0">Today's Commitments</div>
@@ -1175,14 +1175,7 @@ function renderToday(){
     <span class="tag-sm">${openTasks.length} open total</span>
   `;
 
-  routineHost.innerHTML = `
-    <div class="titem">
-      <div class="t-body">
-        <div class="t-title">Start Your Day</div>
-        <div class="t-note">Use the checklist above to orient your day before moving into task work.</div>
-      </div>
-    </div>
-  `;
+if (routineHost) routineHost.innerHTML = '';
 
   p1El.innerHTML = topP1.length
     ? `
@@ -1260,10 +1253,6 @@ function renderPlannerTaskItem(t){
           <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
           <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
           ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
-        </div>
-        <div class="t-edit-row">
-          <input class="t-date-in" id="td-${t.id}" type="date" value="${t.due || ''}">
-          <button class="t-date-save" onclick="saveTaskDueDate('${t.id}')">Save date</button>
         </div>
       </div>
     </div>
@@ -1382,10 +1371,6 @@ function mkTItem(t){
         <span class="badge b-${(t.pri || 'P3').toLowerCase()}">${t.pri}</span>
         <span class="tag-sm ${eClass(t.energy)}">${eIcon(t.energy)}</span>
         ${t.due ? `<span class="tag-sm ${dueClass(t.due)}">📅 ${fmtDue(t.due)}</span>` : ''}
-      </div>
-      <div class="t-edit-row">
-        <input class="t-date-in" id="td-${t.id}" type="date" value="${t.due || ''}">
-        <button class="t-date-save" onclick="saveTaskDueDate('${t.id}')">Save date</button>
       </div>
     </div>
   `;
@@ -1563,6 +1548,10 @@ function mkKbCard(t, curCol) {
       <div class="kb-note-row">
         <textarea class="kb-note-in" id="kn-${t.id}" rows="1" placeholder="Add a note…">${note}</textarea>
         <button class="kb-note-save" onclick="saveKbNote('${t.id}')">Save</button>
+      </div>
+      <div class="t-edit-row" style="margin-top:8px">
+        <input class="t-date-in" id="td-${t.id}" type="date" value="${t.due || ''}">
+        <button class="t-date-save" onclick="saveTaskDueDate('${t.id}')">Save date</button>
       </div>
     </div>
   `;
